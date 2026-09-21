@@ -1,0 +1,43 @@
+name: Keshav Rajput
+tagline: MS CS, NYU. I build systems, cryptography and ML things.
+location: New York, NY
+email: keshav.rajput4@gmail.com
+phone: "+1 646 299 9431"
+site: happyc0der.github.io
+links:
+  github: https://github.com/happyc0der
+  linkedin: https://www.linkedin.com/in/keshav-rajput-862267259/
+
+education:
+  - school: New York University, Tandon School of Engineering
+    degree: MS, Computer Science
+    when: May 2026
+    score: GPA 3.67/4.0
+  - school: IIIT Delhi
+    degree: B.Tech, Computer Science and Applied Mathematics; minor in Economics
+    when: 2020 - 2024
+    score: CGPA 8.19/10
+
+# Only courses that are on the transcripts.
+coursework:
+  swe: [Design and Analysis of Algorithms II, Principles of Database Systems, Open Source and Professional Software Development, Distributed Systems, Operating Systems, Computer Networks]
+  ml: [Machine Learning, Neuroinformatics, Foundations of Data Science, Advanced Machine Learning, Convex Optimization, Reinforcement Learning]
+  data: [Big Data, Principles of Database Systems, Information Visualization, Foundations of Data Science, Statistical Inference, Machine Learning]
+  sec: [Applied Cryptography, Post-Quantum Cryptography, Computer Networks, Operating Systems, Distributed Systems, Design and Analysis of Algorithms II]
+  quant: [Stochastic Processes, Statistical Inference, Convex Optimization, Game Theory, Econometrics, Valuation and Portfolio Management, Machine Learning]
+
+skills:
+  languages: [Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash]
+  ml: [PyTorch, scikit-learn, LightGBM, XGBoost, CatBoost, Optuna, NumPy, pandas, polars]
+  data: [PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Streamlit, Altair, matplotlib]
+  systems: [CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Node.js, REST APIs, MCP]
+  security: [libsodium, liboqs, ML-DSA, ML-KEM, X25519, ChaCha20-Poly1305, OAuth 2.1, libFuzzer, ASan/UBSan, threat modeling]
+  tools: [Git, GitHub Actions, Docker, AWS (CDK, App Runner, DynamoDB), Linux, LaTeX]
+
+activities:
+  - text: Treasurer, OWASP Student Chapter, IIIT Delhi
+    tags: [sec, swe]
+  - text: Events head, Finnexia (finance club), IIIT Delhi; organised "The Critical Bid"
+    tags: [quant, data]
+  - text: Attended the first International Quantum Communication Conclave, New Delhi, 2023
+    tags: [sec, quant]

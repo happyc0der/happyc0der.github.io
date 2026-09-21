@@ -1,0 +1,14 @@
+---
+import { tagNames } from '../lib';
+const { project } = Astro.props;
+const d = project.data;
+---
+<a class="card" href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
+  <div class="top">
+    <h3>{d.title}</h3>
+    <span class="mono muted">{d.year}</span>
+  </div>
+  <p>{d.blurb}</p>
+  <div class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</div>
+  {d.stats.length > 0 && <div class="stats mono">{d.stats.map((s: string) => <span>{s}</span>)}</div>}
+</a>

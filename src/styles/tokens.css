@@ -1,0 +1,19 @@
+/* The whole theme lives here. Change a value, the site follows. */
+:root {
+  --bg: #0b0a10;
+  --surface: #14121c;
+  --surface-2: #1b1826;
+  --line: #262233;
+  --text: #e7e5ee;
+  --muted: #8f8aa3;
+  --accent: #a78bfa;
+  --accent-hi: #c4b5fd;
+  --accent-dim: rgba(167, 139, 250, 0.12);
+
+  --sans: 'Inter Variable', system-ui, sans-serif;
+  --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --width: 64rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --radius: 10px;
+}

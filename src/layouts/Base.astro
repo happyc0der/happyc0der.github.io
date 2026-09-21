@@ -1,0 +1,48 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import { profile, hasNotes } from '../lib';
+
+const { title, description = profile.tagline } = Astro.props;
+const path = Astro.url.pathname;
+
+// Add a nav entry here when a new section goes live.
+const nav = [
+  { href: '/projects/', text: 'Projects' },
+  ...(hasNotes ? [{ href: '/notes/', text: 'Notes' }] : []),
+  { href: '/resume/', text: 'Resume' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b0a10" />
+    <meta property="og:title" content={title ? `${title} · ${profile.name}` : profile.name} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title ? `${title} · ${profile.name}` : profile.name}</title>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <a class="home" href="/"><span>~/</span>keshav</a>
+        <nav>
+          {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.text}</a>)}
+        </nav>
+      </div>
+    </header>
+    <main class="wrap"><slot /></main>
+    <footer class="site">
+      <div class="wrap">
+        <span>{profile.name}, {profile.location}</span>
+        <span>
+          <a href={`mailto:${profile.email}`}>Email</a> · <a href={profile.links.github}>GitHub</a> · <a href={profile.links.linkedin}>LinkedIn</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

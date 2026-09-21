@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { tagNames } from '../../lib';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Projects">
+  <h1 class="page-title">Projects</h1>
+  <p class="muted" style="margin-bottom:2rem">{projects.length} things I have built or taken apart.</p>
+  <div class="chips">
+    <button class="chip" data-filter="all" aria-pressed="true">all</button>
+    {Object.entries(tagNames).map(([tag, name]) => <button class="chip" data-filter={tag} aria-pressed="false">{name}</button>)}
+  </div>
+  <div class="grid">{projects.map((p) => <ProjectCard project={p} />)}</div>
+</Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const cards = document.querySelectorAll<HTMLElement>('.card');
+  const apply = (filter: string) => {
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
+    cards.forEach((c) => (c.hidden = filter !== 'all' && !c.dataset.tags!.split(' ').includes(filter)));
+  };
+  chips.forEach((c) => c.addEventListener('click', () => {
+    history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : `#${c.dataset.filter}`);
+    apply(c.dataset.filter!);
+  }));
+  if (location.hash) apply(location.hash.slice(1));
+</script>

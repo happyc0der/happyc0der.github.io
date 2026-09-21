@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { resumes } from '../lib';
+---
+<Base title="Resume">
+  <h1 class="page-title">Resume</h1>
+  <p class="muted" style="margin-bottom:2rem">One page each. Pick the one that fits the role.</p>
+  <div class="rows" style="max-width:36rem">
+    {Object.values(resumes).map((r: any) => (
+      <div class="row">
+        <span class="what">{r.label}</span>
+        <a class="when mono" href={`/resume/${r.file}.pdf`}>PDF ↓</a>
+      </div>
+    ))}
+  </div>
+</Base>

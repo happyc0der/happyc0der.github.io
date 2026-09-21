@@ -1,0 +1,12 @@
+- name: Biohub Cell Tracking, Kaggle
+  result: Public leaderboard 0.952, about top 1.2% of 3,594 teams
+  year: 2026
+  tags: [ml, data, swe, quant]
+- name: Kaggle Playground S6E9
+  result: AUC 0.9465, 0.00025 behind the leader
+  year: 2026
+  tags: [ml, data, quant]
+- name: Amazon Build, Ship, Shape 2026 (Alexa+ track)
+  result: Shipped Custodian, an MCP recall-monitoring add-on
+  year: 2026
+  tags: [swe, sec, ml]

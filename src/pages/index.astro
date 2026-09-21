@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { profile, competitions } from '../lib';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featured = projects.filter((p) => p.data.featured);
+---
+<Base>
+  <section class="hero">
+    <p class="label">{profile.location}</p>
+    <h1>{profile.name}</h1>
+    <p class="tagline">{profile.tagline}</p>
+    <div class="links">
+      <a class="btn primary" href="/resume/">Resume</a>
+      <a class="btn" href={profile.links.github}>GitHub</a>
+      <a class="btn" href={profile.links.linkedin}>LinkedIn</a>
+      <a class="btn" href={`mailto:${profile.email}`}>Email</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <a href="/projects/" class="mono">all {projects.length} →</a>
+    </div>
+    <div class="grid">{featured.map((p) => <ProjectCard project={p} />)}</div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Competitions</h2></div>
+    <div class="rows">
+      {competitions.map((c: any) => (
+        <div class="row">
+          <span class="what">{c.name}</span>
+          <span class="when mono">{c.year}</span>
+          <span class="detail">{c.result}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Education</h2></div>
+    <div class="rows">
+      {profile.education.map((e: any) => (
+        <div class="row">
+          <span class="what">{e.school}</span>
+          <span class="when mono">{e.when}</span>
+          <span class="detail">{e.degree}. {e.score}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

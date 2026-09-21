@@ -1,0 +1,15 @@
+/* Print stylesheet for the resumes. One column, real text, system fonts: that is what parses cleanly. */
+@page { size: Letter; margin: 0.55in 0.6in; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font: 10pt/1.32 Helvetica, Arial, sans-serif; color: #000; font-variant-ligatures: none; font-kerning: none; }
+h1 { font-size: 20pt; text-align: center; letter-spacing: 0.01em; }
+.contact { text-align: center; font-size: 9.5pt; margin-top: 3pt; }
+a { color: inherit; text-decoration: none; }
+h2 { font-size: 10.5pt; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 0.6pt solid #000; padding-bottom: 1.5pt; margin: 10pt 0 5pt; }
+.entry { margin-bottom: 5pt; break-inside: avoid; }
+.head { display: flex; justify-content: space-between; gap: 12pt; }
+.head .right { white-space: nowrap; font-size: 9.5pt; }
+.stack { font-weight: normal; }
+ul { padding-left: 12pt; margin-top: 1.5pt; }
+li { margin-bottom: 1pt; }
+p { margin-top: 2pt; }

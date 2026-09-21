@@ -1,0 +1,32 @@
+# One entry per resume. "track" picks coursework, activities and competitions by tag.
+# To put a project on a resume, add its file name (without .md) to "projects".
+swe:
+  file: Keshav_Rajput_Software
+  label: Software engineering
+  track: swe
+  projects: [atlas-engine, mldsa-auth, forgelog, custodian]
+  skills: [languages, systems, tools, data]
+ml:
+  file: Keshav_Rajput_ML
+  label: AI / ML
+  track: ml
+  projects: [lfp2vec-audit, biohub-cell-tracking, blockwave, kaggle-s6e9]
+  skills: [languages, ml, data, tools]
+data:
+  file: Keshav_Rajput_Data
+  label: Data
+  track: data
+  projects: [nyc-autoddg, kaggle-s6e9, biohub-cell-tracking, map-reducer]
+  skills: [languages, data, ml, tools]
+sec:
+  file: Keshav_Rajput_Security
+  label: Security
+  track: sec
+  projects: [mldsa-auth, otp-pad-allocation, hawk-signature-study, custodian]
+  skills: [languages, security, systems, tools]
+quant:
+  file: Keshav_Rajput_Quant
+  label: Quant
+  track: quant
+  projects: [bandits, kaggle-s6e9, snakes-ladders-markov, ssgd-momentum]
+  skills: [languages, ml, data, tools]

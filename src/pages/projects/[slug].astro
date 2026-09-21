@@ -1,0 +1,29 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { tagNames } from '../../lib';
+
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+const { project } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+---
+<Base title={d.title} description={d.blurb}>
+  <a class="back" href="/projects/">← Projects</a>
+  <p class="label">{d.year}{d.team && ` · team of ${d.team}`}</p>
+  <h1 class="page-title">{d.title}</h1>
+  <p class="muted" style="font-size:1.15rem;max-width:40rem">{d.blurb}</p>
+  <div class="tags" style="margin:1.25rem 0 1.5rem">
+    {d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}
+    {d.stack.map((s: string) => <span class="tag" style="background:var(--surface-2);color:var(--muted)">{s}</span>)}
+  </div>
+  <div class="links">
+    {d.repo && <a class="btn primary" href={d.repo}>Source</a>}
+    {d.demo && <a class="btn" href={d.demo}>Page</a>}
+  </div>
+  <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
+  {d.image && <div class="figure"><img src={d.image} alt={`Figure from ${d.title}`} loading="lazy" /></div>}
+  <div class="prose"><Content /></div>
+</Base>
