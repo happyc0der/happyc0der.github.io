@@ -27,5 +27,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : `#${c.dataset.filter}`);
     apply(c.dataset.filter!);
   }));
-  if (location.hash) apply(location.hash.slice(1));
+  const fromHash = () => apply(location.hash.slice(1) || 'all');
+  addEventListener('hashchange', fromHash);
+  fromHash();
 </script>
