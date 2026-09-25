@@ -18,4 +18,4 @@
 - name: AI x GTM Hackathon (Block Convey), Revenue Intelligence track
   result: Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
   year: 2026
-  tags: [ml, swe, data]
+  tags: [ml, data]
