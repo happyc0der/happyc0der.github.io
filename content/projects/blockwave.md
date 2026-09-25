@@ -14,9 +14,9 @@ bullets:
   - "PPO agent trained on an empowerment reward that never sees score, lines or level, enforced by a static firewall test; the pixel version sees only an 88x88 crop and learns what its keys do from 60,000 blind key-press trials before counting futures through that model."
   - "465 tests in about 40 seconds; after two identical 150M-step runs differed by 42%, I withdrew every single-seed comparison from the README and research log and added a compare tool that refuses to print a significance figure for one seed."
 resume_bullets:
-  - "Falling-block game in Python and numpy with no image, font or audio files: SRS rotation, 7-bag, T-spins, 240 Hz fixed timestep, 300k engine steps/s headless."
+  - "Falling-block game in Python and numpy with no asset files: SRS rotation, 7-bag, T-spins, 240 Hz fixed timestep, 300k engine steps/s headless."
   - "PPO agent on an empowerment reward that never sees score, lines or level, enforced by a static test; the pixel version sees an 88x88 crop."
-  - "465 tests in 40 s; after two identical 150M-step runs differed by 42%, withdrew every single-seed comparison from the README."
+  - "465 tests in 40 s; after two identical 150M-step runs differed by 42%, withdrew every single-seed comparison."
 ---
 
 The game is written in Python and rendered in numpy. There is no image, font or audio file in the repository: each frame is painted into arrays, the typeface is a procedural bitmap atlas, and the 20 sound effects and 5 music loops are synthesized from oscillators by `blockwave gen-assets`. The rules are the modern guideline set, with SRS rotation and separate kick tables for the I piece and the rest, 7-bag piece selection, hold, a five-piece preview, extended placement lock delay capped at 15 resets, and the three-corner T-spin rule. The engine imports no pygame and takes its timestep as an argument, so the game loop, a replay and a headless script drive it identically, and it runs at about 300k steps per second, which is what makes the 10,000-action fuzz test cheap.

@@ -5,7 +5,7 @@ image: /img/localagent.jpg
 year: 2026
 order: 22
 featured: false
-status: local only
+status: not public
 stack: [Python, Ollama, Qwen3-14B, PyTorch, diffusers, PEFT, SDXL, llama.cpp]
 tags: [ml, swe]
 stats: ["49 tok/s Qwen3-14B", "0.4 s per fast image", "5-page comic, 25 panels"]

@@ -1,21 +1,27 @@
 # No ranks or percentiles until the final leaderboard is official. Scores only, with the deadline.
+# "project" links a line to its project file; a resume that already lists that project skips the line.
 - name: Biohub Cell Tracking, Kaggle
+  project: biohub-cell-tracking
   result: Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
   year: 2026
   tags: [ml, data, swe, quant]
 - name: Kaggle Playground S6E9
-  result: Out-of-fold AUC 0.9465. Final ranking pending, competition ends 2026-09-30
+  project: kaggle-s6e9
+  result: Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final ranking pending, ends 2026-09-30
   year: 2026
   tags: [ml, data, quant]
 - name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)
-  result: In progress, ends 2026-12-02
+  project: gemma-swe-agent
+  result: LLM agent entry in Google ADK with a local vLLM evaluation harness. In progress, ends 2026-12-02
   year: 2026
   tags: [ml, swe]
 - name: TrafficFlowBench
-  result: Public leaderboard 0.845 against a 0.553 baseline. In progress, ends 2026-11-06
+  project: trafficflowbench
+  result: Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
   year: 2026
   tags: [data, ml, quant]
 - name: AI x GTM Hackathon (Block Convey), Revenue Intelligence track
+  project: ledger
   result: Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
   year: 2026
   tags: [ml, data]

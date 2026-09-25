@@ -5,29 +5,34 @@ swe:
   file: Keshav_Rajput_Software
   label: Software engineering
   track: swe
-  projects: [atlas-engine, mldsa-auth, doom-ports, forgelog, tidefit]
-  skills: [languages, systems, tools, data]
+  headline: "Software engineer, new grad. MS Computer Science, NYU Tandon, May 2026. C, C++, Python, TypeScript, Kotlin."
+  projects: [atlas-engine, mldsa-auth, tidefit, forgelog, doom-ports]
+  skills: [languages, systems, testing, tools]
 ml:
   file: Keshav_Rajput_ML
   label: AI / ML
   track: ml
+  headline: "Machine learning engineer, new grad. MS Computer Science, NYU Tandon, May 2026. PyTorch, LLM agents, Kaggle."
   projects: [lfp2vec-audit, gemma-swe-agent, biohub-cell-tracking, blockwave, kaggle-s6e9]
-  skills: [languages, ml, data, tools]
+  skills: [languages, ml, ai, tools]
 data:
   file: Keshav_Rajput_Data
   label: Data
   track: data
+  headline: "Data engineer / data scientist, new grad. MS Computer Science, NYU Tandon, May 2026. PySpark, SQL, pandas, R."
   projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, biohub-cell-tracking, econometrics-india, map-reducer]
   skills: [languages, data, ml, tools]
 sec:
   file: Keshav_Rajput_Security
   label: Security
   track: sec
+  headline: "Security engineer, new grad. MS Computer Science, NYU Tandon, May 2026. Post-quantum cryptography, audits, fuzzing."
   projects: [mldsa-auth, tidefit, otp-pad-allocation, hawk-signature-study, custodian]
-  skills: [languages, security, systems, tools]
+  skills: [languages, security, systems, testing]
 quant:
   file: Keshav_Rajput_Quant
   label: Quant
   track: quant
+  headline: "Quantitative researcher / quant developer, new grad. MS CS, NYU Tandon; B.Tech CS and Applied Mathematics, IIIT Delhi."
   projects: [trading-agent, bandits, econometrics-india, kaggle-s6e9, ssgd-momentum, snakes-ladders-markov]
-  skills: [languages, ml, data, tools]
+  skills: [languages, quant, ml, data]

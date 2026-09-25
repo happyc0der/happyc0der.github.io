@@ -16,7 +16,7 @@ bullets:
 resume_bullets:
   - "Reproduced LFP2Vec (NeurIPS 2025) fine-tuning on public IBL and Allen Neuropixels data on a laptop: 0.74 ± 0.07 balanced accuracy vs 0.68 published."
   - "Traced the cross-lab collapse to a preprocessing mismatch (spectra diverge 768x above 300 Hz); a 100 Hz low-pass restores the published margin."
-  - "Measured calibration under lab shift (ECE 0.10 in lab, 0.56 across, 0.35 after the fix), added an electrode-position control; 337 tests in CI."
+  - "Calibration under lab shift (ECE 0.10 in lab, 0.56 across, 0.35 after the fix) and an electrode-position control; 337 tests and leakage checks in CI."
 ---
 
 LFP2Vec (He et al., NeurIPS 2025) fine-tunes the audio model wav2vec2 on raw local field potential to say which brain region an electrode sits in, from three seconds of one channel. No pretrained weights were released, so I re-ran the fine-tuning stage on the two public datasets the paper uses, IBL and Allen Neuropixels, on an M4 Pro laptop. Within a lab it reproduces: 0.74 ± 0.07 balanced accuracy over all seven held-out IBL sessions against the paper's 0.68, and 0.81 with the paper's post-processing.

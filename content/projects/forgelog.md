@@ -17,7 +17,7 @@ bullets:
 resume_bullets:
   - "Offline Android gym tracker in Kotlin (Jetpack Compose, Room, Hilt, MVVM); five permissions declared, none of them INTERNET."
   - "Rest timer on the lock screen survives process death; analytics for volume, estimated 1RM and personal bests; JSON backup and CSV export."
-  - "830 JVM tests with no device plus 38 instrumented tests on API 26 and 36; released as a signed 2.3 MB APK."
+  - "830 unit and Robolectric tests on the JVM with no device, plus 38 instrumented tests on API 26 and 36; released as a signed 2.3 MB APK."
 ---
 
 I built ForgeLog to plan gym programs, log sets during a workout and compare sessions over time, with every workout kept on the phone. There is no account, no backend and no INTERNET permission, so training data leaves the phone only when the user exports it. The rest countdown shows in the workout notification on the lock screen, comes back paused, skipped or extended if Android kills the app, and holds a wake lock so it reaches zero with the screen off.

@@ -2,7 +2,7 @@ name: Keshav Rajput
 tagline: MS CS, NYU Tandon. I build systems, cryptography and ML things, and I measure them.
 location: New York, NY
 email: keshav.rajput4@gmail.com
-phone: "+1 646 299 9431"
+phone: "+1 (646) 299-9431"
 site: happyc0der.github.io
 links:
   github: https://github.com/happyc0der
@@ -10,34 +10,39 @@ links:
 
 education:
   - school: New York University, Tandon School of Engineering
-    degree: MS, Computer Science
-    when: May 2026
+    degree: Master of Science (MS) in Computer Science
+    when: Sep 2024 - May 2026
     score: GPA 3.67/4.0
-  - school: IIIT Delhi
-    degree: B.Tech, Computer Science and Applied Mathematics; minor in Economics
+  - school: Indraprastha Institute of Information Technology (IIIT) Delhi
+    degree: Bachelor of Technology (B.Tech) in Computer Science and Applied Mathematics, minor in Economics
     when: 2020 - 2024
     score: CGPA 8.19/10
 
 # Only courses that are on the transcripts.
 coursework:
   swe: [Design and Analysis of Algorithms II, Principles of Database Systems, Open Source and Professional Software Development, Distributed Systems, Operating Systems, Computer Networks]
-  ml: [Machine Learning, Neuroinformatics, Foundations of Data Science, Advanced Machine Learning, Convex Optimization, Reinforcement Learning]
+  ml: [Machine Learning, Neuroinformatics, Foundations of Data Science, Advanced Machine Learning, Convex Optimization]
   data: [Big Data, Principles of Database Systems, Information Visualization, Foundations of Data Science, Statistical Inference, Machine Learning]
   sec: [Applied Cryptography, Post-Quantum Cryptography, Computer Networks, Operating Systems, Distributed Systems, Design and Analysis of Algorithms II]
   quant: [Stochastic Processes, Statistical Inference, Convex Optimization, Game Theory, Econometrics, Valuation and Portfolio Management, Machine Learning]
 
 skills:
   languages: [Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash, eZ80 assembly, Monkey C]
-  ml: [PyTorch, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, vLLM, Ollama, NumPy, pandas, polars]
+  ml: [PyTorch, deep learning, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, NumPy, pandas, polars]
   data: [PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Streamlit, Altair, matplotlib]
   systems: [CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP]
-  security: [libsodium, liboqs, ML-DSA, ML-KEM, X25519, ChaCha20-Poly1305, OAuth 2.1, libFuzzer, ASan/UBSan, threat modeling]
-  tools: [Git, GitHub Actions, Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale]
+  security: [applied cryptography, post-quantum cryptography (ML-DSA, ML-KEM), X25519, ChaCha20-Poly1305, HKDF, TLS, OAuth 2.1 (PKCE, JWT), libsodium, liboqs, fuzzing (libFuzzer), mutation testing, ASan/UBSan, formal verification (ProVerif), security auditing and vulnerability assessment, threat modeling]
+  testing: [pytest, Catch2, vitest, Robolectric, libFuzzer, ASan/UBSan, ProVerif, unit and integration tests, CI]
+  ai: [LLM agents (Google ADK, MCP, tool calling), vLLM, Ollama, LiteLLM, LoRA/QLoRA fine-tuning (PEFT), llama.cpp/GGUF quantization]
+  quant: [backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, bandits, Markov chains]
+  tools: [Git, CI/CD (GitHub Actions), Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale, Claude Code]
 
 activities:
+  - text: "Open source: ephys-mcp on PyPI and the MCP Registry (24 tools, 52 tests); six fixes with regression tests to hawk-py"
+    tags: [ml, swe, sec, data]
   - text: Treasurer, OWASP Student Chapter, IIIT Delhi
     tags: [sec, swe]
   - text: Events head, Finnexia (finance club), IIIT Delhi; organised "The Critical Bid"
     tags: [quant, data]
   - text: Attended the first International Quantum Communication Conclave, New Delhi, 2023
-    tags: [sec, quant]
+    tags: [sec]

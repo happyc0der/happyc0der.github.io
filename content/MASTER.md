@@ -5,22 +5,22 @@ Generated from content/ on 2026-09-25. Do not edit; edit the source files and ru
 ## Profile
 
 - MS CS, NYU Tandon. I build systems, cryptography and ML things, and I measure them.
-- New York, NY, keshav.rajput4@gmail.com, +1 646 299 9431
+- New York, NY, keshav.rajput4@gmail.com, +1 (646) 299-9431
 - https://github.com/happyc0der
 - https://www.linkedin.com/in/keshav-rajput-862267259/
 - https://happyc0der.github.io
 
 ## Education
 
-- New York University, Tandon School of Engineering: MS, Computer Science, May 2026. GPA 3.67/4.0
-- IIIT Delhi: B.Tech, Computer Science and Applied Mathematics; minor in Economics, 2020 - 2024. CGPA 8.19/10
+- New York University, Tandon School of Engineering: Master of Science (MS) in Computer Science, Sep 2024 - May 2026. GPA 3.67/4.0
+- Indraprastha Institute of Information Technology (IIIT) Delhi: Bachelor of Technology (B.Tech) in Computer Science and Applied Mathematics, minor in Economics, 2020 - 2024. CGPA 8.19/10
 
 ## Competitions
 
 - Biohub Cell Tracking, Kaggle (2026): Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
-- Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465. Final ranking pending, competition ends 2026-09-30
-- Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): In progress, ends 2026-12-02
-- TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline. In progress, ends 2026-11-06
+- Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final ranking pending, ends 2026-09-30
+- Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): LLM agent entry in Google ADK with a local vLLM evaluation harness. In progress, ends 2026-12-02
+- TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
 ## Projects (32)
@@ -327,7 +327,7 @@ qwen3:14b wrote both descriptions for all 100 datasets from the profile alone, n
 
 Cost-aware trading research harness and paper-trading runner for a $100 Alpaca ETF account, where no model has yet earned promotion over the baseline.
 
-- 2026 · local only · tags: quant ml swe · resumes: quant
+- 2026 · not public · tags: quant ml swe · resumes: quant
 - stack: Python, pandas, LightGBM, TabPFN, Chronos-2, Kronos, Alpaca, Zerodha Kite
 - stats: 14 models, 2 markets · 0 promoted to live · 44 tests
 - Built a cost-aware evaluation harness (purged walk-forward, CPCV, Deflated Sharpe, PBO, random-portfolio null) and ran 14 models, from vol-targeted baselines to LightGBM, CatBoost and TabPFN meta-labelling and the Chronos-2 and Kronos foundation models, on 8 US ETFs over 2011 to 2024.
@@ -449,7 +449,7 @@ This goes through `python-garminconnect` and Garmin's private endpoints, so it i
 
 Local-only LLM agent with image generation, QLoRA fine-tuning and a story-to-comic pipeline, split across a Mac and a Windows GPU laptop.
 
-- 2026 · local only · tags: ml swe · on no resume
+- 2026 · not public · tags: ml swe · on no resume
 - stack: Python, Ollama, Qwen3-14B, PyTorch, diffusers, PEFT, SDXL, llama.cpp
 - stats: 49 tok/s Qwen3-14B · 0.4 s per fast image · 5-page comic, 25 panels
 - Local agent harness in Python: Qwen3-14B under Ollama with a tool-calling loop over seven shell, file and image tools; the agent runs on a Mac and reaches the models on a Windows GPU laptop through an SSH tunnel.
@@ -664,14 +664,18 @@ In September 2026 I went back and fixed it. A fresh clone could not start: the C
 ## Skills
 
 - languages: Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash, eZ80 assembly, Monkey C
-- ml: PyTorch, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, vLLM, Ollama, NumPy, pandas, polars
+- ml: PyTorch, deep learning, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, NumPy, pandas, polars
 - data: PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Streamlit, Altair, matplotlib
 - systems: CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP
-- security: libsodium, liboqs, ML-DSA, ML-KEM, X25519, ChaCha20-Poly1305, OAuth 2.1, libFuzzer, ASan/UBSan, threat modeling
-- tools: Git, GitHub Actions, Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale
+- security: applied cryptography, post-quantum cryptography (ML-DSA, ML-KEM), X25519, ChaCha20-Poly1305, HKDF, TLS, OAuth 2.1 (PKCE, JWT), libsodium, liboqs, fuzzing (libFuzzer), mutation testing, ASan/UBSan, formal verification (ProVerif), security auditing and vulnerability assessment, threat modeling
+- testing: pytest, Catch2, vitest, Robolectric, libFuzzer, ASan/UBSan, ProVerif, unit and integration tests, CI
+- ai: LLM agents (Google ADK, MCP, tool calling), vLLM, Ollama, LiteLLM, LoRA/QLoRA fine-tuning (PEFT), llama.cpp/GGUF quantization
+- quant: backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, bandits, Markov chains
+- tools: Git, CI/CD (GitHub Actions), Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale, Claude Code
 
 ## Activities
 
+- Open source: ephys-mcp on PyPI and the MCP Registry (24 tools, 52 tests); six fixes with regression tests to hawk-py
 - Treasurer, OWASP Student Chapter, IIIT Delhi
 - Events head, Finnexia (finance club), IIIT Delhi; organised "The Critical Bid"
 - Attended the first International Quantum Communication Conclave, New Delhi, 2023

@@ -13,8 +13,8 @@ bullets:
   - "0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 35 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 192 must-kill mutations run nightly in CI."
   - "Built mldsa-authd on it, a login daemon with single-use login codes, device enrolment, revocation, key rotation and recovery codes, and a ProVerif model of the handshake, login and rotation."
 resume_bullets:
-  - "Post-quantum mutual auth and session protocol in C11: ML-DSA-65 signatures over hybrid X25519 + ML-KEM-768, ChaCha20-Poly1305 records."
-  - "0.45 ms median handshake, 736 MiB/s record sealing; ASan/UBSan CI on Linux and macOS, 12 fuzz targets, 192 mutations nightly."
+  - "Post-quantum mutual authentication protocol in C11: ML-DSA-65 (FIPS 204) signatures over hybrid X25519 + ML-KEM-768, HKDF-SHA256, ChaCha20-Poly1305 records."
+  - "0.45 ms median handshake, 736 MiB/s record sealing; ASan/UBSan CI on Linux and macOS, 12 libFuzzer targets, mutation testing with 192 must-kill mutations nightly."
   - "Built mldsa-authd on it: login codes, device enrolment, revocation, key rotation, recovery codes; ProVerif model of the handshake."
 ---
 

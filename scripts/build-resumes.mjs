@@ -19,26 +19,30 @@ fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(publicDir, { recursive: true });
 const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
 
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const link = (url, text) => `<a href="${url}">${esc(text)}</a>`;
+// Plain ASCII in the PDFs: older resume parsers mangle or drop these.
+const ascii = { '±': '+/-', '²': '2', '³': '3', '×': 'x', '→': 'to', '≥': '>=', '≤': '<=', 'µ': 'u', '–': '-', '—': '-', '’': "'", '‘': "'", '“': '"', '”': '"', '…': '...', '·': ',', '≈': '~' };
+// Hyphenated tokens (ChaCha20-Poly1305, exact-fit) must not break at the hyphen, or keyword matchers lose them.
+const nb = (html) => html.replace(/(?<![\w-])([A-Za-z0-9+.]+(?:-[A-Za-z0-9+.]+)+)(?![\w-])/g, '<span class="nb">$1</span>');
+const escRaw = (s) => String(s).replace(/[^\x00-\x7F]/g, (c) => ascii[c] ?? c).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = (s) => nb(escRaw(s));
+const link = (url, text) => `<a href="${url}">${escRaw(text)}</a>`;
 const short = (url) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
-const skillLabels = { languages: 'Languages', ml: 'ML', data: 'Data', systems: 'Systems', security: 'Security', tools: 'Tools' };
+const skillLabels = { languages: 'Languages', ml: 'ML', ai: 'LLMs', data: 'Data', systems: 'Systems', security: 'Security', testing: 'Testing', quant: 'Quant', tools: 'Tools' };
 
 function render(key, cfg, fontPt = 9.6) {
   const track = cfg.track;
   // Two short lines, so no URL gets split across a line break.
-  const contact =
-    [esc(profile.location), link(`mailto:${profile.email}`, profile.email), esc(profile.phone)].join(' | ') +
-    '<br>' +
-    [link(profile.links.github, short(profile.links.github)), link(profile.links.linkedin, short(profile.links.linkedin)), link(`https://${profile.site}`, profile.site)].join(' | ');
+  const contact1 = [esc(profile.location), link(`mailto:${profile.email}`, profile.email), esc(profile.phone)].join(' | ');
+  const contact2 = [link(profile.links.github, short(profile.links.github)), link(profile.links.linkedin, short(profile.links.linkedin)), link(`https://${profile.site}`, profile.site)].join(' | ');
+  const headline = cfg.headline ? `<div class="headline">${esc(cfg.headline)}</div>` : '';
 
   const education =
     profile.education
       .map(
         (e) =>
-          // Dates sit inline: right-aligned dates get detached from the school by some parsers.
-          `<div class="entry"><strong>${esc(e.school)}</strong><div>${esc(e.degree)}, ${esc(e.when)}. ${esc(e.score)}</div></div>`,
+          `<div class="entry"><div class="head"><strong>${esc(e.school)}</strong> <span class="right">${esc(e.when)}</span></div>` +
+          `<div class="head"><span>${esc(e.degree)}</span> <span class="right">${esc(e.score)}</span></div></div>`,
       )
       .join('\n') + `\n<p><strong>Coursework:</strong> ${esc(profile.coursework[track].join(', '))}</p>`;
 
@@ -47,37 +51,42 @@ function render(key, cfg, fontPt = 9.6) {
       const { data } = matter(fs.readFileSync(path.join(root, 'content/projects', `${slug}.md`), 'utf8'));
       const qualifier = [data.team && `team of ${data.team}`, data.status].filter(Boolean).join(', ');
       const title = qualifier ? `${data.title} (${qualifier})` : data.title;
-      const right = data.repo ? link(data.repo, short(data.repo)) : String(data.year);
+      // The head must stay on one line, or parsers lose the title: trim the stack list to fit, and put a long link under it.
+      const url = data.repo ? short(data.repo) : '';
+      let longUrl = url.length > 48;
+      const stack = data.stack.slice(0, 5);
+      const headLen = () => title.length + 3 + stack.join(', ').length + (url && !longUrl ? 3 + url.length : 0);
+      while (stack.length > 2 && headLen() > 90) stack.pop();
+      if (url && !longUrl && headLen() > 90) longUrl = true;
+      const left = `<strong>${escRaw(title)}</strong> <span class="stack">| ${escRaw(stack.join(', '))}${url && !longUrl ? ' | ' + link(data.repo, url) : ''}</span>`;
       return (
-        `<div class="entry"><div class="head"><span><strong>${esc(title)}</strong> <span class="stack">| ${esc(data.stack.slice(0, 5).join(', '))}</span></span> <span class="right">${right}</span></div>\n` +
+        `<div class="entry"><div class="head"><span>${left}</span> <span class="right">${data.year}</span></div>\n` +
+        (longUrl ? `<div class="stack">${link(data.repo, url)}</div>` : '') +
         ((data.resume_credit ?? data.credit) ? `<div class="credit">${esc(data.resume_credit ?? data.credit)}</div>` : '') +
         `<ul>${(data.resume_bullets ?? data.bullets).map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>`
       );
     })
     .join('\n');
 
-  const comps =
-    '<ul>' +
-    competitions
-      .filter((c) => c.tags.includes(track))
-      .slice(0, 3)
-      .map((c) => `<li><strong>${esc(c.name)}</strong>, ${c.year}. ${esc(c.result)}.</li>`)
-      .join('') +
-    '</ul>';
+  const compItems = competitions.filter((c) => c.tags.includes(track) && !(c.project && cfg.projects.includes(c.project))).slice(0, 3);
+  const comps = compItems.length
+    ? `<h2>Competitions</h2>\n<ul>${compItems.map((c) => `<li><strong>${esc(c.name)}</strong>, ${c.year}. ${esc(c.result)}.</li>`).join('')}</ul>`
+    : '';
 
   const skills = cfg.skills.map((g) => `<p><strong>${skillLabels[g]}:</strong> ${esc(profile.skills[g].join(', '))}</p>`).join('\n');
 
   const acts = profile.activities.filter((a) => a.tags.includes(track));
-  const activities = acts.length ? `<h2>Activities</h2>\n<ul>${acts.map((a) => `<li>${esc(a.text)}</li>`).join('')}</ul>` : '';
+  const activities = acts.length ? `<h2>Leadership and activities</h2>\n<ul>${acts.map((a) => `<li>${esc(a.text)}</li>`).join('')}</ul>` : '';
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(profile.name)} - Resume</title><style>${css}\nbody{font-size:${fontPt}pt}</style></head><body>
 <h1>${esc(profile.name)}</h1>
-<div class="contact">${contact}</div>
+<div class="contact">${contact1}</div>
+${headline}
+<div class="contact">${contact2}</div>
 <h2>Education</h2>
 ${education}
 <h2>Projects</h2>
 ${projects}
-<h2>Competitions</h2>
 ${comps}
 <h2>Skills</h2>
 ${skills}
@@ -114,12 +123,20 @@ function check(pdf, cfg) {
   if (pages !== 1) problems.push(`${pages} pages, want 1`);
   const flat = text.replace(/\s+/g, ' ');
   const headings = ['EDUCATION', 'PROJECTS', 'COMPETITIONS', 'SKILLS'];
+  const optional = new Set(['COMPETITIONS']);
   let last = -1;
   for (const h of headings) {
     const i = flat.indexOf(h);
-    if (i < 0) problems.push(`heading "${h}" not found in extracted text`);
-    else if (i < last) problems.push(`heading "${h}" out of order`);
+    if (i < 0) { if (!optional.has(h)) problems.push(`heading "${h}" not found in extracted text`); continue; }
+    if (i < last) problems.push(`heading "${h}" out of order`);
     last = Math.max(last, i);
+  }
+  // A project's link must extract after its title, never before (it would attach to the previous entry).
+  for (const slug of cfg.projects) {
+    const { data } = matter(fs.readFileSync(path.join(root, 'content/projects', `${slug}.md`), 'utf8'));
+    if (!data.repo) continue;
+    const t = flat.indexOf(data.title + ' ('), u = flat.indexOf(short(data.repo));
+    if (t >= 0 && u >= 0 && u < t) problems.push(`link for ${slug} extracts before its title`);
   }
   for (const must of [profile.name, profile.email, 'New York University']) {
     if (!flat.includes(must)) problems.push(`"${must}" not extractable`);
@@ -137,7 +154,7 @@ for (const [key, cfg] of Object.entries(resumes)) {
   const projects = [...cfg.projects];
   let r, note = '';
   outer: while (projects.length) {
-    for (const fontPt of [9.6, 9.3, 9.0]) {
+    for (const fontPt of [9.6, 9.3, 9.0, 8.8]) {
       fs.writeFileSync(html, render(key, { ...cfg, projects }, fontPt));
       await printPdf(html, pdf);
       r = check(pdf, cfg);
