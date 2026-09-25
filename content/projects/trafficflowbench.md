@@ -1,10 +1,11 @@
 ---
 title: TrafficFlowBench
 blurb: Kaggle freeway traffic benchmark, public leaderboard 0.845 against a 0.5534 baseline, final ranking pending.
+repo: https://github.com/happyc0der/trafficflowbench
 year: 2026
 order: 10
 featured: false
-status: not yet public
+status: in progress
 stack: [Python, LightGBM, scikit-learn, NumPy, SciPy, polars, pandas, Kaggle API]
 tags: [ml, data]
 stats: ["public LB 0.845", "onset IoU 0.57 to 0.93", "2 h bit-for-bit repro"]
@@ -24,4 +25,4 @@ My first submission, same-link time interpolation for the state plus the organiz
 
 Checking the shipped queue-onset train windows, I found that in 39 of 40 the first queued cell appears exactly at T+30, a side effect of how the organizers pick window origins. A model trained only on windows built the same way lifted onset IoU from 0.57 to 0.93 on held-out dates. I wrote it up on the competition forum, said plainly that my submission already used it, and offered to switch back. The hosts confirmed the regularity, said it could be used, and announced it to every team.
 
-reproduce.sh rebuilds the submitted file bit-for-bit from the raw data in about two hours on my Mac, since the rules require winners to reproduce their file from code. Probes of the Task 4 deviation form lost on the leaderboard, ramp-demand features and a 1-D CNN second opinion for ongoing queues lost in local validation, and all are logged as rejected in NOTES.md. The repository is local only for now.
+reproduce.sh rebuilds the submitted file bit-for-bit from the raw data in about two hours on my Mac, since the rules require winners to reproduce their file from code. Probes of the Task 4 deviation form lost on the leaderboard, ramp-demand features and a 1-D CNN second opinion for ongoing queues lost in local validation, and all are logged as rejected in NOTES.md.

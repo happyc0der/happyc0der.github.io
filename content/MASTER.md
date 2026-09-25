@@ -21,7 +21,6 @@ Generated from content/ on 2026-09-25. Do not edit; edit the source files and ru
 - Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465. Final ranking pending, competition ends 2026-09-30
 - Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): In progress, ends 2026-12-02
 - TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline. In progress, ends 2026-11-06
-- Amazon Build, Ship, Shape 2026 (Alexa+ track) (2026): Shipped Custodian, an MCP recall-monitoring add-on
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
 ## Projects (26)
@@ -209,7 +208,8 @@ The competition closes on 2026-09-29 and the final ranking is pending, so this p
 
 Kaggle freeway traffic benchmark, public leaderboard 0.845 against a 0.5534 baseline, final ranking pending.
 
-- 2026 · not yet public · tags: ml data · resumes: data
+- 2026 · in progress · tags: ml data · resumes: data
+- https://github.com/happyc0der/trafficflowbench
 - stack: Python, LightGBM, scikit-learn, NumPy, SciPy, polars, pandas, Kaggle API
 - stats: public LB 0.845 · onset IoU 0.57 to 0.93 · 2 h bit-for-bit repro
 - Kaggle TrafficFlowBench (2026 IEEE Big Data Cup): public leaderboard 0.84481 against the organizers' 0.5534 baseline, up from 0.67365 on my first submission, final ranking pending.
@@ -222,7 +222,7 @@ My first submission, same-link time interpolation for the state plus the organiz
 
 Checking the shipped queue-onset train windows, I found that in 39 of 40 the first queued cell appears exactly at T+30, a side effect of how the organizers pick window origins. A model trained only on windows built the same way lifted onset IoU from 0.57 to 0.93 on held-out dates. I wrote it up on the competition forum, said plainly that my submission already used it, and offered to switch back. The hosts confirmed the regularity, said it could be used, and announced it to every team.
 
-reproduce.sh rebuilds the submitted file bit-for-bit from the raw data in about two hours on my Mac, since the rules require winners to reproduce their file from code. Probes of the Task 4 deviation form lost on the leaderboard, ramp-demand features and a 1-D CNN second opinion for ongoing queues lost in local validation, and all are logged as rejected in NOTES.md. The repository is local only for now.
+reproduce.sh rebuilds the submitted file bit-for-bit from the raw data in about two hours on my Mac, since the rules require winners to reproduce their file from code. Probes of the Task 4 deviation form lost on the leaderboard, ramp-demand features and a 1-D CNN second opinion for ongoing queues lost in local validation, and all are logged as rejected in NOTES.md.
 
 ### Kaggle S6E9, EV purchases (`kaggle-s6e9`)
 
@@ -327,7 +327,7 @@ qwen3:14b wrote both descriptions for all 100 datasets from the profile alone, n
 
 Cost-aware trading research harness and paper-trading runner for a $100 Alpaca ETF account, where no model has yet earned promotion over the baseline.
 
-- 2026 · not yet public · tags: quant ml swe · resumes: quant
+- 2026 · local only · tags: quant ml swe · resumes: quant
 - stack: Python, pandas, LightGBM, TabPFN, Chronos-2, Kronos, Alpaca, Zerodha Kite
 - stats: 14 models, 2 markets · 0 promoted to live · 44 tests
 - Built a cost-aware evaluation harness (purged walk-forward, CPCV, Deflated Sharpe, PBO, random-portfolio null) and ran 14 models, from vol-targeted baselines to LightGBM, CatBoost and TabPFN meta-labelling and the Chronos-2 and Kronos foundation models, on 8 US ETFs over 2011 to 2024.
@@ -340,7 +340,7 @@ The harness decides at the close and executes at the next open, runs a purged wa
 
 Vol-targeted equal weight scored a net Sharpe of 0.81. The best candidate, the regime switch, scored 0.68 and beat the baseline in 0 of 5 segments. The meta-labelled models turn the book over 16 to 19 times a year and drop from roughly 0.5 to 0.6 gross Sharpe to about 0.3 net. Chronos-2 called the 5-day direction right 51% of the time, below the 56% from always predicting up. Kronos, which reports a profitable CSI300 backtest in its own paper, hit 46.6% zero-shot and 47.4% after fine-tuning on the same ETFs. The probability of backtest overfitting across all 14 trials was 0.06, so the baselines win in and out of sample alike. The same harness on 5 NSE ETFs came closer: the regime switch reached 1.08 against 0.93 and won 3 of 5 segments, but its Deflated Sharpe was 0.81 and random portfolios with the same exposure reached 1.11 at their 95th percentile, so it stays on a watch list.
 
-The execution side runs regardless, with the unpromoted baseline. Since 2026-09-24 it has paper traded on Alpaca under launchd: long-only, at most 35% per ETF, 10% target volatility, exposure halved at a 5% drawdown, a kill switch at a 10% drawdown or a 3% daily loss that stays tripped until reset by hand, and deterministic client order IDs so a re-run cannot double-submit. Real money needs four things at once: live keys, a config flag, a promoted model and a command-line flag, plus at least three months of paper results inside the backtest's range. A Zerodha Kite adapter and a systemd kit for a static-IP server cover the Indian side, which has only run in dry-run mode so far. The code is local, with 44 tests and no public repo yet.
+The execution side runs regardless, with the unpromoted baseline. Since 2026-09-24 it has paper traded on Alpaca under launchd: long-only, at most 35% per ETF, 10% target volatility, exposure halved at a 5% drawdown, a kill switch at a 10% drawdown or a 3% daily loss that stays tripped until reset by hand, and deterministic client order IDs so a re-run cannot double-submit. Real money needs four things at once: live keys, a config flag, a promoted model and a command-line flag, plus at least three months of paper results inside the backtest's range. A Zerodha Kite adapter and a systemd kit for a static-IP server cover the Indian side, which has only run in dry-run mode so far. The code is local, with 44 tests.
 
 ### Hawk signature study (`hawk-signature-study`)
 
@@ -387,7 +387,7 @@ A second protocol, GrantProtocol, covers the weaker model where a sender gets no
 
 Typed Python library, local HTTP service and MCP server that read and write Garmin Connect, including uploads of completed strength sessions.
 
-- 2026 · not yet public · tags: swe · on no resume
+- 2026 · in progress · tags: swe · on no resume
 - stack: Python 3.12, FastAPI, FastMCP, pydantic, fit-tool, Typer, python-garminconnect, pytest
 - stats: 37 HTTP operations · 35 MCP tools · 67 tests, no network
 - Read/write layer for Garmin Connect with one typed core and three faces: a Python library, a 37-operation FastAPI service, and 35 MCP tools, all but four generated from its routes so the tools cannot drift from the API.
@@ -400,13 +400,13 @@ The library returns pydantic models with Garmin's inconsistencies ironed out: we
 
 Logging a completed session is the part nothing official offers. I encode it as a FIT file with set messages and post it to the upload service the Connect website itself uses. Every write is first validated against the bundled catalogue of 1,527 exercises in 47 categories, and an unknown name gets near misses back instead of Garmin's bare 400. The password is typed in exactly one place, `garmin login`; the service and MCP server only read stored tokens and answer 401 without them. Garmin added Cloudflare fingerprinting and per-account rate limits in March 2026, and a run of failed logins can lock an account for a day or more, so nothing here retries a login and a 429 is surfaced rather than swallowed.
 
-This goes through `python-garminconnect` and Garmin's private endpoints, so it is unsanctioned by Garmin's terms and meant for one's own account. Reads, the day summary, the MCP tools and the workout create, schedule, unschedule, delete cycle are verified against my real account. The completed-session upload is covered by the FIT codec tests but I have not yet run it live. Not on GitHub yet.
+This goes through `python-garminconnect` and Garmin's private endpoints, so it is unsanctioned by Garmin's terms and meant for one's own account. Reads, the day summary, the MCP tools and the workout create, schedule, unschedule, delete cycle are verified against my real account. The completed-session upload is covered by the FIT codec tests but I have not yet run it live. Still in progress.
 
 ### localagent (`localagent`)
 
 Local-only LLM agent with image generation, QLoRA fine-tuning and a story-to-comic pipeline, split across a Mac and a Windows GPU laptop.
 
-- 2026 · not yet public · tags: ml swe · on no resume
+- 2026 · local only · tags: ml swe · on no resume
 - stack: Python, Ollama, Qwen3-14B, PyTorch, diffusers, PEFT, SDXL, llama.cpp
 - stats: 49 tok/s Qwen3-14B · 0.4 s per fast image · 5-page comic, 25 panels
 - Local agent harness in Python: Qwen3-14B under Ollama with a tool-calling loop over seven shell, file and image tools; the agent runs on a Mac and reaches the models on a Windows GPU laptop through an SSH tunnel.
@@ -419,7 +419,7 @@ Two image services sit on the GPU box: SD-Turbo for fast images (about 0.4 s at 
 
 The comic pipeline turns a story into lettered pages: the LLM writes a panel-by-panel script, SDXL draws each panel in about 12.5 s, and Pillow adds borders, speech bubbles and captions. It can also cut existing comic pages into panels, describe them with a local vision model, and train SDXL style and character LoRAs (5.8 s per step, 5.9 GB peak). The included example is Alice's Adventures in Wonderland, chapter I: 5 pages, 25 panels, about 5 minutes of art.
 
-It is deliberately not a git repository and is not on GitHub. There are no automated tests.
+It is deliberately not a git repository. There are no automated tests.
 
 ### Non-stationary bandits (`bandits`)
 
@@ -447,7 +447,7 @@ MapReduce from scratch in Python over gRPC, running K-Means across separate mast
 
 - 2024 · team of 3 · tags: swe data · resumes: data
 - https://github.com/happyc0der/Map_Reducer
-- credit: Course team project with adityaahuja7 and deeptanshu (GitHub handles). The September 2026 test suite, launcher and CI are mine, written with Claude Code.
+- credit: Course team project with adityaahuja7 and deeptanshu (GitHub handles). The September 2026 test suite, launcher and CI are mine.
 - stack: Python, gRPC, protobuf, unittest, ruff, GitHub Actions
 - stats: 64 tests · CI on 3 OSes · team of 3
 - MapReduce framework from scratch in Python over gRPC, with the master, every mapper and every reducer as its own process on its own port, used to run K-Means; the master ships index ranges rather than data, and reducers pull their partitions from the mappers over gRPC.
@@ -458,7 +458,7 @@ Assignment 3 of CSE530 Distributed Systems at IIIT Delhi, Winter 2024, built wit
 
 One iteration works like this. The master splits the input by index range and never ships points. Each mapper reads its range, keys every point to its nearest centroid and writes one partition file per reducer. Each reducer then pulls its partition from every mapper over gRPC, averages each group and returns the new centroids. The loop stops when no centroid moves more than 0.0001 on either axis, or after the requested number of iterations. Failures come in the two shapes the spec asks for. A worker that answers with a failed status (injected at 5 percent per call) is retried until it succeeds. A worker that is gone, so its RPC raises, has its split handed to the next mapper or its partition to a random surviving reducer, which is told to append so it keeps the work it already owns.
 
-The team code is from April 2024. In September 2026 I went back to it with Claude Code for a documentation, lint and dead-code pass, and added what the original never had: a POSIX launcher, a 64-test unittest suite organised around the assignment rubric, and GitHub Actions. The central test replays the same K-Means from the same random starting centroids in a from-scratch single-process implementation and asserts the two agree to within 1e-6, across 1x1, 3x2, 4x3 and 8x2 mapper by reducer configurations. CI runs ruff, the suite on Python 3.10 to 3.13 on Linux plus 3.12 on macOS and Windows, and a fault-injection job that force-stops a mapper and a reducer mid-run. All eight jobs are green on the latest commit, and the fast suite runs in a few seconds on the 25-point sample input.
+The team code is from April 2024. In September 2026 I went back to it for a documentation, lint and dead-code pass, and added what the original never had: a POSIX launcher, a 64-test unittest suite organised around the assignment rubric, and GitHub Actions. The central test replays the same K-Means from the same random starting centroids in a from-scratch single-process implementation and asserts the two agree to within 1e-6, across 1x1, 3x2, 4x3 and 8x2 mapper by reducer configurations. CI runs ruff, the suite on Python 3.10 to 3.13 on Linux plus 3.12 on macOS and Windows, and a fault-injection job that force-stops a mapper and a reducer mid-run. All eight jobs are green on the latest commit, and the fast suite runs in a few seconds on the 25-point sample input.
 
 The README lists what still breaks. An iteration that leaves a centroid with no points ends the run with an IndexError, and a split reassigned after a force-stop can be wiped if the replacement mapper's own Map call has not finished yet. The tests skip rather than fail on the first, and the second is documented as reproducible with a non-zero sleep argument.
 

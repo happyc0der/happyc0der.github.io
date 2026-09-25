@@ -5,7 +5,7 @@ image: /img/localagent.jpg
 year: 2026
 order: 20
 featured: false
-status: not yet public
+status: local only
 stack: [Python, Ollama, Qwen3-14B, PyTorch, diffusers, PEFT, SDXL, llama.cpp]
 tags: [ml, swe]
 stats: ["49 tok/s Qwen3-14B", "0.4 s per fast image", "5-page comic, 25 panels"]
@@ -25,4 +25,4 @@ Two image services sit on the GPU box: SD-Turbo for fast images (about 0.4 s at 
 
 The comic pipeline turns a story into lettered pages: the LLM writes a panel-by-panel script, SDXL draws each panel in about 12.5 s, and Pillow adds borders, speech bubbles and captions. It can also cut existing comic pages into panels, describe them with a local vision model, and train SDXL style and character LoRAs (5.8 s per step, 5.9 GB peak). The included example is Alice's Adventures in Wonderland, chapter I: 5 pages, 25 panels, about 5 minutes of art.
 
-It is deliberately not a git repository and is not on GitHub. There are no automated tests.
+It is deliberately not a git repository. There are no automated tests.

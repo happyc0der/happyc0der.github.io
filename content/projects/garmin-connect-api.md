@@ -4,7 +4,7 @@ blurb: Typed Python library, local HTTP service and MCP server that read and wri
 year: 2026
 order: 19
 featured: false
-status: not yet public
+status: in progress
 stack: [Python 3.12, FastAPI, FastMCP, pydantic, fit-tool, Typer, python-garminconnect, pytest]
 tags: [swe]
 stats: ["37 HTTP operations", "35 MCP tools", "67 tests, no network"]
@@ -24,4 +24,4 @@ The library returns pydantic models with Garmin's inconsistencies ironed out: we
 
 Logging a completed session is the part nothing official offers. I encode it as a FIT file with set messages and post it to the upload service the Connect website itself uses. Every write is first validated against the bundled catalogue of 1,527 exercises in 47 categories, and an unknown name gets near misses back instead of Garmin's bare 400. The password is typed in exactly one place, `garmin login`; the service and MCP server only read stored tokens and answer 401 without them. Garmin added Cloudflare fingerprinting and per-account rate limits in March 2026, and a run of failed logins can lock an account for a day or more, so nothing here retries a login and a 429 is surfaced rather than swallowed.
 
-This goes through `python-garminconnect` and Garmin's private endpoints, so it is unsanctioned by Garmin's terms and meant for one's own account. Reads, the day summary, the MCP tools and the workout create, schedule, unschedule, delete cycle are verified against my real account. The completed-session upload is covered by the FIT codec tests but I have not yet run it live. Not on GitHub yet.
+This goes through `python-garminconnect` and Garmin's private endpoints, so it is unsanctioned by Garmin's terms and meant for one's own account. Reads, the day summary, the MCP tools and the workout create, schedule, unschedule, delete cycle are verified against my real account. The completed-session upload is covered by the FIT codec tests but I have not yet run it live. Still in progress.
