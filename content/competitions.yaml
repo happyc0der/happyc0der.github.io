@@ -1,12 +1,25 @@
+# No ranks or percentiles until the final leaderboard is official. Scores only, with the deadline.
 - name: Biohub Cell Tracking, Kaggle
-  result: Public leaderboard 0.952, about top 1.2% of 3,594 teams
+  result: Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
   year: 2026
   tags: [ml, data, swe, quant]
 - name: Kaggle Playground S6E9
-  result: AUC 0.9465, 0.00025 behind the leader
+  result: Out-of-fold AUC 0.9465. Final ranking pending, competition ends 2026-09-30
   year: 2026
   tags: [ml, data, quant]
+- name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)
+  result: In progress, ends 2026-12-02
+  year: 2026
+  tags: [ml, swe]
+- name: TrafficFlowBench
+  result: Public leaderboard 0.674 against a 0.553 baseline. In progress, ends 2026-11-06
+  year: 2026
+  tags: [data, ml, quant]
 - name: Amazon Build, Ship, Shape 2026 (Alexa+ track)
   result: Shipped Custodian, an MCP recall-monitoring add-on
   year: 2026
   tags: [swe, sec, ml]
+- name: AI x GTM Hackathon (Block Convey), Revenue Intelligence track
+  result: Built Ledger, a pipeline-review agent that checks every claim against the CRM
+  year: 2026
+  tags: [ml, swe, data]

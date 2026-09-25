@@ -14,6 +14,8 @@ const projects = defineCollection({
     order: z.number().default(99),
     featured: z.boolean().default(false),
     team: z.number().optional(),
+    status: z.string().optional(),   // e.g. "in progress", "private", "not yet public"
+    credit: z.string().optional(),   // who else owns part of it
     stack: z.array(z.string()),
     tags: z.array(z.enum(['swe', 'ml', 'data', 'sec', 'quant'])),
     stats: z.array(z.string()).default([]),
