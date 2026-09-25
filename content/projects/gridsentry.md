@@ -8,6 +8,7 @@ year: 2026
 order: 17
 featured: false
 credit: "The app is Utkarsh Mittal's (UtkarshMitta on GitHub): the hackathon build and the first 4 commits are his. The post-hackathon audit, the fixes, the test suite, the linting and the CI are mine, as 7 commits plus the merge of PR #1, 8 of the repo's 12."
+resume_credit: "App by Utkarsh Mittal; the audit, fixes, test suite and CI (8 of 12 commits) are mine."
 stack: [Python, FastAPI, pytest, TypeScript, Next.js 14, Leaflet, GitHub Actions, ruff]
 tags: [swe, data]
 stats: ["0 to 111 API tests", "25 web, 9 live checks", "PR #1: 48 files"]

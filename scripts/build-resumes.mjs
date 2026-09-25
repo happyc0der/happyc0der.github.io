@@ -50,7 +50,7 @@ function render(key, cfg, fontPt = 9.6) {
       const right = data.repo ? link(data.repo, short(data.repo)) : String(data.year);
       return (
         `<div class="entry"><div class="head"><span><strong>${esc(title)}</strong> <span class="stack">| ${esc(data.stack.slice(0, 5).join(', '))}</span></span> <span class="right">${right}</span></div>\n` +
-        (data.credit ? `<div class="credit">${esc(data.credit)}</div>` : '') +
+        ((data.resume_credit ?? data.credit) ? `<div class="credit">${esc(data.resume_credit ?? data.credit)}</div>` : '') +
         `<ul>${(data.resume_bullets ?? data.bullets).map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>`
       );
     })

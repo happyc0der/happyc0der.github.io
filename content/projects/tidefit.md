@@ -8,6 +8,7 @@ year: 2026
 order: 5
 featured: true
 credit: "The app is Utkarsh Mittal's (UtkarshMitta on GitHub). The audit, the upgrade, the tests, the CI and the launch are mine."
+resume_credit: "App by Utkarsh Mittal; the audit, upgrade, tests, CI and launch are mine."
 stack: [TypeScript, Next.js 16, React 19, Supabase, Vercel, GitHub Actions, "node:test"]
 tags: [sec, swe]
 stats: ["15 findings, 13 fixed", "npm audit 6 to 0", "0 to 45 tests"]

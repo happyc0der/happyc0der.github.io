@@ -8,6 +8,7 @@ featured: false
 team: 3
 status: "Finished April 2024"
 credit: "The repository is Aditya Ahuja's (adityaahuja7 on GitHub) and the team was Aditya Ahuja, Deeptanshu Barman and me, for CSE530 at IIIT Delhi. Aditya wrote the node, the election, the client handling and the cloud deployment. Deeptanshu wrote the log replication handlers, the parallel vote requests and the metadata class. Mine are 3 of 45 commits: the leader lease (the lease field on the RequestVote response, the lease state and its start, renew and timeout handlers, lease-gated reads and writes, step-down on expiry) and the first version of the per-node dump and metadata files."
+resume_credit: "Team of three in Aditya Ahuja's repo; the leader lease and per-node event log are mine."
 stack: [Python, gRPC, Protocol Buffers, Google Cloud]
 tags: [swe]
 stats: ["5-node cluster", "8 s leader lease", "3 of 45 commits"]

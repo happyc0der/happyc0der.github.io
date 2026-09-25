@@ -6,6 +6,7 @@ order: 9
 featured: false
 status: in progress
 credit: "The submission is a fork of Igor Zharov's public Harmonic Fusion notebook (Apache-2.0). The offline harness, the division classifiers and every experiment are mine."
+resume_credit: "Builds on Igor Zharov's public notebook (Apache-2.0); the harness, classifiers and experiments are mine."
 stack: [Python, PyTorch, NumPy, SciPy, polars, scikit-learn, uv, Kaggle API]
 tags: [ml, data]
 stats: ["public LB 0.952", "+0.005 measured twice", "~22 Kaggle GPU-hours"]

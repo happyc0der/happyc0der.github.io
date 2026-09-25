@@ -7,6 +7,7 @@ order: 29
 featured: false
 team: 4
 credit: "The repo is Ishit Bajpai's (IshitBajpai on GitHub). The project was a team of four: Ishit Bajpai, Keshav Rajput, Prachi and Satyam Arora, with equal credit stated in the report. My share was debugging, result analysis, the train and test split, PCA and t-SNE, the dataset handling and the report. All 3 commits are Ishit's uploads of the group's notebooks, slides and report."
+resume_credit: "Team of four in Ishit Bajpai's repo; my share was debugging, analysis, the split, PCA and t-SNE, and the report."
 stack: [Python, scikit-learn, XGBoost, pandas, seaborn, Jupyter, Google Colab]
 tags: [ml, data]
 stats: ["7,043 rows, 38 columns", "8 classifiers", "team of 4"]

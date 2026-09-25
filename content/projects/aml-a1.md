@@ -9,6 +9,7 @@ featured: false
 team: 2
 status: private
 credit: "Two-person course assignment with Pratyush Kumar (WillOfSprings on GitHub), who owns the repo and made all 13 commits. Both milestone reports list us as co-authors. The NAL MLP and TabPFN notebooks carry my laptop's run metadata (the RTX 3080 Ti both reports name as the hardware); the SubTab and LSTM notebooks ran on a different machine with a GTX 1660 Ti."
+resume_credit: "Two-person assignment in Pratyush Kumar's repo; co-author on both reports."
 stack: [Python, PyTorch, TabPFN, pandas, scikit-learn, Jupyter]
 tags: [ml]
 stats: ["NAL 63.79% to 74.19%", "TabPFN 85.31% test", "3 noise levels"]

@@ -7,6 +7,7 @@ year: 2026
 order: 31
 featured: false
 credit: "Forked from codebrain001/customer-churn-prediction. The original app, notebook and dataset are codebrain001's. The model gallery, the threshold study, the tests, the CI and the bug fixes are mine."
+resume_credit: "Forked from codebrain001; the model gallery, threshold study, tests and CI are mine."
 stack: [Python, scikit-learn, pandas, Streamlit, pytest, ruff, GitHub Actions]
 tags: [ml, data, swe]
 stats: ["9 models", "62 tests", "recall 0.578 to 0.751"]

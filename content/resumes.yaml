@@ -17,7 +17,7 @@ data:
   file: Keshav_Rajput_Data
   label: Data
   track: data
-  projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, econometrics-india, biohub-cell-tracking, map-reducer]
+  projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, biohub-cell-tracking, econometrics-india, map-reducer]
   skills: [languages, data, ml, tools]
 sec:
   file: Keshav_Rajput_Security

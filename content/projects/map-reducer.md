@@ -7,6 +7,7 @@ order: 24
 featured: false
 team: 3
 credit: "Course team project with adityaahuja7 and deeptanshu (GitHub handles). The September 2026 test suite, launcher and CI are mine."
+resume_credit: "Team of three at IIIT Delhi; the 2026 test suite, launcher and CI are mine."
 stack: [Python, gRPC, protobuf, unittest, ruff, GitHub Actions]
 tags: [swe, data]
 stats: ["64 tests", "CI on 3 OSes", "team of 3"]

@@ -7,6 +7,7 @@ order: 18
 featured: false
 team: 5
 credit: "The repository is Utkarsh Arora's (utkar22 on GitHub). The 2023 coursework was a team of five: Utkarsh Arora, me, Krishnasai Addala, Samarth Raina and Sejal Kardam. The 2026 re-analysis, the data pipeline, the R models, the review, the CI and the license are mine, merged as PR #1."
+resume_credit: "2023 coursework with four teammates in Utkarsh Arora's repo; the 2026 re-analysis, pipeline, models, review and CI are mine."
 stack: [R, fixest, data.table, Python, pandas, GNU make, GitHub Actions]
 tags: [data, quant]
 stats: ["673 districts, 6 years", "tables match to 6 dp", "within-R2 under 0.02"]

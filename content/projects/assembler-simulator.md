@@ -7,6 +7,7 @@ order: 28
 featured: false
 team: 3
 credit: "Aditya Ahuja's repository (adityaahuja7 on GitHub), a Computer Organization assignment with Aditya Ahuja and Vedant Gupta. Vedant wrote the assembler. The simulator is mine: I added its first version and 309 of its 430 lines by blame, 8 of the repo's 39 commits under my happyc0der and KeshavIIITD accounts, and Aditya and Vedant fixed 9 lines after that."
+resume_credit: "Team of three in Aditya Ahuja's repo; the simulator is mine."
 stack: [Python, bash]
 tags: [swe]
 stats: ["20 opcodes", "256 x 16-bit words", "14 of 14 grader tests"]

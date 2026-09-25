@@ -7,6 +7,7 @@ order: 20
 featured: false
 team: 3
 credit: "NYU CS6903/4783 Project 1 with Aaron Wu and Shuhua. The October 2025 version is the team's static-partition baseline. The chunk-reserve protocol, the proofs, the adversarial simulator, the tests, CI and the report are from my September 2026 rewrite."
+resume_credit: "Team of three; the chunk-reserve protocol, proofs, simulator, tests, CI and report are my 2026 rewrite."
 stack: [Python, pytest, ruff, GitHub Actions]
 tags: [sec, swe]
 stats: ["36 vs 4,000 wasted pads", "310 tests", "0 blocked sends"]
