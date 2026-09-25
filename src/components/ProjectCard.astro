@@ -6,7 +6,7 @@ const d = project.data;
 <a class="card" href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
   <div class="top">
     <h3>{d.title}</h3>
-    <span class="mono muted">{d.year}</span>
+    <span class="mono muted">{d.status ? d.status : d.year}</span>
   </div>
   <p>{d.blurb}</p>
   <div class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</div>

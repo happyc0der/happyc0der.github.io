@@ -12,14 +12,10 @@
   year: 2026
   tags: [ml, swe]
 - name: TrafficFlowBench
-  result: Public leaderboard 0.674 against a 0.553 baseline. In progress, ends 2026-11-06
+  result: Public leaderboard 0.845 against a 0.553 baseline. In progress, ends 2026-11-06
   year: 2026
   tags: [data, ml, quant]
-- name: Amazon Build, Ship, Shape 2026 (Alexa+ track)
-  result: Shipped Custodian, an MCP recall-monitoring add-on
-  year: 2026
-  tags: [swe, sec, ml]
 - name: AI x GTM Hackathon (Block Convey), Revenue Intelligence track
-  result: Built Ledger, a pipeline-review agent that checks every claim against the CRM
+  result: Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
   year: 2026
   tags: [ml, swe, data]

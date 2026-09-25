@@ -20,6 +20,7 @@ const projects = defineCollection({
     tags: z.array(z.enum(['swe', 'ml', 'data', 'sec', 'quant'])),
     stats: z.array(z.string()).default([]),
     bullets: z.array(z.string()).max(3),
+    resume_bullets: z.array(z.string()).max(3).optional(), // shorter versions for the one-page PDFs
   }),
 });
 

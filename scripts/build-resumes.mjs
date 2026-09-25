@@ -25,7 +25,7 @@ const short = (url) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''
 
 const skillLabels = { languages: 'Languages', ml: 'ML', data: 'Data', systems: 'Systems', security: 'Security', tools: 'Tools' };
 
-function render(key, cfg) {
+function render(key, cfg, fontPt = 9.6) {
   const track = cfg.track;
   // Two short lines, so no URL gets split across a line break.
   const contact =
@@ -45,11 +45,13 @@ function render(key, cfg) {
   const projects = cfg.projects
     .map((slug) => {
       const { data } = matter(fs.readFileSync(path.join(root, 'content/projects', `${slug}.md`), 'utf8'));
-      const title = data.team ? `${data.title} (team of ${data.team})` : data.title;
-      const right = [data.repo ? link(data.repo, short(data.repo)) : '', data.year].filter(Boolean).join(', ');
+      const qualifier = [data.team && `team of ${data.team}`, data.status].filter(Boolean).join(', ');
+      const title = qualifier ? `${data.title} (${qualifier})` : data.title;
+      const right = data.repo ? link(data.repo, short(data.repo)) : String(data.year);
       return (
-        `<div class="entry"><div class="head"><span><strong>${esc(title)}</strong> <span class="stack">| ${esc(data.stack.slice(0, 6).join(', '))}</span></span> <span class="right">${right}</span></div>\n` +
-        `<ul>${data.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>`
+        `<div class="entry"><div class="head"><span><strong>${esc(title)}</strong> <span class="stack">| ${esc(data.stack.slice(0, 5).join(', '))}</span></span> <span class="right">${right}</span></div>\n` +
+        (data.credit ? `<div class="credit">${esc(data.credit)}</div>` : '') +
+        `<ul>${(data.resume_bullets ?? data.bullets).map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>`
       );
     })
     .join('\n');
@@ -58,6 +60,7 @@ function render(key, cfg) {
     '<ul>' +
     competitions
       .filter((c) => c.tags.includes(track))
+      .slice(0, 3)
       .map((c) => `<li><strong>${esc(c.name)}</strong>, ${c.year}. ${esc(c.result)}.</li>`)
       .join('') +
     '</ul>';
@@ -67,7 +70,7 @@ function render(key, cfg) {
   const acts = profile.activities.filter((a) => a.tags.includes(track));
   const activities = acts.length ? `<h2>Activities</h2>\n<ul>${acts.map((a) => `<li>${esc(a.text)}</li>`).join('')}</ul>` : '';
 
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(profile.name)} - Resume</title><style>${css}</style></head><body>
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(profile.name)} - Resume</title><style>${css}\nbody{font-size:${fontPt}pt}</style></head><body>
 <h1>${esc(profile.name)}</h1>
 <div class="contact">${contact}</div>
 <h2>Education</h2>
@@ -95,7 +98,10 @@ async function printPdf(html, pdf) {
     size = now;
   }
   child.kill('SIGKILL');
-  fs.rmSync(profileDir, { recursive: true, force: true });
+  await new Promise((r) => child.once('exit', r));
+  for (let i = 0; i < 10; i++) {
+    try { fs.rmSync(profileDir, { recursive: true, force: true }); break; } catch { await new Promise((r) => setTimeout(r, 300)); }
+  }
   if (!fs.existsSync(pdf)) throw new Error(`Edge did not produce ${pdf}`);
 }
 
@@ -127,12 +133,21 @@ let failed = false;
 for (const [key, cfg] of Object.entries(resumes)) {
   const html = path.join(outDir, `${cfg.file}.html`);
   const pdf = path.join(outDir, `${cfg.file}.pdf`);
-  fs.writeFileSync(html, render(key, cfg));
-  await printPdf(html, pdf);
-  const r = check(pdf, cfg);
+  // Fit to one page: shrink the type a little, then drop the last project, and say what happened.
+  const projects = [...cfg.projects];
+  let r, note = '';
+  outer: while (projects.length) {
+    for (const fontPt of [9.6, 9.3, 9.0]) {
+      fs.writeFileSync(html, render(key, { ...cfg, projects }, fontPt));
+      await printPdf(html, pdf);
+      r = check(pdf, cfg);
+      if (r.pages === 1) { note = (fontPt !== 9.6 ? ` (type ${fontPt}pt)` : '') + note; break outer; }
+    }
+    note += ` (dropped ${projects.pop()})`;
+  }
   fs.writeFileSync(path.join(outDir, `${cfg.file}.txt`), r.text);
   fs.copyFileSync(pdf, path.join(publicDir, `${cfg.file}.pdf`));
-  console.log(`${key.padEnd(6)} ${r.pages} page, ${r.words} words ${r.problems.length ? 'PROBLEMS: ' + r.problems.join('; ') : 'ok'}`);
+  console.log(`${key.padEnd(6)} ${r.pages} page, ${r.words} words${note} ${r.problems.length ? 'PROBLEMS: ' + r.problems.join('; ') : 'ok'}`);
   if (r.problems.length) failed = true;
 }
 process.exit(failed ? 1 : 0);

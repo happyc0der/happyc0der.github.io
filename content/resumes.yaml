@@ -1,32 +1,33 @@
 # One entry per resume. "track" picks coursework, activities and competitions by tag.
-# To put a project on a resume, add its file name (without .md) to "projects".
+# To put a project on a resume, add its file name (without .md) to "projects". Order matters: if a resume
+# runs past one page the build shrinks the type a little, then drops projects from the end of the list.
 swe:
   file: Keshav_Rajput_Software
   label: Software engineering
   track: swe
-  projects: [atlas-engine, mldsa-auth, forgelog, custodian]
+  projects: [atlas-engine, mldsa-auth, doom-ports, forgelog, tidefit]
   skills: [languages, systems, tools, data]
 ml:
   file: Keshav_Rajput_ML
   label: AI / ML
   track: ml
-  projects: [lfp2vec-audit, biohub-cell-tracking, blockwave, kaggle-s6e9]
+  projects: [lfp2vec-audit, gemma-swe-agent, biohub-cell-tracking, blockwave, kaggle-s6e9]
   skills: [languages, ml, data, tools]
 data:
   file: Keshav_Rajput_Data
   label: Data
   track: data
-  projects: [nyc-autoddg, kaggle-s6e9, biohub-cell-tracking, map-reducer]
+  projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, biohub-cell-tracking, map-reducer]
   skills: [languages, data, ml, tools]
 sec:
   file: Keshav_Rajput_Security
   label: Security
   track: sec
-  projects: [mldsa-auth, otp-pad-allocation, hawk-signature-study, custodian]
+  projects: [mldsa-auth, tidefit, otp-pad-allocation, hawk-signature-study, custodian]
   skills: [languages, security, systems, tools]
 quant:
   file: Keshav_Rajput_Quant
   label: Quant
   track: quant
-  projects: [bandits, kaggle-s6e9, snakes-ladders-markov, ssgd-momentum]
+  projects: [trading-agent, bandits, kaggle-s6e9, ssgd-momentum, snakes-ladders-markov]
   skills: [languages, ml, data, tools]

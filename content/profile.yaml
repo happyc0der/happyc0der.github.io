@@ -1,5 +1,5 @@
 name: Keshav Rajput
-tagline: MS CS, NYU. I build systems, cryptography and ML things.
+tagline: MS CS, NYU Tandon. I build systems, cryptography and ML things, and I measure them.
 location: New York, NY
 email: keshav.rajput4@gmail.com
 phone: "+1 646 299 9431"
@@ -27,12 +27,12 @@ coursework:
   quant: [Stochastic Processes, Statistical Inference, Convex Optimization, Game Theory, Econometrics, Valuation and Portfolio Management, Machine Learning]
 
 skills:
-  languages: [Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash]
-  ml: [PyTorch, scikit-learn, LightGBM, XGBoost, CatBoost, Optuna, NumPy, pandas, polars]
+  languages: [Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash, eZ80 assembly, Monkey C]
+  ml: [PyTorch, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, vLLM, Ollama, NumPy, pandas, polars]
   data: [PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Streamlit, Altair, matplotlib]
-  systems: [CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Node.js, REST APIs, MCP]
+  systems: [CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP]
   security: [libsodium, liboqs, ML-DSA, ML-KEM, X25519, ChaCha20-Poly1305, OAuth 2.1, libFuzzer, ASan/UBSan, threat modeling]
-  tools: [Git, GitHub Actions, Docker, AWS (CDK, App Runner, DynamoDB), Linux, LaTeX]
+  tools: [Git, GitHub Actions, Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale]
 
 activities:
   - text: Treasurer, OWASP Student Chapter, IIIT Delhi

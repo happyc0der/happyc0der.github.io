@@ -12,9 +12,10 @@ const { Content } = await render(project);
 ---
 <Base title={d.title} description={d.blurb}>
   <a class="back" href="/projects/">← Projects</a>
-  <p class="label">{d.year}{d.team && ` · team of ${d.team}`}</p>
+  <p class="label">{d.year}{d.team && ` · team of ${d.team}`}{d.status && ` · ${d.status}`}</p>
   <h1 class="page-title">{d.title}</h1>
   <p class="muted" style="font-size:1.15rem;max-width:40rem">{d.blurb}</p>
+  {d.credit && <p class="muted" style="max-width:40rem">{d.credit}</p>}
   <div class="tags" style="margin:1.25rem 0 1.5rem">
     {d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}
     {d.stack.map((s: string) => <span class="tag" style="background:var(--surface-2);color:var(--muted)">{s}</span>)}
