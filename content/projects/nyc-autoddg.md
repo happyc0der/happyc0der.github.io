@@ -14,7 +14,7 @@ bullets:
   - "Benchmarked Spark on an M4 Pro and Databricks serverless: near-linear speedup to 8 cores, a Spark vs pandas crossover at 1.7M rows, and pandas across 14 processes 14x faster than the best Spark setup on the small-file catalog."
   - "Generated AutoDDG-style descriptions with a local qwen3:14b from the profile alone; 97% of checkable claims matched the profile, and appending the search-focused one to portal metadata raised Recall@1 on tag queries from 0.605 to 0.728."
 resume_bullets:
-  - "Single-pass PySpark profiler (types, statistics, semantic types, quality flags) for 100 NYC Open Data datasets: 4.8M rows in 2.3 min, down from 12; checked against a pandas oracle with pytest."
+  - "Single-pass PySpark profiler (types, statistics, semantic types, data-quality flags) for 100 NYC Open Data datasets: 4.8M rows in 2.3 min, down from 12; checked against a pandas oracle with pytest."
   - "Benchmarked Spark vs pandas on an M4 Pro and Databricks serverless over Parquet inputs: crossover at 1.7M rows, near-linear to 8 cores, pandas 14x faster on small files."
   - "A local qwen3:14b wrote AutoDDG-style descriptions from the profile; 97% of checkable claims matched, and search Recall@1 rose from 0.605 to 0.728."
 ---

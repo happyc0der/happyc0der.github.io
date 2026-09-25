@@ -19,7 +19,7 @@ Generated from content/ on 2026-09-25. Do not edit; edit the source files and ru
 
 - Biohub Cell Tracking, Kaggle (2026): Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
 - Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final ranking pending, ends 2026-09-30
-- Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): LLM agent entry in Google ADK with a local vLLM evaluation harness. In progress, ends 2026-12-02
+- Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends 2026-12-02
 - TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
@@ -665,12 +665,12 @@ In September 2026 I went back and fixed it. A fresh clone could not start: the C
 
 - languages: Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash, eZ80 assembly, Monkey C
 - ml: PyTorch, deep learning, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, NumPy, pandas, polars
-- data: PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Streamlit, Altair, matplotlib
-- systems: CMake, gRPC, SQLite, WebAssembly, Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP
+- data: PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Parquet, time-series forecasting, econometrics (fixest), Streamlit, Altair, matplotlib
+- systems: CMake, gRPC, PostgreSQL, SQLite, WebAssembly (sandboxed mods), Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP
 - security: applied cryptography, post-quantum cryptography (ML-DSA, ML-KEM), X25519, ChaCha20-Poly1305, HKDF, TLS, OAuth 2.1 (PKCE, JWT), libsodium, liboqs, fuzzing (libFuzzer), mutation testing, ASan/UBSan, formal verification (ProVerif), security auditing and vulnerability assessment, threat modeling
-- testing: pytest, Catch2, vitest, Robolectric, libFuzzer, ASan/UBSan, ProVerif, unit and integration tests, CI
+- testing: pytest, Catch2, vitest, Robolectric, libFuzzer, ASan/UBSan, static analysis (clang-tidy, ruff, ESLint), ProVerif, unit and integration tests, CI
 - ai: LLM agents (Google ADK, MCP, tool calling), vLLM, Ollama, LiteLLM, LoRA/QLoRA fine-tuning (PEFT), llama.cpp/GGUF quantization
-- quant: backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, bandits, Markov chains
+- quant: backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, Kalman filters, bandits, Markov chains
 - tools: Git, CI/CD (GitHub Actions), Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale, Claude Code
 
 ## Activities

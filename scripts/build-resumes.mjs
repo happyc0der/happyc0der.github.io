@@ -21,10 +21,8 @@ const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
 
 // Plain ASCII in the PDFs: older resume parsers mangle or drop these.
 const ascii = { '±': '+/-', '²': '2', '³': '3', '×': 'x', '→': 'to', '≥': '>=', '≤': '<=', 'µ': 'u', '–': '-', '—': '-', '’': "'", '‘': "'", '“': '"', '”': '"', '…': '...', '·': ',', '≈': '~' };
-// Hyphenated tokens (ChaCha20-Poly1305, exact-fit) must not break at the hyphen, or keyword matchers lose them.
-const nb = (html) => html.replace(/(?<![\w-])([A-Za-z0-9+.]+(?:-[A-Za-z0-9+.]+)+)(?![\w-])/g, '<span class="nb">$1</span>');
 const escRaw = (s) => String(s).replace(/[^\x00-\x7F]/g, (c) => ascii[c] ?? c).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const esc = (s) => nb(escRaw(s));
+const esc = escRaw;
 const link = (url, text) => `<a href="${url}">${escRaw(text)}</a>`;
 const short = (url) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
@@ -114,6 +112,29 @@ async function printPdf(html, pdf) {
   if (!fs.existsSync(pdf)) throw new Error(`Edge did not produce ${pdf}`);
 }
 
+// Hyphenated tokens that straddled a line end in the extracted text ("ChaCha20-" / "Poly1305"): keyword matchers lose them.
+function straddledTokens(text) {
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  const out = [];
+  for (let i = 0; i < lines.length - 1; i++) {
+    const m = lines[i].match(/(?:^|\s)([A-Za-z0-9+.]+(?:-[A-Za-z0-9+.]+)*-)$/);
+    const n = lines[i + 1].match(/^([A-Za-z0-9+.]+(?:-[A-Za-z0-9+.]+)*)/);
+    if (m && n) out.push(m[1] + n[1]);
+  }
+  return out;
+}
+// Put a line break before the first occurrence of each token in the page text (never inside a tag), so it moves down whole.
+function breakBefore(html, tokens) {
+  const parts = html.split(/(<[^>]+>)/);
+  for (const token of tokens) {
+    const re = new RegExp('(?<![\\w-])' + token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\w-])');
+    for (let i = 0; i < parts.length; i += 2) {
+      if (re.test(parts[i]) && !/<br>$/.test(parts[i - 1] ?? '')) { parts[i] = parts[i].replace(re, '<br>' + token); break; }
+    }
+  }
+  return parts.join('');
+}
+
 // What an ATS sees: plain text, in order. Fails the build if something is off.
 function check(pdf, cfg) {
   const gs = (args) => execFileSync('gs', ['-q', '-dNOPAUSE', '-dBATCH', '-dNOSAFER', ...args], { encoding: 'utf8' });
@@ -155,10 +176,25 @@ for (const [key, cfg] of Object.entries(resumes)) {
   let r, note = '';
   outer: while (projects.length) {
     for (const fontPt of [9.6, 9.3, 9.0, 8.8]) {
-      fs.writeFileSync(html, render(key, { ...cfg, projects }, fontPt));
+      let page = render(key, { ...cfg, projects }, fontPt);
+      fs.writeFileSync(html, page);
       await printPdf(html, pdf);
       r = check(pdf, cfg);
-      if (r.pages === 1) { note = (fontPt !== 9.6 ? ` (type ${fontPt}pt)` : '') + note; break outer; }
+      if (r.pages !== 1) continue;
+      // Up to three passes moving straddled tokens down whole; keep the last version that still fits one page.
+      for (let pass = 0; pass < 3; pass++) {
+        const tokens = straddledTokens(r.text);
+        if (!tokens.length) break;
+        const candidate = breakBefore(page, tokens);
+        if (candidate === page) break;
+        fs.writeFileSync(html, candidate);
+        await printPdf(html, pdf);
+        const r2 = check(pdf, cfg);
+        if (r2.pages !== 1) { fs.writeFileSync(html, page); await printPdf(html, pdf); r = check(pdf, cfg); note += ' (kept a hyphen break)'; break; }
+        page = candidate; r = r2; note += ` (moved ${tokens.join(', ')})`;
+      }
+      note = (fontPt !== 9.6 ? ` (type ${fontPt}pt)` : '') + note;
+      break outer;
     }
     note += ` (dropped ${projects.pop()})`;
   }

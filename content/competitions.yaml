@@ -12,7 +12,7 @@
   tags: [ml, data, quant]
 - name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)
   project: gemma-swe-agent
-  result: LLM agent entry in Google ADK with a local vLLM evaluation harness. In progress, ends 2026-12-02
+  result: LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends 2026-12-02
   year: 2026
   tags: [ml, swe]
 - name: TrafficFlowBench

@@ -5,7 +5,6 @@ body { font: 9.6pt/1.25 Helvetica, Arial, sans-serif; color: #000; font-variant-
 h1 { font-size: 19pt; text-align: center; letter-spacing: 0.01em; }
 .contact { text-align: center; font-size: 9pt; margin-top: 2pt; }
 .headline { text-align: center; margin-top: 2pt; }
-.nb { white-space: nowrap; }
 a { color: inherit; text-decoration: none; }
 h2 { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 0.6pt solid #000; padding-bottom: 1pt; margin: 6pt 0 2.5pt; }
 .entry { margin-bottom: 6.5pt; break-inside: avoid; } /* gap clearly larger than a line gap, so parsers split entries here */
