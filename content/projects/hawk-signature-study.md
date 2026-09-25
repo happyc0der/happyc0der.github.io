@@ -4,7 +4,7 @@ blurb: "Report, talk and a working keygen, sign and verify demo of Hawk, the lat
 repo: https://github.com/happyc0der/hawk-signature-study
 image: /img/hawk-signature-study.jpg
 year: 2026
-order: 17
+order: 19
 featured: false
 stack: [Python, NumPy, SymPy, Flask, pytest]
 tags: [sec, swe]

@@ -3,7 +3,7 @@ title: Subgradient descent with momentum
 blurb: Stochastic subgradient descent, with and without heavy-ball momentum, as PyTorch optimizers on LASSO and a ReLU network, checked against scikit-learn.
 repo: https://github.com/happyc0der/AOMML
 year: 2024
-order: 24
+order: 26
 featured: false
 stack: [Python, PyTorch, NumPy, scikit-learn, Matplotlib, pytest, uv, GitHub Actions]
 tags: [ml, quant]

@@ -4,7 +4,7 @@ blurb: Streamlit dashboard of US leading causes of death, 1999 to 2017, from the
 repo: https://github.com/happyc0der/InfoViz
 image: /img/infoviz.png
 year: 2025
-order: 26
+order: 32
 featured: false
 stack: [Python, Streamlit, Altair, pandas]
 tags: [data]

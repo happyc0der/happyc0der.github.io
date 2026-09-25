@@ -3,7 +3,7 @@ title: localagent
 blurb: Local-only LLM agent with image generation, QLoRA fine-tuning and a story-to-comic pipeline, split across a Mac and a Windows GPU laptop.
 image: /img/localagent.jpg
 year: 2026
-order: 20
+order: 22
 featured: false
 status: local only
 stack: [Python, Ollama, Qwen3-14B, PyTorch, diffusers, PEFT, SDXL, llama.cpp]

@@ -13,6 +13,7 @@ const projects = defineCollection({
     year: z.number(),
     order: z.number().default(99),
     featured: z.boolean().default(false),
+    listed: z.boolean().default(true),     // false keeps it in the dataset and MASTER.md but off the site
     team: z.number().optional(),
     status: z.string().optional(),   // e.g. "in progress", "private", "not yet public"
     credit: z.string().optional(),   // who else owns part of it

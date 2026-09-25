@@ -4,7 +4,7 @@ blurb: "Nine scikit-learn churn models with tuned thresholds behind a Streamlit 
 repo: https://github.com/happyc0der/customer-churn-prediction
 image: /img/customer-churn.jpg
 year: 2026
-order: 25
+order: 31
 featured: false
 credit: "Forked from codebrain001/customer-churn-prediction. The original app, notebook and dataset are codebrain001's. The model gallery, the threshold study, the tests, the CI and the bug fixes are mine."
 stack: [Python, scikit-learn, pandas, Streamlit, pytest, ruff, GitHub Actions]

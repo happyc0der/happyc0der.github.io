@@ -3,7 +3,7 @@ title: map-reducer
 blurb: MapReduce from scratch in Python over gRPC, running K-Means across separate master, mapper and reducer processes, with two kinds of worker failure handled.
 repo: https://github.com/happyc0der/Map_Reducer
 year: 2024
-order: 22
+order: 24
 featured: false
 team: 3
 credit: "Course team project with adityaahuja7 and deeptanshu (GitHub handles). The September 2026 test suite, launcher and CI are mine."

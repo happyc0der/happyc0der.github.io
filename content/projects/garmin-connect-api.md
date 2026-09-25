@@ -2,7 +2,7 @@
 title: garmin-connect-api
 blurb: Typed Python library, local HTTP service and MCP server that read and write Garmin Connect, including uploads of completed strength sessions.
 year: 2026
-order: 19
+order: 21
 featured: false
 status: in progress
 stack: [Python 3.12, FastAPI, FastMCP, pydantic, fit-tool, Typer, python-garminconnect, pytest]

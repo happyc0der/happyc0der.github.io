@@ -3,7 +3,7 @@ title: Snakes and Ladders as a Markov chain
 blurb: Exact game length of Snakes and Ladders from the fundamental matrix, checked against a dice simulation and 47 tests.
 repo: https://github.com/happyc0der/SPA_Project
 year: 2022
-order: 23
+order: 25
 featured: false
 credit: Aman Kumar wrote the empirical transition-matrix tally in the original 2022 simulation.
 stack: [Python, numpy, matplotlib, pytest]

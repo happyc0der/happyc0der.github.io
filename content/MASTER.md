@@ -23,7 +23,7 @@ Generated from content/ on 2026-09-25. Do not edit; edit the source files and ru
 - TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline. In progress, ends 2026-11-06
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
-## Projects (26)
+## Projects (32)
 
 ### mldsa-auth (`mldsa-auth`)
 
@@ -342,6 +342,49 @@ Vol-targeted equal weight scored a net Sharpe of 0.81. The best candidate, the r
 
 The execution side runs regardless, with the unpromoted baseline. Since 2026-09-24 it has paper traded on Alpaca under launchd: long-only, at most 35% per ETF, 10% target volatility, exposure halved at a 5% drawdown, a kill switch at a 10% drawdown or a 3% daily loss that stays tripped until reset by hand, and deterministic client order IDs so a re-run cannot double-submit. Real money needs four things at once: live keys, a config flag, a promoted model and a command-line flag, plus at least three months of paper results inside the backtest's range. A Zerodha Kite adapter and a systemd kit for a static-IP server cover the Indian side, which has only run in dry-run mode so far. The code is local, with 44 tests.
 
+### GridSentry (`gridsentry`)
+
+Post-hackathon audit, fixes, test suite and CI for Utkarsh Mittal's NEPA environmental permit agent (FastAPI and Next.js).
+
+- 2026 · tags: swe data · on no resume
+- https://github.com/UtkarshMitta/GridSentry
+- live: https://grid-sentry-web.vercel.app
+- credit: The app is Utkarsh Mittal's (UtkarshMitta on GitHub): the hackathon build and the first 4 commits are his. The post-hackathon audit, the fixes, the test suite, the linting and the CI are mine, as 7 commits plus the merge of PR #1, 8 of the repo's 12.
+- stack: Python, FastAPI, pytest, TypeScript, Next.js 14, Leaflet, GitHub Actions, ruff
+- stats: 0 to 111 API tests · 25 web, 9 live checks · PR #1: 48 files
+- Audited a hackathon NEPA permit agent against the live federal GIS services for about 17 sites: non-US sites came back as clean, critical habitat was never detected, a dead data service was reported as clean, and two citations were to a nonexistent statute and a rescinded rule.
+- Fixed the data pipeline, citations and UI in PR #1 (48 files, 3668 additions, 887 deletions), then 7 more bugs in a review pass, including a protected-land query that kept 25 of up to 329 nearby records and could drop the park a site sits in.
+- Took tests from 0 to 111 offline API tests, 25 web tests and 9 opt-in live checks, added ruff and ESLint, and CI on Python 3.12 and 3.14; the app is live at grid-sentry-web.vercel.app.
+
+GridSentry is Utkarsh Mittal's NEPA environmental permit agent, built at a hackathon. You give it the coordinates of a proposed energy project and it queries federal datasets (USFWS wetlands and species, FEMA flood zones, USGS protected areas), runs three agents (a geolocation analyst, a legal compliance officer and a red-team critic) and writes a cited environmental assessment draft. The app and the hackathon build are his. He added me as a collaborator, and the audit, the fixes, the tests and the CI are mine.
+
+Several claims in the README were not holding, so I ran the real pipeline against the live federal services for about 17 sites, checked every citation and clicked through the UI. London and Mexico came back as low risk with a Categorical Exclusion likely, because the US-only datasets returned nothing. Critical habitat was never detected: IPaC returns populationSid as an object, so the ID match could never succeed. A data service that did not respond was reported as clean. State law was cited even when the jurisdiction had not been verified. Two citations were wrong: 54 U.S.C. § 101905 does not exist and 40 CFR 1501.3 was rescinded on 2025-04-11. The site acreage was a random number seeded from the coordinates.
+
+PR #1 (48 files, 3668 additions, 887 deletions) added a coverage gate for non-US and offshore sites, fixed the habitat match, marks a missing layer NOT ASSESSED so it blocks a Categorical Exclusion, verifies the state with the keyless US Census geocoder, corrects the citations, makes acreage an input, and generalizes geometry so a run stores hundreds of KB instead of 4 to 10 MB. A second review pass found 7 more bugs, among them a protected-land query that kept 25 of 152 to 329 nearby records in arbitrary order and could drop the park the site sits in, and a failed database write that reported a run as complete. Each fix has a regression test that fails on the old code. After the merge I added typed API response models, a run history on the home page, ruff and ESLint, and GitHub Actions CI that runs both suites, both linters, the typecheck and a build on Python 3.12 and 3.14.
+
+Tests went from 0 to 111 offline API tests (parsers on recorded real payloads, gates, report logic, the API and SSE lifecycle), 25 web tests and 9 opt-in checks against the live federal services. The site is live at grid-sentry-web.vercel.app, with the API on Render.
+
+### Econometrics re-analysis (`econometrics-india`)
+
+Re-analysis of my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts: the original headline effects were artefacts of the crop-index construction and of iid standard errors.
+
+- 2026 · team of 5 · tags: data quant · resumes: data quant
+- https://github.com/utkar22/Econometric-Analysis-of-Agriculture-and-Health-Across-India
+- credit: The repository is Utkarsh Arora's (utkar22 on GitHub). The 2023 coursework was a team of five: Utkarsh Arora, me, Krishnasai Addala, Samarth Raina and Sejal Kardam. The 2026 re-analysis, the data pipeline, the R models, the review, the CI and the license are mine, merged as PR #1.
+- stack: R, fixest, data.table, Python, pandas, GNU make, GitHub Actions
+- stats: 673 districts, 6 years · tables match to 6 dp · within-R2 under 0.02
+- Re-analysed my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts and six years: I reproduced both original regression tables to six decimals, then showed the crop indices were the yield of whichever crop row came first in the CSV, so the Kharif cash-crop effect (p < 1e-16 originally) is not significant once the index is built per category and the nitrate sample restriction is lifted.
+- Rebuilt it as a deterministic pipeline, Python for a 3,585-row district-year panel with Census 2011, NFHS-4 and IMD rainfall joined through LGD district codes, R in fixest for six specifications with state-clustered standard errors and district and year fixed effects, under which the child-marriage and hospital-bed effects are indistinguishable from zero and within-R2 is below 0.02.
+- Wrote the review, archived the original scripts with seven run-breaking bugs fixed, added a GPL-3.0 license and CI that reruns the whole pipeline on Ubuntu and fails if any committed table, the panel or the README changes; merged as PR #1 (114 files) with three follow-up commits for the CI and cross-platform reproducibility.
+
+In 2023, five of us at IIIT Delhi (Utkarsh Arora, me, Krishnasai Addala, Samarth Raina and Sejal Kardam) wrote an econometrics course project asking whether crop yields, health-system indicators and state economics explain the share of reported infant deaths attributed to low birth weight across 673 Indian districts from 2011 to 2016. The repository is Utkarsh Arora's. In September 2026 I went back to it on my own to check whether the results held. They did not.
+
+I started by reproducing both regression tables in the original README, which worked to six decimals but only with log(tap) in the Kharif model, where the committed script used tap in levels. The real problem was the crop indices: the script kept the first crop row of each district-year in whatever order the CSV had, so cash_index was that row's yield if it happened to be a cash crop and 0 otherwise. In the Kharif sample the kept row was a cash crop for 1,576 district-years and a cereal for 772. The Kharif and Rabi tables were the same annual outcome and regressors with a different first row. GDP, hospital beds, child marriage and nitrate vary only by state, but the standard errors were iid over 24 states, and clustering by state multiplies them by 2 to 3. With the indices rebuilt per category, clustered errors and the nitrate sample restriction lifted, the three headline effects go: child marriage from -0.08 (p < 0.001) to -0.01, hospital beds from -3.9 (p < 1e-8) to -2.8 (p = 0.13), and the Kharif cash-crop index from -0.20 (p < 1e-16) to -0.08 and not significant. The report's drop in child-marriage cases in 2014 is not in the data either: the yearly state totals are 214, 304, 240, 277, 298 and 321.
+
+The rebuild is a Python data-preparation step and an R analysis. Python collapses the 41,773 crop rows to one row per district-year (3,585 rows) with per-season, per-category yield indices, within-district yield shocks and lags, and joins Census 2011, NFHS-4 and IMD monsoon rainfall through Local Government Directory district codes (594 of the 673 districts exist in Census 2011). R runs six specifications in fixest, from the original regressors with corrected indices through year and zone effects, district and year effects, Census and NFHS controls and lags, all with state-clustered standard errors. Between districts, two associations survive a 999-draw district cluster bootstrap: a higher state GDP per capita goes with a higher LBW share (+6.5 points per log point, 95% CI 4.0 to 9.0), which reads as cause-of-death reporting rather than nutrition, and a higher rabi cereal yield with a lower one (-1.5 per tonne per hectare, CI -1.9 to -1.0). Within districts over time nothing in the data moves the outcome: within-R2 is below 0.02 with district and year effects. Monsoon rainfall is too weak an instrument for yields (clustered first-stage F = 2.3), so no causal claim is made.
+
+The original scripts are archived under legacy/ with seven run-breaking bugs fixed and nothing else changed, plus a map from each script to the two course reports. make all rebuilds everything and a second run produces no diff; generated CSVs are rounded (10 significant digits for the Python panel, 6 for the R tidy tables) so macOS and Linux agree byte for byte, and a GitHub Actions workflow reruns the pipeline on a clean Ubuntu runner and fails if any committed table, the panel, the codebook or the README changes. The review is in docs/REVIEW.md, with a final section recording an independent recomputation of the derived columns and of the fixest estimates against lm and sandwich. I added a GPL-3.0-or-later license. The work went in as PR #1 (114 files changed), merged by Utkarsh Arora, plus three follow-up commits on main for the CI and reproducibility; the latest run is green.
+
 ### Hawk signature study (`hawk-signature-study`)
 
 Report, talk and a working keygen, sign and verify demo of Hawk, the lattice signature scheme withdrawn from NIST standardisation in July 2026.
@@ -500,6 +543,85 @@ The repository began in April 2024 as a seven-cell notebook that stated an inten
 Correctness is checked against code I did not write. Autograd agrees with the closed-form subgradient to 4e-16, and at w = 0 every coordinate is a valid element of [-lambda, lambda]. The LASSO optimum is within 7.4e-5 of scikit-learn's coordinate descent with coefficients within 1.5e-3, and the true support is recovered at 10 of 10 tested lambdas. Each update rule is matched step by step and against `torch.optim.SGD` to 1e-14. On MNIST a 784-128-10 network trained for 5 epochs reaches 91.4% test accuracy with SSGD and 92.7% with momentum, selected on a held-out validation split.
 
 Three results. The objective rose on 44% of recorded iterations while the method converged normally, so plotting only the raw iterate makes a correct implementation look broken. A constant step reaches a neighbourhood of the optimum and stops: quadrupling the budget left its gap at 5.4616, while 1/sqrt(k) kept descending. And momentum's benefit is stability rather than a better step. Comparing beta at a fixed alpha_0 suggests a 9.3e8x speedup, but that silently varies the effective step alpha_0/(1-beta); with the effective step matched, the advantage is 1.05x. What momentum buys is headroom: plain SSGD diverges above an effective step of 1.5 and beta 0.99 stays stable to 300. One limitation: plain subgradient descent does not land on exact zeros (0 of 50 coefficients, against up to 45 for scikit-learn), so support recovery needs thresholding, and a proximal method such as ISTA would be the natural next step.
+
+### Raft with leader leases (`raft`)
+
+Raft consensus in Python and gRPC for a distributed systems course, where my part was the leader lease and the per-node event log.
+
+- 2024 · Finished April 2024 · team of 3 · tags: swe · on no resume
+- https://github.com/adityaahuja7/Raft-Implementation
+- credit: The repository is Aditya Ahuja's (adityaahuja7 on GitHub) and the team was Aditya Ahuja, Deeptanshu Barman and me, for CSE530 at IIIT Delhi. Aditya wrote the node, the election, the client handling and the cloud deployment. Deeptanshu wrote the log replication handlers, the parallel vote requests and the metadata class. Mine are 3 of 45 commits: the leader lease (the lease field on the RequestVote response, the lease state and its start, renew and timeout handlers, lease-gated reads and writes, step-down on expiry) and the first version of the per-node dump and metadata files.
+- stack: Python, gRPC, Protocol Buffers, Google Cloud
+- stats: 5-node cluster · 8 s leader lease · 3 of 45 commits
+- Added leader leases to a team Raft implementation in Python and gRPC: the leader renews its lease (8 seconds in the final code) when its heartbeats reach a majority of the cluster and steps down when it expires, and followers hold off elections while a lease is live.
+- Added a leaseDuration field to the RequestVote response next to the existing one on AppendEntries, and made the leader refuse GET and SET while it holds no lease.
+- Added per-node dump and metadata files that record election timeouts, votes, step-downs, rejected AppendEntries and failed RPCs, so a run of the 5-node cluster can be read back afterwards.
+
+Raft-Implementation is a course project for CSE530 Distributed Systems at IIIT Delhi in 2024, with Aditya Ahuja and Deeptanshu Barman. The repository is Aditya's. It is a Raft cluster in Python: five nodes talk over gRPC using the two Raft RPCs, RequestVote and AppendEntries, plus a serveClient RPC that takes GET and SET commands from a small command line client and forwards them to the leader. Each node keeps its log, a metadata file (term, commit length, vote) and a dump file on disk, so a restarted node picks up where it left off. The election timeout is drawn from 5 to 11 seconds and the leader sends a heartbeat once a second. The cluster was deployed on five Google Cloud VMs.
+
+My part was the leader lease, the idea from YugabyteDB that lets a leader answer reads without a round trip to the followers. The leader renews its lease each time its heartbeats reach a majority of the cluster and steps down to follower when the lease timer fires. My commit set the lease to 3 seconds and Deeptanshu raised it to 8 the same day. Followers learn the lease duration from AppendEntries and do not start an election while the lease is live. The RequestVote response carries a lease duration so that a winning candidate can wait out the old leader's lease before it serves. GET and SET are refused with a message while the leader has no lease. For this I added the lease field on the RequestVote response to the proto, the lease state and its start, renew and timeout handlers in the node, and the lease checks in the client path. The AppendEntries lease field and the timer class were already there from Deeptanshu.
+
+I also added the first version of the per-node dump and metadata files, writing a line for each election timeout, vote granted or denied, lease expiry and step-down, accepted or rejected AppendEntries and failed RPC. Deeptanshu then moved the metadata into its own class. My share is small: 3 of 45 commits, on 30 and 31 March 2024. Aditya and Deeptanshu wrote the election, replication and client code around it.
+
+### Assembler and Simulator (`assembler-simulator`)
+
+Assembler and cycle-by-cycle simulator for a 16-bit teaching ISA, a three-person Computer Organization assignment at IIIT Delhi in which I wrote the simulator.
+
+- 2021 · team of 3 · tags: swe · on no resume
+- https://github.com/adityaahuja7/Assembler-Simulator
+- credit: Aditya Ahuja's repository (adityaahuja7 on GitHub), a Computer Organization assignment with Aditya Ahuja and Vedant Gupta. Vedant wrote the assembler. The simulator is mine: I added its first version and 309 of its 430 lines by blame, 8 of the repo's 39 commits under my happyc0der and KeshavIIITD accounts, and Aditya and Vedant fixed 9 lines after that.
+- stack: Python, bash
+- stats: 20 opcodes · 256 x 16-bit words · 14 of 14 grader tests
+- Wrote the Python simulator for the course's 16-bit ISA: 20 opcodes, registers R0 to R6 plus FLAGS, 256 words of memory, and a trace line of program counter, registers and flags after every instruction followed by a memory dump.
+- The course grader passes all 14 assembler and simulator tests (5 simple and 2 hard for each) and rejects the 4 error programs, rerun in September 2026 on Python 3.14 for 20 of 20 marks on each half.
+
+This was the Computer Organization assignment at IIIT Delhi in August 2021, done in Aditya Ahuja's repository with Aditya and Vedant Gupta. The course fixed the instruction set: 16-bit words, a 5-bit opcode, 20 instructions, registers R0 to R6 plus a FLAGS register, 256 words of memory, and both programs reading stdin and writing stdout. The assembler turns assembly text into binary words and the simulator runs those words. Vedant wrote the assembler, which rejects 16 kinds of error (undefined variables and labels, variables declared after code, a repeated or misplaced hlt, illegal immediates, misuse of FLAGS). The simulator is my part. My two commits to the assembler are comments.
+
+I wrote the simulator between 18 and 21 August 2021, 309 of its 430 lines by blame. It loads the binary into memory until it reads the halt word, then loops: fetch the word at the program counter, take the top 5 bits as the opcode, run the handler, and print one line with the 8-bit program counter, the seven registers and the flags, all in binary. Add, sub and mul set the overflow flag when a result leaves 16 bits; cmp sets the less-than, greater-than or equal flag; the three conditional jumps read the flag from the previous cmp and then clear it. After hlt it dumps all 256 memory words.
+
+The repo ships the course's grader: 5 simple and 2 hard programs each for the assembler (assembly in, binary out) and the simulator (binary in, trace out), plus 4 error programs the assembler must reject. Rerun in September 2026 on Python 3.14, every test passes, 20 of 20 marks on each half. To be exact about the share: at my last commit the simulator matched 1 of the 7 traces, and Vedant's and Aditya's later commits changed 9 lines (among them a memory word initialised with 15 zeros instead of 16, the ld instruction, and when flags reset) to reach 7 of 7. One rough edge remains: the file still calls the matplotlib scatter plot at exit with the import commented out, so it ends with a NameError after the memory dump. The grader reads only stdout, so the trace is unaffected.
+
+### Customer attrition (`ml-project-churn`)
+
+Four-person IIIT Delhi machine learning course project comparing eight classifiers for telecom churn, and why its reported accuracy does not hold up.
+
+- 2022 · team of 4 · tags: ml data · on no resume
+- https://github.com/IshitBajpai/ML_Project
+- credit: The repo is Ishit Bajpai's (IshitBajpai on GitHub). The project was a team of four: Ishit Bajpai, Keshav Rajput, Prachi and Satyam Arora, with equal credit stated in the report. My share was debugging, result analysis, the train and test split, PCA and t-SNE, the dataset handling and the report. All 3 commits are Ishit's uploads of the group's notebooks, slides and report.
+- stack: Python, scikit-learn, XGBoost, pandas, seaborn, Jupyter, Google Colab
+- stats: 7,043 rows, 38 columns · 8 classifiers · team of 4
+- Machine learning course project at IIIT Delhi in a team of four: churn prediction on the Maven Analytics telecom dataset of 7,043 customers and 38 columns, comparing logistic regression, two naive Bayes variants, SVM, random forest, AdaBoost, XGBoost and an MLP, most under 5-fold cross-validation.
+- My share was debugging, result analysis, the 75:25 stratified split, PCA and t-SNE, the dataset handling and the report; the group reported an RBF-kernel SVM as best at 96.72% accuracy and 93.51 F1.
+- The reported scores are inflated by target leakage: the Churn Category and Churn Reason columns, filled only for churners, stayed in the feature matrix, and the ROC-AUC helper fitted each model on the test set it then scored.
+
+This was the final project for CSE/ECE 343 Machine Learning at IIIT Delhi, submitted on 4 December 2022 by a team of four: Ishit Bajpai, Prachi, Satyam Arora and me. The repository is Ishit's and holds the group's four Colab notebooks, the slides and the report. The task was to predict which telecom customers churn. The data is the Maven Analytics telecom churn set: 7,043 customers from one quarter of 2022, 38 columns, and a three-way status of joined, stayed or churned that we collapsed to churned (1,869 customers) against the rest (5,174). Per the slides, my share was debugging, result analysis, the train and test split, PCA and t-SNE, the dataset handling and the report.
+
+The pipeline drops the customer ID, fills missing values with a KNN imputer (the report says mean for numeric columns, but that line in the notebook never assigns its result), label-encodes every categorical column, removes any feature correlated above 0.85 with another, drops low-variance numeric columns, standardises, and reduces to 8 principal components. The split is 75:25 and stratified. We then ran logistic regression, Gaussian and Bernoulli naive Bayes, SVM with four kernels, random forest, AdaBoost and XGBoost with small grid searches, and an MLP with hidden layers of 256 and 32, scoring the scikit-learn models with 5-fold cross-validation and the MLP on the held-out quarter. The group's table put the RBF SVM first at 96.72% accuracy and 93.51 F1, with XGBoost highest on ROC-AUC at 99.8.
+
+Those numbers do not hold up, and it is better to say so here than let them stand. The Maven set has two columns, Churn Category and Churn Reason, that are blank unless the customer churned. The notebooks fill them with a placeholder for everyone else and then keep both in the feature matrix, so the inputs to PCA, and through it to every model, carried a column that is zero exactly when the label is zero. On top of that, the ROC-AUC helper fits each model on the test set and scores the same rows, and PCA is fitted separately on the train and test halves. For comparison, my 2026 Telecom churn project on a 7,043-row Telco dataset without those columns reaches accuracy between 0.767 and 0.805 depending on the model and threshold.
+
+Most of the semester went into preprocessing and rerunning results, and every model looked good because the leak made every model look good. The later project keeps each preprocessing step inside a scikit-learn pipeline and holds out the test set before anything is fitted, which is the fix for both problems.
+
+### Noisy-label tabular models (`aml-a1`)
+
+Course assignment comparing a plain MLP, Noise Attention Learning, a partial SubTab autoencoder, TabPFN and an LSTM on synthetic tabular data at three label-noise levels.
+
+- 2024 · private · not on the site · team of 2 · tags: ml · on no resume
+- https://github.com/WillOfSprings/aml-a1
+- credit: Two-person course assignment with Pratyush Kumar (WillOfSprings on GitHub), who owns the repo and made all 13 commits. Both milestone reports list us as co-authors. The NAL MLP and TabPFN notebooks carry my laptop's run metadata (the RTX 3080 Ti both reports name as the hardware); the SubTab and LSTM notebooks ran on a different machine with a GTX 1660 Ti.
+- stack: Python, PyTorch, TabPFN, pandas, scikit-learn, Jupyter
+- stats: NAL 63.79% to 74.19% · TabPFN 85.31% test · 3 noise levels
+- Compared five approaches on a 24-feature synthetic tabular dataset at zero, low and high label noise for two targets: a baseline MLP, the same MLP with a Noise Attention Learning loss, a partial SubTab autoencoder, TabPFN and an LSTM.
+- Noise Attention Learning raised test accuracy on the era target from 63.79% to 74.19% on low-noise data and from 44.90% to 49.75% on high-noise data, and cost accuracy on clean data (76.41% to 42.05%).
+- Fitted TabPFN within its 1,000-row and 10-class limits by fitting on a 1,000-row sample and chaining two classifiers, the first trained on classes 0 to 9 and handing any row it labels 9 to a second trained on classes 9 to 11, reaching 85.31% test accuracy on the 12-class era target with zero noise.
+
+Assignment 1 of Advanced Machine Learning at IIIT Delhi, done with Pratyush Kumar in February 2024 in two milestones. The data is synthetic tabular data with 24 price-series style features per row (normalised open, high, low, close and volume, moving averages, a CMO and slope features) at three label-noise levels: a clean set of 7,800 rows, a low-noise set of 312,000 rows and a high-noise set of 249,600 rows. Each method predicts two targets, a 12-class era label and target_10_val, from a 70/15/15 train, test and validation split with seed 42.
+
+Milestone 1 set a baseline MLP against two methods for noisy labels. Noise Attention Learning keeps the MLP and swaps the loss for the paper's attention-weighted loss, without its regularisation term. It helped where noise was present and hurt where it was not: on the era target, test accuracy went from 63.79% to 74.19% at low noise and from 44.90% to 49.75% at high noise, but fell from 76.41% to 42.05% on clean data. On target_10_val the gains were small (79.11% to 80.26% at low noise). Our SubTab port was partial: an autoencoder trained on overlapping feature subsets with the reconstruction loss only, no contrastive term, feeding an MLP with the NAL loss. It scored well below the baseline (15.07% on low-noise era) and the report says so.
+
+Milestone 2 added TabPFN and a sequence model. TabPFN fits at most 1,000 rows and predicts at most 10 classes, so we fitted on a 1,000-row sample and chained two classifiers: the first is trained on classes 0 to 9, and any row it labels 9 goes to a second classifier trained on classes 9 to 11. It reached 85.31% test accuracy on clean era data and 74.83% on low-noise target_10_val, at the cost of prediction time (186.9 s for 1,500 test rows on low-noise era in the notebook). The sequence model is a one-layer LSTM over windows of 12 rows sorted by row_num with a classification head. LSTM and GRU scored almost the same, so the report gives one number. On the era target it beat TabPFN on noisy data (62.72% against 57.6% at low noise, 46.60% against 34.58% at high noise) and trailed it on clean data.
+
+The repo is Pratyush's and all 13 commits are his; both reports list us as co-authors. The NAL MLP and TabPFN notebooks carry my laptop's run metadata, the RTX 3080 Ti both reports name as the hardware, and the SubTab and LSTM notebooks ran on a different machine with a GTX 1660 Ti. Two things I would fix now: the SubTab training loop prints a validation accuracy of 0.00000 every epoch, so its numbers are unverified, and the milestone 1 report says every model ran for 10 epochs while the committed NAL notebook is set to 5 and prints 47.71% on high-noise era where the report says 49.75%, so the reported numbers come from runs that are not the committed ones.
 
 ### Telecom churn (`customer-churn`)
 

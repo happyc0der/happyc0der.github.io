@@ -28,7 +28,7 @@ for (const c of competitions) out.push(`- ${c.name} (${c.year}): ${c.result}`);
 out.push('', `## Projects (${projects.length})`, '');
 for (const p of projects) {
   const d = p.data;
-  const meta = [d.year, d.status, d.team && `team of ${d.team}`, d.featured && 'featured', `tags: ${d.tags.join(' ')}`, onResumes(p.slug).length ? `resumes: ${onResumes(p.slug).join(' ')}` : 'on no resume'].filter(Boolean).join(' · ');
+  const meta = [d.year, d.status, d.listed === false && 'not on the site', d.team && `team of ${d.team}`, d.featured && 'featured', `tags: ${d.tags.join(' ')}`, onResumes(p.slug).length ? `resumes: ${onResumes(p.slug).join(' ')}` : 'on no resume'].filter(Boolean).join(' · ');
   out.push(`### ${d.title} (\`${p.slug}\`)`, '', d.blurb, '', `- ${meta}`);
   if (d.repo) out.push(`- ${d.repo}`);
   if (d.demo) out.push(`- live: ${d.demo}`);

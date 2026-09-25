@@ -3,7 +3,7 @@ title: Non-stationary bandits
 blurb: Five bandit algorithms for changing environments, benchmarked on one interface with regret split into decisions and mandatory probing.
 repo: https://github.com/happyc0der/multi_armed_bandit_algorithms
 year: 2026
-order: 21
+order: 23
 featured: false
 stack: [Python, NumPy, Matplotlib]
 tags: [ml, quant]

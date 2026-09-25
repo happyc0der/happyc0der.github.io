@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import { tagNames } from '../../lib';
 
 export async function getStaticPaths() {
-  return (await getCollection('projects')).map((project) => ({ params: { slug: project.id }, props: { project } }));
+  return (await getCollection('projects')).filter((p) => p.data.listed).map((project) => ({ params: { slug: project.id }, props: { project } }));
 }
 const { project } = Astro.props;
 const d = project.data;

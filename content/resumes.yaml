@@ -17,7 +17,7 @@ data:
   file: Keshav_Rajput_Data
   label: Data
   track: data
-  projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, biohub-cell-tracking, map-reducer]
+  projects: [nyc-autoddg, trafficflowbench, kaggle-s6e9, econometrics-india, biohub-cell-tracking, map-reducer]
   skills: [languages, data, ml, tools]
 sec:
   file: Keshav_Rajput_Security
@@ -29,5 +29,5 @@ quant:
   file: Keshav_Rajput_Quant
   label: Quant
   track: quant
-  projects: [trading-agent, bandits, kaggle-s6e9, ssgd-momentum, snakes-ladders-markov]
+  projects: [trading-agent, bandits, econometrics-india, kaggle-s6e9, ssgd-momentum, snakes-ladders-markov]
   skills: [languages, ml, data, tools]

@@ -3,7 +3,7 @@ title: One-time-pad allocation
 blurb: "Wait-free one-time-pad allocation for m broadcasting parties, with a proof of no reuse and an exact waste bound that does not grow with the pool."
 repo: https://github.com/happyc0der/cryptography-project-1
 year: 2025
-order: 18
+order: 20
 featured: false
 team: 3
 credit: "NYU CS6903/4783 Project 1 with Aaron Wu and Shuhua. The October 2025 version is the team's static-partition baseline. The chunk-reserve protocol, the proofs, the adversarial simulator, the tests, CI and the report are from my September 2026 rewrite."
