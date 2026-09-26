@@ -7,7 +7,7 @@ swe:
   track: swe
   headline: "Software engineer, new grad. MS Computer Science, NYU Tandon, May 2026. C, C++, Python, TypeScript, Kotlin."
   projects: [atlas-engine, mldsa-auth, doom-ports, tidefit, forgelog]
-  skills: [languages, systems, testing, tools]
+  skills: [languages, systems, ai, testing, tools]
 ml:
   file: Keshav_Rajput_ML
   label: AI / ML
@@ -26,7 +26,7 @@ sec:
   file: Keshav_Rajput_Security
   label: Security
   track: sec
-  headline: "Security engineer, new grad. MS Computer Science, NYU Tandon, May 2026. Post-quantum cryptography, audits, fuzzing."
+  headline: "Security software engineer, new grad. MS Computer Science, NYU Tandon, May 2026. Post-quantum cryptography, audits, fuzzing."
   projects: [mldsa-auth, tidefit, otp-pad-allocation, hawk-signature-study, custodian]
   skills: [languages, security, systems, testing]
 quant:

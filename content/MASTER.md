@@ -666,12 +666,12 @@ In September 2026 I went back and fixed it. A fresh clone could not start: the C
 
 - languages: Python, C, C++, Kotlin, TypeScript, JavaScript, SQL, Java, R, Bash, eZ80 assembly, Monkey C
 - ml: PyTorch, deep learning, scikit-learn, LightGBM, XGBoost, CatBoost, Hugging Face transformers, NumPy, pandas, polars
-- data: PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Parquet, time-series forecasting, econometrics (fixest), Streamlit, Altair, matplotlib
+- data: PySpark, Databricks, SQL, PostgreSQL, SQLite, pandas, Parquet, time-series forecasting, statistics (hypothesis testing, regression), econometrics (fixest), Streamlit, Altair, matplotlib
 - systems: CMake, gRPC, PostgreSQL, SQLite, WebAssembly (sandboxed mods), Android (Jetpack Compose, Room), Next.js, React, FastAPI, Node.js, REST APIs, MCP
-- security: applied cryptography, post-quantum cryptography (ML-DSA, ML-KEM), X25519, ChaCha20-Poly1305, HKDF, TLS, OAuth 2.1 (PKCE, JWT), libsodium, liboqs, fuzzing (libFuzzer), mutation testing, ASan/UBSan, formal verification (ProVerif), security auditing and vulnerability assessment, threat modeling
+- security: applied cryptography, post-quantum cryptography (ML-DSA, ML-KEM), X25519, ChaCha20-Poly1305, HKDF, network security (TLS), OAuth 2.1 (PKCE, JWT), libsodium, liboqs, fuzzing (libFuzzer), mutation testing, ASan/UBSan, formal verification (ProVerif), security auditing and vulnerability assessment, threat modeling
 - testing: pytest, Catch2, vitest, Robolectric, libFuzzer, ASan/UBSan, static analysis (clang-tidy, ruff, ESLint), ProVerif, unit and integration tests, CI
 - ai: LLM agents (Google ADK, MCP, tool calling), vLLM, Ollama, LiteLLM, LoRA/QLoRA fine-tuning (PEFT), llama.cpp/GGUF quantization
-- quant: backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, Kalman filters, bandits, Markov chains
+- quant: backtesting (purged walk-forward, CPCV, Deflated Sharpe, PBO), financial modeling, econometrics (fixest, fixed effects, clustered SEs), time-series forecasting, Kalman filters, bandits, Markov chains
 - tools: Git, CI/CD (GitHub Actions), Docker, AWS (CDK, App Runner, DynamoDB), Vercel, Linux, WSL2, Tailscale, Claude Code
 
 ## Activities
