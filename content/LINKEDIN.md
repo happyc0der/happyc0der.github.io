@@ -4,7 +4,7 @@ Written from content/ on 2026-09-26. Limits: headline 220 characters, About 2,60
 
 ## Profile URL
 
-Change `linkedin.com/in/keshav-rajput-862267259` to `linkedin.com/in/keshav-rajput` (Settings > Edit public profile & URL). Then update the link in content/profile.yaml and rerun `npm run resumes`.
+Change `linkedin.com/in/happyc0der` to `linkedin.com/in/keshav-rajput` (Settings > Edit public profile & URL). Then update the link in content/profile.yaml and rerun `npm run resumes`.
 
 ## Headline
 

@@ -7,7 +7,7 @@ Generated from content/ on 2026-09-26. Do not edit; edit the source files and ru
 - MS CS, NYU Tandon. I build systems, cryptography and ML things, and I measure them.
 - New York, NY, keshav.rajput4@gmail.com, +1 (646) 299-9431
 - https://github.com/happyc0der
-- https://www.linkedin.com/in/keshav-rajput-862267259/
+- https://www.linkedin.com/in/happyc0der/
 - https://happyc0der.github.io
 
 ## Education
