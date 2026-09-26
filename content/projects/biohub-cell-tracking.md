@@ -15,9 +15,9 @@ bullets:
   - "Built an offline harness that runs GPU inference on Kaggle once, then re-runs the notebook's post-processor locally against the hosts' official scorer on 40 held-out videos, five times the upstream validator, and matches the notebook's own score to +0.00011."
   - "Trained a small 3D CNN on 134 annotated cell divisions to prune false division forks: predicted +0.0047 on a pre-registered holdout, measured +0.005 on the leaderboard twice, while nine other ideas were tried and rejected."
 resume_bullets:
-  - "Kaggle Biohub Cell Tracking: public leaderboard 0.952 against 0.947 for the public notebook it builds on, on free Kaggle GPU; final ranking pending."
-  - "Offline harness runs GPU inference once, then re-tunes post-processing locally against the official scorer on 40 held-out videos, matching the notebook to +0.00011."
-  - "3D CNN trained on 134 annotated divisions prunes false forks: predicted +0.0047 on a pre-registered holdout, measured +0.005 on the leaderboard twice."
+  - "Scored 0.952 on the Kaggle Biohub Cell Tracking public leaderboard on free Kaggle GPU, against 0.947 for the public notebook it builds on; final ranking pending."
+  - "Built an offline harness that runs GPU inference once, then re-tunes post-processing locally against the official scorer on 40 held-out videos; it reproduces the notebook's score to within 0.00011."
+  - "Trained a 3D CNN on 134 annotated cell divisions to prune false branches: predicted +0.0047 on a pre-registered holdout, measured +0.005 on the leaderboard twice."
 ---
 
 This is a code competition with a 12-hour notebook cap, and I had only the free Kaggle GPU quota. The strongest public notebook, Harmonic Fusion, scores 0.947 and tunes its post-processing inside the notebook on 8 videos with 7 candidate configurations, because inference eats the budget. Inference needs the GPU; post-processing does not. I forked the notebook, ran inference once over 40 held-out training videos, exported the raw prediction graphs and ground truth, and pulled the post-processor out of the notebook with an AST extractor so it runs on my laptop against the hosts' official scorer. Before trusting anything downstream I checked the port against the notebook's own output: score delta +0.00011, median node shift 0.0000 µm against a 7 µm matching tolerance.

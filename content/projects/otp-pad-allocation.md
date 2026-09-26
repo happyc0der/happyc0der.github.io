@@ -16,9 +16,9 @@ bullets:
   - "Cut worst-case waste in the evaluation grid at m=5, d=5, n=5,000 from 4,000 pads under the static-partition baseline to 36, with zero blocked sends in every cell of that grid, where each cell is the worst case over 4 delivery orders, 2 network pressures and 3 seeds."
   - "Found two defects in the course handout's own two-party protocol, an off-by-one gap check and a pointer view that can move backwards under out-of-order delivery, each pinned by a test; 310 tests and CI that reruns the evaluation and diffs the committed results."
 resume_bullets:
-  - "Wait-free one-time-pad allocation for m broadcasting parties with d messages in flight; proof of no reuse, exact worst-case waste d(2m-1) - m + (n mod d)."
-  - "Worst-case waste at m=5, d=5, n=5,000 cut from 4,000 pads (static partition) to 36, with zero blocked sends across the adversarial grid."
-  - "Found two defects in the course handout's own two-party protocol, each pinned by a test; 310 tests, CI reruns the evaluation and diffs the results."
+  - "Designed a wait-free one-time-pad allocation protocol for m broadcasting parties with d messages in flight, with a proof of no pad reuse and an exact worst-case waste bound."
+  - "Cut worst-case waste at m=5, d=5, n=5,000 from 4,000 pads (static partition) to 36, with zero blocked sends across the adversarial grid."
+  - "Found two defects in the course handout's own two-party protocol, each pinned by a test; 310 tests, and CI reruns the evaluation and diffs the results."
 ---
 
 m parties share n one-time pads. Every message is broadcast to all the others at the same instant, at most d messages are undelivered at any moment, and nobody takes turns. No pad may ever be used twice, and when the pads run out as few as possible should be stranded. The obvious answer, a fixed slice of the pads per party, is trivially secret, but a party can only spend its own slice, so one talkative party strands 4,000 of 5,000 pads at m=5. That static partition was the team's October 2025 version of this project, with a simulator that never modelled delivery delay.

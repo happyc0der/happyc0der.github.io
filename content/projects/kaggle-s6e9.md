@@ -13,9 +13,9 @@ bullets:
   - "Nested target encodings over the synthetic generator's artifacts on 668,665 rows, 20 folds with encoding-seed bags, and a logit blend of LightGBM, CatBoost and a 15-seed MLP with hard-edge post-processing."
   - "Logged 192 experiments judged by paired DeLong tests (accept at +0.00008 with z ≥ 3, noise floor about 0.00003), and showed by label resampling that a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise."
 resume_bullets:
-  - "Kaggle Playground S6E9 (ROC AUC): out-of-fold 0.94648, public leaderboard 0.94649 against a leader at 0.94674; final ranking pending."
-  - "Feature engineering with nested target encodings over the synthetic generator's artifacts on 668,665 rows, 20-fold cross-validation; logit blend of LightGBM, CatBoost and a 15-seed MLP."
-  - "192 experiments judged by paired DeLong hypothesis tests; label resampling showed a perfect model scores 0.9459 ± 0.0003, so the gap left is label noise."
+  - "Reached 0.94649 on the Kaggle Playground S6E9 public leaderboard (ROC AUC) against a leader at 0.94674, with out-of-fold 0.94648; final ranking pending."
+  - "Engineered features with nested target encodings over the synthetic generator's artifacts on 668,665 rows with 20-fold cross-validation; blended LightGBM, CatBoost and a 15-seed MLP in logit space."
+  - "Judged 192 experiments by paired DeLong hypothesis tests; label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise."
 ---
 
 Kaggle Playground Series S6E9 asks for the probability that a person buys an electric vehicle, scored by ROC AUC. The train set (668,665 rows) and test set (286,571 rows) are synthetic, generated from a 10,000-row original that is itself synthetic: features drawn from a fixed random state, label from a probit formula on income, environmental concern, subsidy and range anxiety. Nearly every point of AUC above about 0.942 comes from the generator's artifacts. A few thousand income and commute values are heavily over-produced, and the label rate at those values departs from the formula. So I modelled how the data was made rather than what it represents.

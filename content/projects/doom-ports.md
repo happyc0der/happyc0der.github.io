@@ -15,9 +15,9 @@ bullets:
   - "Measured that one VRAM byte write costs about 122 eZ80 cycles, fit a frame-time model to it (ceiling about 6.2 fps for a full 320 by 200 view), and moved the column fill to hand-written assembly."
   - "Ported it to the Garmin Venu X1 in Monkey C, micro-benchmarked the watch (about 0.2 ms per bitmap draw whatever its size) and rebuilt the renderer around call count: 1 to 2 fps to 20 fps still and 15.6 fps moving; on the Connect IQ store."
 resume_bullets:
-  - "From-scratch first-person raycaster for the TI-84 Plus CE in C and eZ80 assembly: 24 KB, 5 to 7 fps, all art generated at startup."
-  - "Measured 122 eZ80 cycles per VRAM byte, fit a frame-time model (ceiling 6.2 fps) and moved the column fill to hand-written assembly."
-  - "Garmin Venu X1 port in Monkey C, rebuilt around a 0.2 ms per-draw cost: 1 to 2 fps to 15.6 fps; on the Connect IQ store."
+  - "Wrote a first-person raycaster from scratch for the TI-84 Plus CE calculator in C and eZ80 assembly: 24 KB, 5 to 7 fps, all art generated at startup."
+  - "Profiled the display (122 eZ80 cycles per VRAM byte), fit a frame-time model with a 6.2 fps ceiling, and moved the column fill to hand-written assembly."
+  - "Ported it to the Garmin Venu X1 watch in Monkey C, rebuilt around a 0.2 ms per-draw cost: 1 to 2 fps to 15.6 fps; published on the Garmin Connect IQ store."
 ---
 
 The engine is original. Textured walls, floors and ceilings at different heights, sliding doors, soldiers with a state-machine AI, projectiles you can sidestep, pickups and a status bar. Every texture and sprite is generated at startup by code in the repository, so there are no game assets to ship. It shares a genre and a pun with a well-known shooter and nothing else, which is why the watch version carries a different name.

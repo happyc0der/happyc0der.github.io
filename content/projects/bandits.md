@@ -13,9 +13,9 @@ bullets:
   - "Audited TS-GE against its paper and found the Beta update reversed, which cut TS-phase regret from 21,860 to 174 at K=2, T=6000, and showed mandatory probing is 75.9% of its total regret on that case."
   - "Made AdSwitch 59x faster (218.6 s to 3.7 s at K=16, T=1e5) and cut memory from 2,048 MB to 272 MB at K=128, T=1e6, with bit-identical output."
 resume_bullets:
-  - "Five piecewise-stationary bandit algorithms (TS-GE, AdSwitch, M-UCB, UCB1, epsilon-greedy) behind one interface, benchmarked from 2 to 128 arms."
-  - "Audited TS-GE against its paper and found the Beta update reversed: TS-phase regret 21,860 to 174; mandatory probing is 75.9% of its total regret."
-  - "Made AdSwitch 59x faster (218.6 s to 3.7 s) and cut memory from 2,048 MB to 272 MB at K=128, T=1e6, bit-identical output."
+  - "Implemented five piecewise-stationary bandit algorithms (TS-GE, AdSwitch, M-UCB, UCB1, epsilon-greedy) behind one interface and benchmarked them from 2 to 128 arms."
+  - "Audited TS-GE against its paper and found its Beta update reversed; fixing it cut TS-phase regret from 21,860 to 174, and showed mandatory probing causes 75.9% of its total regret."
+  - "Made AdSwitch 59x faster (218.6 s to 3.7 s) and cut its memory from 2,048 MB to 272 MB at K=128, T=1e6, with bit-identical output."
 ---
 
 Bandits where the best arm changes over time. I started the repo in 2022 with financial markets in mind and rewrote it in September 2026. Five algorithms (TS-GE, AdSwitch, M-UCB, UCB1 and epsilon-greedy) implement one interface and run on one bounded synthetic environment, across five benchmark cases from 2 to 128 arms.

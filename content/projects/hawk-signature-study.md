@@ -14,9 +14,9 @@ bullets:
   - "Applied six correctness fixes to the vendored hawk-py reference code, each with a reproduction in PATCHES.md and with regression tests for the decoder and sentinel bugs: NumPy 2 integer promotion that made every verification fail, decoder bounds and failure-path bugs that crashed instead of rejecting malformed input, and a modular exponentiation fix that made Hawk-256 verification about 300x faster (6.04 s to 0.02 s) and cut the test suite from 30 s to 2 s."
   - "Kept the report and slides unedited after the break and documented the attack beside them: a polynomial-time reduction of Hawk-n key recovery to SVP in dimension n/2 + 1 that took the claimed cost from 2^150 to 2^108 for Hawk-512 and 2^288 to 2^182 for Hawk-1024, with Hawk-256 keys recovered end to end by the attack's authors."
 resume_bullets:
-  - "Study of Hawk, the lattice signature scheme withdrawn from NIST standardisation in July 2026: 13-page report, talk, Flask keygen/sign/verify API and demo page."
-  - "Six correctness fixes to the vendored hawk-py reference, with regression tests; one made Hawk-256 verification about 300x faster (6.04 s to 0.02 s)."
-  - "Documented the break beside the unedited report: key recovery reduced to SVP in dimension n/2 + 1, Hawk-512 from 2^150 to 2^108."
+  - "Studied Hawk, the lattice signature scheme withdrawn from NIST standardisation in July 2026: a 13-page report, a talk, and a Flask keygen/sign/verify API with a demo page."
+  - "Made six correctness fixes to the vendored hawk-py reference implementation, with regression tests; one sped up Hawk-256 verification about 300x (6.04 s to 0.02 s)."
+  - "Documented the attack that broke it beside the unedited report: key recovery reduces to a lattice problem in half the dimension, cutting Hawk-512 from 2^150 to 2^108."
 ---
 
 A course project for CS-UY 3943, Post-Quantum Cryptography, at NYU Tandon in spring 2026: a 13-page report on Hawk's algorithms, parameters, security reductions and cryptanalysis, a talk, and a Flask server that serves key generation, signing and verification as a JSON API with a demo page for an Alice to Bob walkthrough. The report and slides were submitted on 8 June 2026. Seven weeks later the scheme was broken and withdrawn. I have kept them exactly as submitted, with the break documented on a separate page next to them.

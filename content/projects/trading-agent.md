@@ -13,9 +13,9 @@ bullets:
   - "No candidate beat the vol-targeted equal-weight baseline after costs (best 0.68 Sharpe against 0.81), so none was promoted; zero-shot Kronos called 5-day direction right 46.6% of the time on US ETFs."
   - "Shipped the execution path anyway: Alpaca and Zerodha Kite adapters, a $100 paper account on a launchd schedule, drawdown throttle, persistent kill switch, deterministic client order IDs, and four separate gates before real money."
 resume_bullets:
-  - "Cost-aware backtesting: purged walk-forward with a 5-day embargo, CPCV, Deflated Sharpe, probability of backtest overfitting (0.06) and a random-portfolio null; 14 models on 8 US ETFs, 2011 to 2024."
-  - "No candidate beat vol-targeted equal weight after costs (best 0.68 Sharpe vs 0.81), so none was promoted; zero-shot Kronos as a standalone signal called 5-day direction right 46.6%."
-  - "Paper-trading runner with risk controls (10% target volatility, 35% per-ETF cap, exposure halved at 5% drawdown, kill switch at 10% drawdown or 3% daily loss); four gates before real money."
+  - "Built a cost-aware backtester: purged walk-forward with a 5-day embargo, CPCV, Deflated Sharpe, probability of backtest overfitting (0.06) and a random-portfolio null; 14 models on 8 US ETFs, 2011 to 2024."
+  - "No candidate beat volatility-targeted equal weight after costs (best Sharpe 0.68 vs 0.81), so none was promoted; the zero-shot Kronos model called 5-day direction right only 46.6% of the time."
+  - "Wrote a paper-trading runner with risk controls: 10% target volatility, 35% per-ETF cap, exposure halved at a 5% drawdown, kill switch at 10% drawdown or a 3% daily loss; four gates before real money."
 ---
 
 I built this to answer one question before any money moves: which of the models the literature recommends still work on liquid US ETFs after retail costs. The answer so far is none of them, and the repo is built so that result cannot be tuned away.

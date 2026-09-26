@@ -16,9 +16,9 @@ bullets:
   - "Rebuilt it as a deterministic pipeline, Python for a 3,585-row district-year panel with Census 2011, NFHS-4 and IMD rainfall joined through LGD district codes, R in fixest for six specifications with state-clustered standard errors and district and year fixed effects, under which the child-marriage and hospital-bed effects are indistinguishable from zero and within-R2 is below 0.02."
   - "Wrote the review, archived the original scripts with seven run-breaking bugs fixed, added a GPL-3.0 license and CI that reruns the whole pipeline on Ubuntu and fails if any committed table, the panel or the README changes; merged as PR #1 (114 files) with three follow-up commits for the CI and cross-platform reproducibility."
 resume_bullets:
-  - "Re-analysed a 2023 econometrics team project on 673 Indian districts: reproduced both regression tables to 6 decimals, then showed the crop indices were row-order artefacts."
-  - "Python ETL builds a 3,585-row district-year panel from Census 2011, NFHS-4 and IMD data; R (fixest) panel regressions with fixed effects and state-clustered standard errors show the headline effects vanish, within-R2 below 0.02."
-  - "Wrote the review, fixed 7 run-breaking bugs in the archived scripts, added GPL-3.0 and CI that reruns the deterministic pipeline and fails on any changed table."
+  - "Re-analysed a 2023 econometrics team project on 673 Indian districts: reproduced both regression tables to 6 decimals, then showed the crop indices were artefacts of row order."
+  - "Built a Python ETL for a 3,585-row district-year panel from Census 2011, NFHS-4 and IMD data; R (fixest) panel regressions with fixed effects and state-clustered errors show the headline effects vanish (within-R2 below 0.02)."
+  - "Wrote the review, fixed 7 run-breaking bugs in the archived scripts, and added CI that reruns the deterministic pipeline and fails on any changed table."
 ---
 
 In 2023, five of us at IIIT Delhi (Utkarsh Arora, me, Krishnasai Addala, Samarth Raina and Sejal Kardam) wrote an econometrics course project asking whether crop yields, health-system indicators and state economics explain the share of reported infant deaths attributed to low birth weight across 673 Indian districts from 2011 to 2016. The repository is Utkarsh Arora's. In September 2026 I went back to it on my own to check whether the results held. They did not.

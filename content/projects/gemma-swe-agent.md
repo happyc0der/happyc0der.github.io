@@ -14,9 +14,9 @@ bullets:
   - "swelite, a re-implementation of the organizers' unreleased evaluation harness (Docker sandboxes, the 9 fixed tools, ADK YAML compiler with skills, multi-pass patch verification, failure-taxonomy analyzer), validated with gold and null checks on all 129 public tasks: 109 pass, 0 pass unfixed."
   - "Provisioned a 16 GB laptop GPU over SSH as a vLLM proxy box and ran 33-task holdouts per prompt change (best 7/33); found that ADK never compacts context inside a task and that temperature 0.7 cut identical retries from 13.5 to 5.1 per task."
 resume_bullets:
-  - "Kaggle Gemma 4 Developer Agent (solo, in progress): an LLM agent in declarative Google ADK that fixes GitHub issues with Gemma 4 31B; final ranking pending."
-  - "swelite, a re-implementation of the organizers' unreleased evaluation harness (Docker sandboxes, 9 tools, ADK YAML compiler): 109 of 129 public tasks pass gold checks."
-  - "A 16 GB laptop GPU over SSH serves the vLLM proxy; found ADK never compacts context mid-task; temperature 0.7 cut identical retries from 13.5 to 5.1."
+  - "Built an LLM agent in Google ADK that fixes GitHub issues with Gemma 4 31B, for the Kaggle Gemma 4 Developer Agent competition; final ranking pending."
+  - "Wrote swelite, a re-implementation of the organizers' unreleased evaluation harness (Docker sandboxes, 9 tools, an ADK YAML compiler); 109 of 129 public tasks pass its gold checks."
+  - "Served a 12B proxy model with vLLM on a 16 GB laptop GPU over SSH; found that ADK never compacts context mid-task and that temperature 0.7 cut identical retries from 13.5 to 5.1."
 ---
 
 The competition asks for a declarative Google ADK agent config (YAML, prompts, skills, optional LoRA adapters) that turns `gemma-4-31b-it-qat-w4a16-ct` into an agent that fixes real GitHub issues offline. Scoring runs on about 120 hidden tasks from private repos on 4x L4 GPUs, with 12 hours for the whole set and one submission a day. I entered solo with a $0 cloud budget, Kaggle's free GPU hours only.

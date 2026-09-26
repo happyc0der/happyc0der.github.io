@@ -15,9 +15,9 @@ bullets:
   - "Deterministic fixed-tick simulation with canonical state hashing, replay, save and load, and lockstep play over ENet sockets proved hash for hash between two processes; a million-cell tick runs in 694 us on four workers."
   - "Mods run as untrusted WebAssembly with no clock, filesystem or random generator; 1045 tests, and CI on macOS, Linux and Windows with ASan and TSan lanes, clang-tidy, a software-GPU lane and benchmarks gated at 1.25x of a recorded baseline."
 resume_bullets:
-  - "Solo C++23 engine for map-based strategy games, 25 gated milestones: SDL_GPU renderer, hot-reload assets, versioned serialization, 21 ADRs."
-  - "Deterministic fixed-tick simulation with state hashing, replay and lockstep over ENet, proved hash for hash across two processes; million-cell tick in 694 us."
-  - "Mods run as WebAssembly with no clock, filesystem or RNG; 1045 tests, CI on macOS, Linux and Windows with ASan/TSan and gated benchmarks."
+  - "Built a C++23 engine for map-based strategy games solo across 25 gated milestones: SDL_GPU renderer, hot-reloading assets, versioned saves, 21 written design decisions."
+  - "Made the simulation deterministic (fixed ticks, state hashing), so replays and two machines in lockstep over ENet stay bit-identical; a million-cell tick runs in 694 us."
+  - "Sandboxed mods as WebAssembly with no clock, filesystem or randomness; 1045 tests, CI on macOS, Linux and Windows with ASan/TSan and benchmark gates."
 ---
 
 Atlas is an engine, not a game: it has no countries, wars, diplomacy or rules, and is not meant to. I built it alone in gated milestones, M0 through M24, each ending with a clean configure, build, test run and a runnable demonstration. Every decision that is expensive to reverse is an ADR, 21 so far, and recent milestones each end with a report of what changed, what was run and what is still risky.

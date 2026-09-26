@@ -175,7 +175,7 @@ for (const [key, cfg] of Object.entries(resumes)) {
   const projects = [...cfg.projects];
   let r, note = '';
   outer: while (projects.length) {
-    for (const fontPt of [9.6, 9.3, 9.0, 8.8]) {
+    for (const fontPt of [9.6, 9.3, 9.0, 8.8, 8.5]) {
       let page = render(key, { ...cfg, projects }, fontPt);
       fs.writeFileSync(html, page);
       await printPdf(html, pdf);

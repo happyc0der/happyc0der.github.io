@@ -20,7 +20,7 @@ education:
 
 # Only courses that are on the transcripts.
 coursework:
-  swe: [Data Structures and Algorithms, Design and Analysis of Algorithms II, Database Systems, Distributed Systems, Operating Systems, Open Source and Professional Software Development]
+  swe: [Data Structures and Algorithms, Algorithms II, Database Systems, Distributed Systems, Operating Systems, Professional Software Development]
   ml: [Machine Learning, Neuroinformatics, Foundations of Data Science, Advanced Machine Learning, Convex Optimization]
   data: [Big Data, Principles of Database Systems, Information Visualization, Foundations of Data Science, Statistical Inference, Machine Learning]
   sec: [Applied Cryptography, Post-Quantum Cryptography, Computer Networks, Operating Systems, Distributed Systems, Design and Analysis of Algorithms II]

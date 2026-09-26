@@ -17,9 +17,9 @@ bullets:
   - "Upgraded Next 14 to 16 and React 18 to 19 by hand (async cookies, middleware to proxy, ESLint 9 flat config), taking npm audit from 6 vulnerabilities to 0 and tests from 0 to 45, with CI that deploys main to Vercel once the checks pass."
   - "Launched it at tide-fit.vercel.app with private Blob storage so shared links survive redeploys, an edge rate limit verified at 20 requests then 429, and Strava and Google Calendar sign-in verified end to end on the live site."
 resume_bullets:
-  - "Security audit (code review of all 45 source files) of a Next.js trip planner: 15 vulnerabilities confirmed on the running app (OAuth callbacks accepting any authorization code, a row-level security policy exposing every user, a plaintext secret cookie), 13 fixed."
-  - "Upgraded Next 14 to 16 and React 18 to 19 by hand across 16 merged pull requests; npm audit 6 vulnerabilities to 0, tests 0 to 45, CI (typecheck, lint, tests) deploying main to Vercel."
-  - "Launched to production at tide-fit.vercel.app: private Blob storage, edge rate limit verified at 20 requests then 429, Strava and Google sign-in verified live."
+  - "Audited all 45 source files of a Next.js trip planner: 15 vulnerabilities confirmed on the running app (OAuth callbacks accepting any authorization code, a row-level security policy exposing every user), 13 fixed."
+  - "Upgraded Next 14 to 16 and React 18 to 19 across 16 merged pull requests; npm audit 6 vulnerabilities to 0, tests 0 to 45, CI (typecheck, lint, tests) deploying to Vercel."
+  - "Launched it to production at tide-fit.vercel.app: private file storage, an edge rate limit verified at 20 requests then 429, Strava and Google sign-in verified live."
 ---
 
 TideFit is my roommate Utkarsh Mittal's Next.js trip planner for athletes. It fetches sport-specific forecasts (sea state for swimmers, air quality for runners, wind and heat for cyclists and hikers), grades each trip day safe, caution or unsafe against tunable thresholds, and writes a day-by-day plan. The app is his and he gave me full permission to change it. The audit, the upgrade, the tests, the CI and the launch are mine.

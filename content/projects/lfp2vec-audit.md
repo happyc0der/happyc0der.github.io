@@ -14,9 +14,9 @@ bullets:
   - "Traced the cross-lab collapse to a preprocessing mismatch, spectra diverging up to 768-fold above 300 Hz, and showed a 100 Hz low-pass with no target-lab labels restores the published margin in one direction (+0.13 ± 0.03 vs +0.12) and most of it in the other (+0.08 ± 0.07 vs +0.11) over three seeds."
   - "Measured calibration under lab shift, which the paper calls for but does not report (ECE 0.10 in lab, 0.56 across labs, 0.35 after the fix), added an electrode-position control, and backed it with 337 tests, a leakage check before every training run and a synthetic smoke gate in CI."
 resume_bullets:
-  - "Reproduced LFP2Vec (NeurIPS 2025) fine-tuning on public IBL and Allen Neuropixels data on a laptop: 0.74 ± 0.07 balanced accuracy vs 0.68 published."
-  - "Traced the cross-lab collapse to a preprocessing mismatch (spectra diverge 768x above 300 Hz); a 100 Hz low-pass restores the published margin."
-  - "Calibration under lab shift (ECE 0.10 in lab, 0.56 across, 0.35 after the fix) and an electrode-position control; 337 tests and leakage checks in CI."
+  - "Reproduced LFP2Vec (NeurIPS 2025) fine-tuning on public IBL and Allen Neuropixels brain recordings on a laptop: 0.74 ± 0.07 balanced accuracy vs 0.68 published."
+  - "Traced its cross-lab failure to a preprocessing mismatch between labs (spectra diverge 768x above 300 Hz); a 100 Hz low-pass filter restores the published margin."
+  - "Measured calibration under lab shift (expected calibration error 0.10 in lab, 0.56 across labs, 0.35 after the fix) and added an electrode-position control; 337 tests with leakage checks in CI."
 ---
 
 LFP2Vec (He et al., NeurIPS 2025) fine-tunes the audio model wav2vec2 on raw local field potential to say which brain region an electrode sits in, from three seconds of one channel. No pretrained weights were released, so I re-ran the fine-tuning stage on the two public datasets the paper uses, IBL and Allen Neuropixels, on an M4 Pro laptop. Within a lab it reproduces: 0.74 ± 0.07 balanced accuracy over all seven held-out IBL sessions against the paper's 0.68, and 0.81 with the paper's post-processing.

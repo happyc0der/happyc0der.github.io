@@ -14,9 +14,9 @@ bullets:
   - "Benchmarked Spark on an M4 Pro and Databricks serverless: near-linear speedup to 8 cores, a Spark vs pandas crossover at 1.7M rows, and pandas across 14 processes 14x faster than the best Spark setup on the small-file catalog."
   - "Generated AutoDDG-style descriptions with a local qwen3:14b from the profile alone; 97% of checkable claims matched the profile, and appending the search-focused one to portal metadata raised Recall@1 on tag queries from 0.605 to 0.728."
 resume_bullets:
-  - "Single-pass PySpark profiler (types, statistics, semantic types, data-quality flags) for 100 NYC Open Data datasets: 4.8M rows in 2.3 min, down from 12; checked against a pandas oracle with pytest."
-  - "Benchmarked Spark vs pandas on an M4 Pro and Databricks serverless over Parquet inputs: crossover at 1.7M rows, near-linear to 8 cores, pandas 14x faster on small files."
-  - "A local qwen3:14b wrote AutoDDG-style descriptions from the profile; 97% of checkable claims matched, and search Recall@1 rose from 0.605 to 0.728."
+  - "Built a single-pass PySpark profiler (types, statistics, semantic types, data-quality flags) for 100 NYC Open Data datasets: 4.8M rows in 2.3 minutes, down from 12; checked against a pandas oracle with pytest."
+  - "Benchmarked Spark against pandas on an M4 Pro and Databricks serverless over Parquet: crossover at 1.7M rows, near-linear scaling to 8 cores, pandas 14x faster on small files."
+  - "Had a local qwen3:14b model write dataset descriptions from the profiles; 97% of checkable claims matched the data, and search Recall@1 rose from 0.605 to 0.728."
 ---
 
 NYC Open Data publishes about 2,400 datasets, and their descriptions are thin: across the 100 I sampled, the median is 69 words and names 7% of the columns. AutoDDG (Zhang et al., 2025) profiles a dataset and prompts an LLM for a user-focused and a search-focused description. I built the profiling half on Spark, ran the LLM stage on a free local model, and measured where each choice paid off. It was a one-week Big Data course project on a 24 GB M4 Pro shared with other jobs.

@@ -14,9 +14,9 @@ bullets:
   - "Four-task pipeline: same-link time interpolation for missing detector cells, LightGBM queue forecasters trained out of core on 56M rows from 273 train days with causal features, and an exact-fit NNLS origin-destination solver."
   - "Found a window-selection regularity in the queue-onset task that lifted onset IoU from 0.57 to 0.93 and reported it on the competition forum; the hosts confirmed it and announced it to all teams."
 resume_bullets:
-  - "Kaggle TrafficFlowBench (IEEE Big Data Cup 2026): public leaderboard 0.845 vs the 0.553 baseline, up from 0.67365 on my first submission; final ranking pending."
-  - "Four-task data pipeline: same-link interpolation for missing cells, LightGBM time-series queue forecasters trained out of core on 56M rows with causal features, an exact NNLS origin-destination solver."
-  - "Found a window-selection regularity that lifted queue-onset IoU from 0.57 to 0.93 and reported it on the forum; reproduce.sh rebuilds the submission bit-for-bit in about two hours."
+  - "Scored 0.845 on the Kaggle TrafficFlowBench (IEEE Big Data Cup 2026) public leaderboard against a 0.553 baseline, up from 0.674 on the first submission; final ranking pending."
+  - "Built the four-task pipeline: same-link interpolation for missing cells, LightGBM time-series queue forecasters trained out of core on 56M rows with causal features, and an exact NNLS origin-destination solver."
+  - "Found a window-selection regularity that lifted queue-onset IoU from 0.57 to 0.93 and shared it on the forum; one script rebuilds the submission bit-for-bit in about two hours."
 ---
 
 TrafficFlowBench is the 2026 IEEE Big Data Cup competition on Kaggle: ten freeway corridors at five-minute resolution and four scored tasks on the same data. Fill the missing detector cells, say which links are queued over the next thirty minutes, keep the reconstruction consistent with traffic-flow physics, and estimate an origin-destination matrix. The score weights them 0.35, 0.30, 0.15 and 0.20. The public leaderboard scores one month and a separately generated month decides the final ranking, so I validate on the 273 train days and use the leaderboard only as a transfer check.
