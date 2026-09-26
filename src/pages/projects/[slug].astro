@@ -22,7 +22,7 @@ const { Content } = await render(project);
   </div>
   <div class="links">
     {d.repo && <a class="btn primary" href={d.repo}>Source</a>}
-    {d.demo && <a class="btn" href={d.demo}>Page</a>}
+    {d.demo && <a class="btn" href={d.demo}>{d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Page' : 'Live'}</a>}
   </div>
   <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
   {d.image && <div class="figure"><img src={d.image} alt={`Figure from ${d.title}`} loading="lazy" /></div>}

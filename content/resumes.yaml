@@ -6,7 +6,7 @@ swe:
   label: Software engineering
   track: swe
   headline: "Software engineer, new grad. MS Computer Science, NYU Tandon, May 2026. C, C++, Python, TypeScript, Kotlin."
-  projects: [atlas-engine, mldsa-auth, tidefit, forgelog, doom-ports]
+  projects: [atlas-engine, mldsa-auth, doom-ports, tidefit, forgelog]
   skills: [languages, systems, testing, tools]
 ml:
   file: Keshav_Rajput_ML
