@@ -1,6 +1,6 @@
 # Keshav Rajput: master data
 
-Generated from content/ on 2026-09-26. Do not edit; edit the source files and run `npm run master`.
+Generated from content/ on 2026-09-27. Do not edit; edit the source files and run `npm run master`.
 
 ## Profile
 
@@ -23,7 +23,7 @@ Generated from content/ on 2026-09-26. Do not edit; edit the source files and ru
 - TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
-## Projects (32)
+## Projects (37)
 
 ### mldsa-auth (`mldsa-auth`)
 
@@ -52,16 +52,16 @@ C++23 engine for map-based strategy games with a deterministic lockstep simulati
 - 2026 · in progress · featured · tags: swe · resumes: swe
 - https://github.com/happyc0der/atlas-engine
 - stack: C++23, SDL_GPU, HLSL, WebAssembly, ENet, CMake, vcpkg, Catch2
-- stats: 1045 tests · 1M-cell tick in 694 us · 25 milestones, 21 ADRs
-- Solo C++23 engine for map-based strategy games, built in 25 gated milestones: SDL_GPU renderer, asset pipeline with hot reload, versioned scene serialization, audio, animation, and 21 architecture decision records.
+- stats: 1,000+ tests · 1M-cell tick in 694 us · 28 milestones, 24 ADRs
+- Solo C++23 engine for map-based strategy games, built in 28 gated milestones: SDL_GPU renderer, asset pipeline with hot reload, versioned scene serialization, audio, animation, and 24 architecture decision records.
 - Deterministic fixed-tick simulation with canonical state hashing, replay, save and load, and lockstep play over ENet sockets proved hash for hash between two processes; a million-cell tick runs in 694 us on four workers.
-- Mods run as untrusted WebAssembly with no clock, filesystem or random generator; 1045 tests, and CI on macOS, Linux and Windows with ASan and TSan lanes, clang-tidy, a software-GPU lane and benchmarks gated at 1.25x of a recorded baseline.
+- Mods run as untrusted WebAssembly with no clock, filesystem or random generator; over 1,000 tests, and CI on macOS, Linux and Windows with ASan and TSan lanes, clang-tidy, a software-GPU lane and benchmarks gated at 1.25x of a recorded baseline.
 
-Atlas is an engine, not a game: it has no countries, wars, diplomacy or rules, and is not meant to. I built it alone in gated milestones, M0 through M24, each ending with a clean configure, build, test run and a runnable demonstration. Every decision that is expensive to reverse is an ADR, 21 so far, and recent milestones each end with a report of what changed, what was run and what is still risky.
+Atlas is an engine, not a game: it has no countries, wars, diplomacy or rules, and is not meant to. I built it alone in gated milestones, M0 through M27, each ending with a clean configure, build, test run and a runnable demonstration. Every decision that is expensive to reverse is an ADR, 24 so far, and recent milestones each end with a report of what changed, what was run and what is still risky.
 
 The simulation advances in whole integer ticks and hashes its state, so a replay, a save or a second machine in lockstep can be checked bit for bit. Lockstep runs over the command queue: M14 proved it with several simulations in one process agreeing hash for hash, M17 with two processes over a real ENet socket at a 22.4 us median round trip. A million-cell tick takes 694 us on four workers against 1.650 ms without the pool; what remains is serial, and the hash is 0.38 ms of it. Mods are WebAssembly modules that reach simulation state only by submitting commands, with no clock, no filesystem and no random generator of their own.
 
-Three applications drive it. `atlas_sandbox` demonstrates the lifecycle and scene layer. `atlas_lab` is a synthetic million-cell grid with map modes, picking, time controls and replay, there to test the architecture rather than to be a game. `atlas_chess` is the first game on the engine: every rule including the draws, perft-verified, with the Opera Game as a golden hash, playable by two people at one screen or over a socket, and no line of it in `engine/`.
+Two applications live in the engine. `atlas_sandbox` demonstrates the lifecycle and scene layer. `atlas_lab` is a synthetic million-cell grid with map modes, picking, time controls and replay, there to test the architecture rather than to be a game. The first game is chess, written inside the engine's tree from M18 to M26 as a probe: every rule including the draws, perft-verified, with the Opera Game as a golden hash, playable by two people at one screen or over a socket, and since M26 against an opponent that is a C mod compiled to WebAssembly. M27 made the engine installable as a package and moved chess to its own repository, [atlas-chess](https://github.com/happyc0der/atlas-chess), built against the installed engine and nothing else. That is the charter's test for v1.0: a game links the engine and runs a deterministic simulation without patching engine internals.
 
 Not done: the renderer is verified on one Apple GPU and one software rasteriser, so Direct3D 12 and non-Apple hardware are untested. Networking is direct address only, with no encryption, NAT traversal or lobby. No large mod has been written, so what loading a real one costs is unmeasured. Everything deferred is listed with its reason in `docs/DEFERRED.md`.
 
@@ -84,6 +84,27 @@ Trained on one lab and tested on the other, the model lands below the majority-c
 The paper's Broader Impact section asks for calibrated uncertainty and reports none. Expected calibration error is 0.10 in lab and 0.56 across labs; a temperature fitted in lab barely moves the cross-lab number, and the target lab needed a temperature four to seven times larger. Matching the filters halves the error to 0.35. Electrode depth alone reaches 0.77 within IBL, where insertions are stereotyped, and chance across labs; fused with the signal as a product of experts the pair reaches 0.78 on IBL and 0.72 on Allen, at or above both parts.
 
 Every training run passes a synthetic smoke test, a leakage check on its split and a throughput gate before it starts, and writes a manifest with the git commit, data hashes and seed before its first step. Of the 337 tests, the 320 that need no real data run in CI with an end-to-end smoke run on every push to main, and every table and figure regenerates from saved results. On 21 September 2026 I found that my electrode-position baseline had leaked test labels, retracted the claims that depended on it in a Corrections section of the README, and regenerated every table and figure. Much of the code was written with Claude Code, and the development notes list what I checked by hand.
+
+### EEG dementia re-evaluation (`eeg-dementia`)
+
+Honest, subject-level re-evaluation of a course project that classified Alzheimer's, frontotemporal dementia and healthy controls from EEG: about 60% balanced accuracy, and no deep model beats spectral features.
+
+- 2026 · team of 4 · featured · tags: ml data · on no resume
+- https://github.com/happyc0der/eeg-dementia-graph-transformer
+- credit: The Spring 2025 project was a team of four in NYU's Neuroinformatics course: Subhrajit Dey (subro608 on GitHub), who wrote most of the original graph-transformer model and training code, Sirish Visweswar, terka2610 and me. It is kept unchanged in the repository's legacy folder. The 2026 re-evaluation is mine: the subject-level evaluation harness, the 16 feature pipelines, the foundation-model and CNN comparisons, the statistics and the tests.
+- stack: Python, PyTorch, braindecode, MNE, scikit-learn, LightGBM, pyRiemann, uv, pytest
+- stats: 88 subjects, 10x5-fold nested CV · 61.1% vs 33% chance · no deep model beats features
+- Re-evaluated a course project that reported 63.6% accuracy for Alzheimer's (AD), frontotemporal dementia (FTD) and controls from resting EEG after model selection leaked subjects (99% validation accuracy): every split is now over subjects, with nested model selection, 10 repeats of 5-fold CV, bootstrap CIs and permutation tests.
+- Compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs under one protocol, pre-registered for the deep models: the best pre-specified model reaches 61.1 ± 3.0% subject-level balanced accuracy (chance 33%), and no deep model beats it; AD vs controls reaches 84.6%, AD vs FTD stays near 60%.
+- Found that 92% of every channel's variance in the distributed recordings is one common-mode artefact, which the average reference removes; leakage tests with spy estimators, and a test that fails if the README tables and the result files disagree.
+
+The project started in Spring 2025 in NYU's Neuroinformatics course: a graph transformer that classified Alzheimer's disease (AD), frontotemporal dementia (FTD) and cognitively normal controls from resting-state EEG on the public OpenNeuro ds004504 dataset (88 subjects, 19 channels). It reported 63.6% accuracy on one 18-subject test split, after model selection on 15-second chunks that put chunks of the same recording in both training and validation, which is why validation accuracy was 99%.
+
+In 2026 I re-evaluated the task properly. Every split is made over subjects, hyper-parameters are chosen by an inner cross-validation on the training subjects only, and every model runs through 10 repeats of 5-fold cross-validation with subject-level metrics, class-stratified bootstrap confidence intervals and permutation tests of the whole nested pipeline. Honest three-class performance is about 60% subject-level balanced accuracy against 33% chance. The best pre-specified model, a soft vote of a spectral logistic regression, a Riemannian model and LightGBM, reaches 61.1 ± 3.0% [53.6, 68.0].
+
+The second phase, written down before any outer-fold run, compared that with EEG foundation models (frozen and fine-tuned CBraMod, frozen LaBraM and BIOT) and CNNs trained from scratch (EEGNet, ShallowFBCSPNet). None beats the feature models: frozen LaBraM with a linear head reaches 61.3%, ShallowFBCSPNet 60.3%, and three deep models are significantly worse. With about 70 training subjects per fold the networks memorise subjects within a few epochs, and what the classifiers use is the EEG slowing of dementia that band power already captures. AD vs controls works (84.6% leave-one-subject-out, in line with rigorous studies), FTD vs controls reaches 78.8%, but AD vs FTD stays near 60% with every representation tried.
+
+Along the way I found that about 92% of every channel's variance in the recordings as distributed is one common-mode signal, mostly below 2 Hz and identical across groups; the original pipeline z-scored it into most of its input, and the average reference removes it. Spy estimators in the tests check that no fit call ever sees a test subject, and a test fails if any README table disagrees with the result files. The limitations are in the README: one site, 23 FTD patients, and deep models run at pre-registered defaults rather than tuned.
 
 ### doom-ports (`doom-ports`)
 
@@ -465,6 +486,20 @@ The comic pipeline turns a story into lettered pages: the LLM writes a panel-by-
 
 It is deliberately not a git repository. There are no automated tests.
 
+### OW2 Career Tracker (`ow2-career-tracker`)
+
+Personal Overwatch 2 dashboard that snapshots my public career profile every three hours and charts every hero's stats over time.
+
+- 2026 · tags: swe data · on no resume
+- https://github.com/happyc0der/ow2-career-tracker
+- stack: Python, FastAPI, SQLite, httpx, JavaScript, Chart.js, uv
+- stats: snapshot every 3 h · stores only changes · per-hero history
+- Blizzard's career profile only shows current lifetime totals, so the tracker builds history itself: a scheduled sync pulls the profile through the OverFast API and stores a new point in SQLite only when a stat actually changed.
+- A FastAPI server and a plain HTML, CSS and Chart.js front end show the player banner and rank, headline stats, win rate and KDA over time, the role split and every hero's detail tables, for Quick Play and Competitive.
+- One command runs it with uv; a Windows installer registers a silent scheduled task every three hours and a Start menu entry, with cron for macOS and Linux.
+
+A personal dashboard for my Overwatch 2 account. The public career profile exposes lifetime totals per hero and per mode, not match history, so "over time" only exists if something saves snapshots. `owdash sync` fetches the profile, compares it with the last snapshot and writes a point only when something changed, which keeps the database small. `owdash serve` syncs once and opens the dashboard: player banner with endorsement and competitive rank, headline stats with changes since tracking started, win rate and KDA over time, the tank, damage and support split, and a sortable hero roster with each hero's full stat tables.
+
 ### Non-stationary bandits (`bandits`)
 
 Five bandit algorithms for changing environments, benchmarked on one interface with regret split into decisions and mandatory probing.
@@ -505,6 +540,22 @@ One iteration works like this. The master splits the input by index range and ne
 The team code is from April 2024. In September 2026 I went back to it for a documentation, lint and dead-code pass, and added what the original never had: a POSIX launcher, a 64-test unittest suite organised around the assignment rubric, and GitHub Actions. The central test replays the same K-Means from the same random starting centroids in a from-scratch single-process implementation and asserts the two agree to within 1e-6, across 1x1, 3x2, 4x3 and 8x2 mapper by reducer configurations. CI runs ruff, the suite on Python 3.10 to 3.13 on Linux plus 3.12 on macOS and Windows, and a fault-injection job that force-stops a mapper and a reducer mid-run. All eight jobs are green on the latest commit, and the fast suite runs in a few seconds on the 25-point sample input.
 
 The README lists what still breaks. An iteration that leaves a centroid with no points ends the run with an IndexError, and a split reassigned after a force-stop can be wiped if the replacement mapper's own Map call has not finished yet. The tests skip rather than fail on the first, and the second is documented as reproducible with a non-zero sleep argument.
+
+### Library Loans Explorer (`library-loans`)
+
+Flask front end over a relational library database: a member's full loan history and live copy availability by branch, on PostgreSQL or SQLite.
+
+- 2025 · tags: data swe · on no resume
+- https://github.com/happyc0der/library-loans-explorer
+- stack: Python, Flask, PostgreSQL, SQLite, psycopg2, Jinja2, pytest
+- stats: 2 database backends · parameterised SQL · pytest on both
+- Built for NYU's Principles of Database Systems (Spring 2025): a member enters an ID and sees every loan they have made, then clicks a book to see which copies are on the shelf right now and at which branch.
+- One codebase runs on PostgreSQL through a psycopg2 connection pool or on SQLite with no setup, chosen by one DATABASE_URL setting; one command creates the schema and loads the sample data on either.
+- Every query is parameterised, bad input gets a 400 or 404, database errors are logged but not shown to users, and a pytest suite runs on SQLite by default and on PostgreSQL when pointed at one.
+
+A small web app over a five-table library schema (members, books, branches, book copies and loans), built for Problem Set 3 of NYU Tandon's CS-GY 6083 Principles of Database Systems in Spring 2025. A loan's key is member, copy and loan date, so the same member can borrow the same copy again later, and a copy is available when it has no loan without a return date.
+
+It was written against PostgreSQL and later made to run on SQLite as well, so it can be tried straight from a fresh clone: `flask --app app init-db` loads the sample data (5 members, 5 branches, 8 books, 36 copies, 20 loans) on either backend.
 
 ### Snakes and Ladders as a Markov chain (`snakes-ladders-markov`)
 
@@ -547,22 +598,24 @@ Three results. The objective rose on 44% of recorded iterations while the method
 
 ### Raft with leader leases (`raft`)
 
-Raft consensus in Python and gRPC for a distributed systems course, where my part was the leader lease and the per-node event log.
+Raft consensus key-value store with leader leases in Python and gRPC, from a distributed systems course; my part was the leader lease, and in 2026 I fixed six bugs and got it running on current gRPC.
 
-- 2024 · Finished April 2024 · team of 3 · tags: swe · on no resume
-- https://github.com/adityaahuja7/Raft-Implementation
-- credit: The repository is Aditya Ahuja's (adityaahuja7 on GitHub) and the team was Aditya Ahuja, Deeptanshu Barman and me, for CSE530 at IIIT Delhi. Aditya wrote the node, the election, the client handling and the cloud deployment. Deeptanshu wrote the log replication handlers, the parallel vote requests and the metadata class. Mine are 3 of 45 commits: the leader lease (the lease field on the RequestVote response, the lease state and its start, renew and timeout handlers, lease-gated reads and writes, step-down on expiry) and the first version of the per-node dump and metadata files.
+- 2024 · Course project 2024, maintained 2026 · team of 3 · tags: swe · on no resume
+- https://github.com/happyc0der/raft-leader-lease-kv
+- credit: The team was Aditya Ahuja, Deeptanshu Barman and me, for CSE530 at IIIT Delhi in 2024; the repository is my fork of Aditya's Raft-Implementation with the full history. Aditya wrote the node, the election, the client handling and request forwarding. Deeptanshu wrote the replication and commit logic, the lease timers and the metadata class. My 2024 part was the leader lease and the first per-node dump and metadata files. The 2026 maintenance, the bug fixes, the smoke test and the README are mine.
 - stack: Python, gRPC, Protocol Buffers, Google Cloud
-- stats: 5-node cluster · 8 s leader lease · 3 of 45 commits
+- stats: 5-node cluster · 8 s leader lease · 6 bugs fixed in 2026
 - Added leader leases to a team Raft implementation in Python and gRPC: the leader renews its lease (8 seconds in the final code) when its heartbeats reach a majority of the cluster and steps down when it expires, and followers hold off elections while a lease is live.
 - Added a leaseDuration field to the RequestVote response next to the existing one on AppendEntries, and made the leader refuse GET and SET while it holds no lease.
-- Added per-node dump and metadata files that record election timeouts, votes, step-downs, rejected AppendEntries and failed RPCs, so a run of the 5-node cluster can be read back afterwards.
+- In 2026 made it run on current grpcio and protobuf and fixed six bugs: votes from earlier terms counted in later elections, a step-down that could never run, majority checks that left out the leader, a voter that did not reset its timer, an int-vs-string term comparison, and log repair that recursed once per missing entry until a follower 500 entries behind hit the recursion limit; added an end-to-end cluster smoke test.
 
-Raft-Implementation is a course project for CSE530 Distributed Systems at IIIT Delhi in 2024, with Aditya Ahuja and Deeptanshu Barman. The repository is Aditya's. It is a Raft cluster in Python: five nodes talk over gRPC using the two Raft RPCs, RequestVote and AppendEntries, plus a serveClient RPC that takes GET and SET commands from a small command line client and forwards them to the leader. Each node keeps its log, a metadata file (term, commit length, vote) and a dump file on disk, so a restarted node picks up where it left off. The election timeout is drawn from 5 to 11 seconds and the leader sends a heartbeat once a second. The cluster was deployed on five Google Cloud VMs.
+Raft with leader leases is a course project for CSE530 Distributed Systems at IIIT Delhi in 2024, with Aditya Ahuja and Deeptanshu Barman. It started in Aditya's repository. It is a Raft cluster in Python: five nodes talk over gRPC using the two Raft RPCs, RequestVote and AppendEntries, plus a serveClient RPC that takes GET and SET commands from a small command line client and forwards them to the leader. Each node keeps its log, a metadata file (term, commit length, vote) and a dump file on disk, so a restarted node picks up where it left off. The election timeout is drawn from 5 to 11 seconds and the leader sends a heartbeat once a second. The cluster was deployed on five Google Cloud VMs.
 
 My part was the leader lease, the idea from YugabyteDB that lets a leader answer reads without a round trip to the followers. The leader renews its lease each time its heartbeats reach a majority of the cluster and steps down to follower when the lease timer fires. My commit set the lease to 3 seconds and Deeptanshu raised it to 8 the same day. Followers learn the lease duration from AppendEntries and do not start an election while the lease is live. The RequestVote response carries a lease duration so that a winning candidate can wait out the old leader's lease before it serves. GET and SET are refused with a message while the leader has no lease. For this I added the lease field on the RequestVote response to the proto, the lease state and its start, renew and timeout handlers in the node, and the lease checks in the client path. The AppendEntries lease field and the timer class were already there from Deeptanshu.
 
 I also added the first version of the per-node dump and metadata files, writing a line for each election timeout, vote granted or denied, lease expiry and step-down, accepted or rejected AppendEntries and failed RPC. Deeptanshu then moved the metadata into its own class. My share is small: 3 of 45 commits, on 30 and 31 March 2024. Aditya and Deeptanshu wrote the election, replication and client code around it.
+
+In September 2026 I forked it to my own account and made it run again: current protobuf rejects `True` in an int32 field, which broke every vote, so the stubs are regenerated and `voteGranted` is a bool. The cluster addresses and data directory are configurable. I fixed six bugs: votes from earlier terms were counted in later elections, the step-down on a higher-term vote reply could never run, majority checks did not count the leader, a voter did not reset its election timer after granting a vote, a log-conflict check compared an int term with a string, and log repair recursed once per missing entry, so a follower about 500 entries behind hit Python's recursion limit and heartbeats to it failed until it caught up. The leader now repairs in a loop. RPCs have deadlines, a busy-wait loop is gone, and `scripts/demo_cluster.py` runs an end-to-end smoke test of a whole cluster.
 
 ### Assembler and Simulator (`assembler-simulator`)
 
@@ -661,6 +714,30 @@ Four views of the NCHS Leading Causes of Death dataset: 10,868 rows covering ten
 The whole app is one file, `streamlit_app.py`. Charts are Altair, the maps join the data onto Vega's `us_10m` TopoJSON by FIPS code, and the three data functions sit behind `st.cache_data` so a dropdown change re-renders without re-reading the CSV. The dataset is fetched from the CDC on first run and cached next to the script.
 
 In September 2026 I went back and fixed it. A fresh clone could not start: the CSV was never committed and an unused geopandas import blocked launch. The pie chart crashed on current pandas and, before that, counted every death twice by including the United States rollup rows in the state sum (cancer in 2017 read 1,198,216 against the true 599,108). I replaced deprecated Altair and Streamlit calls, added requirements, a .gitignore and an MIT license, and rewrote the README. Checked from a clean clone: all four views render with no exceptions.
+
+### First CUDA experiments (`cuda-matmul`)
+
+A naive CUDA matrix-multiplication kernel timed against a single-threaded C++ loop on 1024 x 1024 matrices.
+
+- 2025 · not on the site · tags: swe · on no resume
+- https://github.com/happyc0der/cuda-matmul-cpu-vs-gpu
+- stack: CUDA, C++, Make
+- My first CUDA programs (March 2025): a hello-world kernel, then a naive matrix multiply with one thread per output element, checked element by element against a CPU triple loop on 1024 x 1024 matrices.
+- The README explains what the host-side timing includes (allocation, copies and CUDA context creation) and lists the next steps: shared-memory tiling, cuBLAS and CUDA events.
+
+Learning exercises, not an optimised GEMM: there is no tiling, cuBLAS or error checking. Kept in the dataset, off the site.
+
+### Snakes and Ladders (JavaFX) (`snakes-ladders-java`)
+
+Two-player Snakes and Ladders desktop game in Java and JavaFX, an IIIT Delhi Advanced Programming team project.
+
+- 2021 · not on the site · team of 2 · tags: swe · on no resume
+- https://github.com/happyc0der/snakes-and-ladders-java
+- credit: Built with Vedant (oo7vedant-IIITD on GitHub) for Advanced Programming at IIIT Delhi in 2021; I worked on the UI and we bug-tested it together. The repository is a fork of his SnakeScape. My 2026 commits add a Maven build, fix resource loading so it runs from a fresh clone, fix two UI bugs and rewrite the README with screenshots.
+- stack: Java, JavaFX, FXML, Maven
+- Splash screen, animated menus, a dice, pieces that walk the board tile by tile, 10 snakes and 10 ladders, and a win screen with replay.
+
+A 2021 course project that cloned the Snake & Ladder mode of the Ludo Master mobile app. Kept in the dataset, off the site.
 
 ## Skills
 
