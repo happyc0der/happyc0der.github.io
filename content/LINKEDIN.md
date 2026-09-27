@@ -19,8 +19,9 @@ I like building things end to end and then measuring them. Most of my projects s
 Some recent work:
 
 • mldsa-auth: a post-quantum authentication protocol in C11 (ML-DSA-65 over hybrid X25519 + ML-KEM-768). 0.45 ms handshake, fuzzing, nightly mutation testing, a ProVerif model.
-• Atlas: a solo C++23 engine for map-based strategy games. Deterministic lockstep simulation, mods sandboxed in WebAssembly, 1,045 tests, CI on three platforms.
+• Atlas: a solo C++23 engine for map-based strategy games. Deterministic lockstep simulation, mods sandboxed in WebAssembly, over 1,000 tests, CI on three platforms.
 • LFP2Vec audit: reproduced a NeurIPS 2025 neuroscience model on public data, found why it fails across labs (a preprocessing mismatch) and fixed it with a 100 Hz low-pass filter.
+• EEG dementia re-evaluation: re-ran a course project on detecting Alzheimer's and frontotemporal dementia from EEG with subject-level splits and nested cross-validation. Honest accuracy is about 60%, and no deep model beat spectral features.
 • DOOMCE and TRENCHFIRE: a first-person raycaster written from scratch for the TI-84 Plus CE calculator, then ported to a Garmin watch and published on the Connect IQ store.
 • TideFit: security audit, framework upgrade and production launch of a friend's Next.js app. 15 findings, npm audit from 6 vulnerabilities to 0, tests from 0 to 45.
 • ForgeLog: an offline Android gym tracker in Kotlin with no network permission and 830 tests.
@@ -67,13 +68,28 @@ Written for a reader, not a parser: the first sentence says what the thing is an
 
 ### Atlas: C++23 engine for map-based strategy games
 Dates: Sep 2026 - present · Skills: C++, Game Engine Development, WebAssembly
-A game engine I am building alone in C++23, in 25 gated milestones so far: SDL_GPU renderer, hot-reloading assets, versioned saves and 21 written design decisions.
+A game engine I am building alone in C++23, in 28 gated milestones so far: SDL_GPU renderer, hot-reloading assets, versioned saves and 24 written design decisions.
 
 The simulation is deterministic. It advances in fixed ticks and hashes its state, so a replay, a save or a second machine playing in lockstep over ENet can be checked bit for bit. A million-cell tick runs in 694 microseconds. Mods run as WebAssembly with no clock, filesystem or randomness of their own.
 
-1,045 tests. CI on macOS, Linux and Windows with sanitizers and benchmark gates.
+The first game on it is chess, now in its own repository and built against the installed engine: every rule including the draws, and an opponent that is a C mod compiled to WebAssembly.
+
+Over 1,000 tests. CI on macOS, Linux and Windows with sanitizers and benchmark gates.
 
 Code: github.com/happyc0der/atlas-engine
+Chess: github.com/happyc0der/atlas-chess
+
+### EEG dementia re-evaluation: Alzheimer's and frontotemporal dementia from EEG
+Dates: Sep 2026 · Skills: Machine Learning, PyTorch, Statistics
+A re-evaluation of a Spring 2025 NYU Neuroinformatics team project that classified Alzheimer's disease, frontotemporal dementia and healthy controls from resting-state EEG (88 subjects, public OpenNeuro data). The original reported 63.6% on one 18-subject split, after model selection that leaked subjects.
+
+I rebuilt the evaluation so every split is over subjects, with nested model selection, 10 repeats of 5-fold cross-validation, bootstrap confidence intervals and permutation tests. Honest three-class accuracy is about 60% against 33% chance: the best pre-specified model reaches 61.1%.
+
+I then compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs under a plan written before any run. No deep model beat the spectral features. Alzheimer's vs controls reaches 84.6%, but Alzheimer's vs frontotemporal dementia stays near 60% with everything tried. I also found that 92% of each channel's variance in the distributed recordings is one common-mode artefact.
+
+The original model code is my teammates' (mainly Subhrajit Dey's); the re-evaluation is mine.
+
+Code: github.com/happyc0der/eeg-dementia-graph-transformer
 
 ### Gemma 4 Developer Agent (Kaggle): LLM agent that fixes GitHub issues
 Dates: Sep 2026 - present · Skills: LLM Agents, Python, Docker
