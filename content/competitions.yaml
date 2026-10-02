@@ -1,13 +1,13 @@
-# No ranks or percentiles until the final leaderboard is official. Scores only, with the deadline.
+# Ranks only once the final (private) leaderboard is official; until then, scores and the deadline.
 # "project" links a line to its project file; a resume that already lists that project skips the line.
 - name: Biohub Cell Tracking, Kaggle
   project: biohub-cell-tracking
-  result: Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
+  result: Final rank 591 of 3,947 teams (top 15%); private leaderboard 0.918, public 0.952
   year: 2026
   tags: [ml, data, swe, quant]
 - name: Kaggle Playground S6E9
   project: kaggle-s6e9
-  result: Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final ranking pending, ends 2026-09-30
+  result: Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final rank 287 of 3,575 teams (top 9%), private AUC 0.94545
   year: 2026
   tags: [ml, data, quant]
 - name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)

@@ -1,6 +1,6 @@
 # Keshav Rajput: master data
 
-Generated from content/ on 2026-09-27. Do not edit; edit the source files and run `npm run master`.
+Generated from content/ on 2026-10-02. Do not edit; edit the source files and run `npm run master`.
 
 ## Profile
 
@@ -17,13 +17,13 @@ Generated from content/ on 2026-09-27. Do not edit; edit the source files and ru
 
 ## Competitions
 
-- Biohub Cell Tracking, Kaggle (2026): Public leaderboard 0.952. Final ranking pending, competition ends 2026-09-29
-- Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final ranking pending, ends 2026-09-30
+- Biohub Cell Tracking, Kaggle (2026): Final rank 591 of 3,947 teams (top 15%); private leaderboard 0.918, public 0.952
+- Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final rank 287 of 3,575 teams (top 9%), private AUC 0.94545
 - Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends 2026-12-02
 - TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
 - AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
 
-## Projects (37)
+## Projects (38)
 
 ### mldsa-auth (`mldsa-auth`)
 
@@ -32,16 +32,16 @@ Post-quantum mutual authentication and session protocol in C11, with a login dae
 - 2026 · featured · tags: sec swe · resumes: swe sec
 - https://github.com/happyc0der/mldsa-auth
 - stack: C11, liboqs, libsodium, SQLite, CMake, libFuzzer, ProVerif, GitHub Actions
-- stats: 0.45 ms handshake · 192 mutations nightly · 12 fuzz targets
+- stats: 0.45 ms handshake · 271 mutations nightly · 12 fuzz targets
 - Post-quantum mutual authentication and session protocol in C11: ML-DSA-65 signatures over a hybrid X25519 and ML-KEM-768 key exchange, HKDF-SHA256, and a padded ChaCha20-Poly1305 record layer.
-- 0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 35 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 192 must-kill mutations run nightly in CI.
+- 0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 40 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 271 must-kill mutations run nightly in CI.
 - Built mldsa-authd on it, a login daemon with single-use login codes, device enrolment, revocation, key rotation and recovery codes, and a ProVerif model of the handshake, login and rotation.
 
 Two parties prove who they are with ML-DSA-65 (FIPS 204) signatures, agree a key from X25519 and ML-KEM-768 together, then talk over a padded ChaCha20-Poly1305 record layer. The specification lives beside the code and every design decision is written down in a decision log. Dependencies are pinned by hash or commit and built from source, so a clean checkout builds identical bits.
 
 `mldsa-authd` turns the protocol into a login system. A device authenticates with the handshake and gets a single-use login code, which the site exchanges over a local Unix socket for an opaque session token, so the token never reaches browser JavaScript. Devices can be enrolled, revoked and rotate their keys, a lost device is replaced with a recovery code, and browsers reach the daemon as a WebSocket behind a TLS proxy that states the client address in a PROXY v2 preamble the daemon rate-limits on. It is installable but not deployed: the runbook from an empty VPS to a first login exists, and nobody has run it against a real host yet.
 
-I do not trust a test I have not seen fail. Every push runs the 35-test suite in debug, ASan and UBSan builds on Linux and macOS. Every night, 192 must-kill mutations across 23 campaigns run against a fresh ASan tree, each of the 12 fuzz targets runs for 600 s, and a ProVerif model must prove mutual agreement, session-key secrecy, login-code secrecy and rotation binding while eight derived variants are checked too: three that leak one secret must still prove, and five that remove a check must fail. Each CI gate was shown to go red by breaking it on purpose before it was trusted.
+I do not trust a test I have not seen fail. Every push runs the 40-test suite in debug, ASan and UBSan builds on Linux and macOS. Every night, 271 must-kill mutations across 27 campaigns run against a fresh ASan tree, each of the 12 fuzz targets runs for 600 s, and a ProVerif model must prove mutual agreement, session-key secrecy, login-code secrecy and rotation binding while eight derived variants are checked too: three that leak one secret must still prove, and five that remove a check must fail. Each CI gate was shown to go red by breaking it on purpose before it was trusted.
 
 Measured, not estimated: 0.45 ms median hybrid handshake in process on an Apple M4 Pro against a 15 ms target, 0.78 to 1.02 ms on GitHub's shared x86_64 runners, and 736 MiB/s record sealing at 64 KiB. The README says plainly that it is not production-ready: trust is manual key pinning with no CA, and the library is single-threaded by design.
 
@@ -52,12 +52,12 @@ C++23 engine for map-based strategy games with a deterministic lockstep simulati
 - 2026 · in progress · featured · tags: swe · resumes: swe
 - https://github.com/happyc0der/atlas-engine
 - stack: C++23, SDL_GPU, HLSL, WebAssembly, ENet, CMake, vcpkg, Catch2
-- stats: 1,000+ tests · 1M-cell tick in 694 us · 28 milestones, 24 ADRs
-- Solo C++23 engine for map-based strategy games, built in 28 gated milestones: SDL_GPU renderer, asset pipeline with hot reload, versioned scene serialization, audio, animation, and 24 architecture decision records.
+- stats: 1,000+ tests · 1M-cell tick in 694 us · 32 milestones, 25 ADRs
+- Solo C++23 engine for map-based strategy games, built in 32 gated milestones: SDL_GPU renderer, asset pipeline with hot reload, versioned scene serialization, audio, animation, and 25 architecture decision records.
 - Deterministic fixed-tick simulation with canonical state hashing, replay, save and load, and lockstep play over ENet sockets proved hash for hash between two processes; a million-cell tick runs in 694 us on four workers.
 - Mods run as untrusted WebAssembly with no clock, filesystem or random generator; over 1,000 tests, and CI on macOS, Linux and Windows with ASan and TSan lanes, clang-tidy, a software-GPU lane and benchmarks gated at 1.25x of a recorded baseline.
 
-Atlas is an engine, not a game: it has no countries, wars, diplomacy or rules, and is not meant to. I built it alone in gated milestones, M0 through M27, each ending with a clean configure, build, test run and a runnable demonstration. Every decision that is expensive to reverse is an ADR, 24 so far, and recent milestones each end with a report of what changed, what was run and what is still risky.
+Atlas is an engine, not a game: it has no countries, wars, diplomacy or rules, and is not meant to. I built it alone in gated milestones, M0 through M31, each ending with a clean configure, build, test run and a runnable demonstration. Every decision that is expensive to reverse is an ADR, 25 so far, and recent milestones each end with a report of what changed, what was run and what is still risky.
 
 The simulation advances in whole integer ticks and hashes its state, so a replay, a save or a second machine in lockstep can be checked bit for bit. Lockstep runs over the command queue: M14 proved it with several simulations in one process agreeing hash for hash, M17 with two processes over a real ENet socket at a 22.4 us median round trip. A million-cell tick takes 694 us on four workers against 1.650 ms without the pool; what remains is serial, and the hash is 0.38 ms of it. Mods are WebAssembly modules that reach simulation state only by submitting commands, with no clock, no filesystem and no random generator of their own.
 
@@ -193,8 +193,8 @@ Solo Kaggle SWE-agent entry, in progress, built on a re-implementation of the or
 - 2026 · in progress · featured · tags: ml swe · resumes: ml
 - https://github.com/happyc0der/gemma-swe-agent
 - stack: Python, Google ADK, vLLM, LiteLLM, Docker, Gemma 4, Tailscale, Kaggle API
-- stats: 109/129 gold checks · 7/33 proxy holdout · $0 cloud spend
-- Kaggle Gemma 4 Developer Agent competition (solo, in progress): a declarative Google ADK agent that fixes GitHub issues with Gemma 4 31B, submitted daily; two submissions so far, both 0.00 on the public leaderboard, final ranking pending.
+- stats: 109/129 gold checks · best public score 0.10 · $0 cloud spend
+- Kaggle Gemma 4 Developer Agent competition (solo, in progress): a declarative Google ADK agent that fixes GitHub issues with Gemma 4 31B, submitted daily: 0.00 on the first two days, then 0.06 to 0.10 (best 0.10, 317th of 1,356 teams on 2026-10-02); final ranking pending.
 - swelite, a re-implementation of the organizers' unreleased evaluation harness (Docker sandboxes, the 9 fixed tools, ADK YAML compiler with skills, multi-pass patch verification, failure-taxonomy analyzer), validated with gold and null checks on all 129 public tasks: 109 pass, 0 pass unfixed.
 - Provisioned a 16 GB laptop GPU over SSH as a vLLM proxy box and ran 33-task holdouts per prompt change (best 7/33); found that ADK never compacts context inside a task and that temperature 0.7 cut identical retries from 13.5 to 5.1 per task.
 
@@ -204,17 +204,17 @@ The organizers' evaluator is unreleased, so I re-implemented it from their spec 
 
 The 31B model's roughly 17 GB of weights do not fit my laptop's 16 GB GPU, so that laptop serves Gemma 4 12B through vLLM 0.30 as a proxy. I set it up over SSH and Tailscale: WSL2, Docker, vLLM fitted into 16 GB, and Task Scheduler for jobs that survive SSH logoff. Runs are logged under `experiments/` with a config snapshot, per-task results and notes.
 
-Two findings drove the prompt. ADK's context compaction never fires inside a task, so trajectories die at the 32k window after about 20 full-size tool outputs. Temperature 0.2 makes the model retry failed calls verbatim; 0.7 cut identical repeats from 13.5 to 5.1 per task. The holdout went from 6/33 to 7/33 with a prompt written around a context budget. Two Kaggle submissions so far, both 0.00 on the public leaderboard, while the same config solved 6/33 on the proxy; the next submission tests a shorter per-task budget against the 12 hour global cap. The competition closes 2026-12-02; final ranking pending.
+Two findings drove the prompt. ADK's context compaction never fires inside a task, so trajectories die at the 32k window after about 20 full-size tool outputs. Temperature 0.2 makes the model retry failed calls verbatim; 0.7 cut identical repeats from 13.5 to 5.1 per task. The holdout went from 6/33 to 7/33 with a prompt written around a context budget. The first two daily submissions scored 0.00 on the public leaderboard; after the prompt was rewritten around a context budget and the per-task time scaled to the 12 hour global cap, they scored 0.06, 0.10, 0.08 and 0.10, which put the entry 317th of 1,356 teams on 2026-10-02. The competition closes 2026-12-02; final ranking pending.
 
 ### Biohub cell tracking (`biohub-cell-tracking`)
 
-Kaggle cell-tracking competition entry on free GPU, public leaderboard 0.952 from an offline post-processing harness and a 3D CNN that prunes false cell divisions, final ranking pending.
+Kaggle cell-tracking competition entry on free GPU, final rank 591 of 3,947 teams (top 15%), built on an offline post-processing harness and a 3D CNN that prunes false cell divisions.
 
-- 2026 · in progress · tags: ml data · resumes: ml data
+- 2026 · Finished September 2026 · tags: ml data · resumes: ml data
 - credit: The submission is a fork of Igor Zharov's public Harmonic Fusion notebook (Apache-2.0). The offline harness, the division classifiers and every experiment are mine.
 - stack: Python, PyTorch, NumPy, SciPy, polars, scikit-learn, uv, Kaggle API
-- stats: public LB 0.952 · +0.005 measured twice · ~22 Kaggle GPU-hours
-- Kaggle Biohub Cell Tracking During Development (September 2026): public leaderboard 0.952 against 0.947 for the unmodified public notebook it builds on, using only free Kaggle GPU; final ranking pending.
+- stats: 591st of 3,947 (top 15%) · +0.005 measured twice · ~22 Kaggle GPU-hours
+- Kaggle Biohub Cell Tracking During Development (September 2026): public leaderboard 0.952 against 0.947 for the unmodified public notebook it builds on, using only free Kaggle GPU; final rank 591 of 3,947 teams (top 15%), private leaderboard 0.918.
 - Built an offline harness that runs GPU inference on Kaggle once, then re-runs the notebook's post-processor locally against the hosts' official scorer on 40 held-out videos, five times the upstream validator, and matches the notebook's own score to +0.00011.
 - Trained a small 3D CNN on 134 annotated cell divisions to prune false division forks: predicted +0.0047 on a pre-registered holdout, measured +0.005 on the leaderboard twice, while nine other ideas were tried and rejected.
 
@@ -224,7 +224,7 @@ Every offline number is a selection set of 26 videos against a holdout of 14, ba
 
 The one change that survived is a small 3D CNN, trained on 134 real cell divisions, that scores every node and prunes division forks it judges false. On the holdout it cut division false positives from 6 to 3 without losing a true positive, gave the identical result at every threshold from 0.10 to 0.30, and cleared a random-score floor I had measured first. It predicted +0.0047; the leaderboard gave +0.005 twice, 0.945 to 0.950 and 0.947 to 0.952. The shipped version averages two such classifiers. The whole result cost about 22 of a 30-hour weekly GPU quota, each run logged with its cost.
 
-The competition closes on 2026-09-29 and the final ranking is pending, so this page carries only the public score. The code is private for now, under GPL-3.0, with the full experiment log, the GPU ledger and a step-by-step reproduction in the repository.
+The competition closed on 2026-09-29. The entry finished 591st of 3,947 teams (top 15%). Its private leaderboard score was 0.918, against 0.952 on the public leaderboard; the private set is a different group of test videos. The code is private for now, under GPL-3.0, with the full experiment log, the GPU ledger and a step-by-step reproduction in the repository.
 
 ### TrafficFlowBench (`trafficflowbench`)
 
@@ -248,13 +248,13 @@ reproduce.sh rebuilds the submitted file bit-for-bit from the raw data in about 
 
 ### Kaggle S6E9, EV purchases (`kaggle-s6e9`)
 
-Kaggle Playground S6E9, public leaderboard 0.94649 against a leader at 0.94674, with a 192-experiment ledger and a label-noise ceiling analysis, final ranking pending.
+Kaggle Playground S6E9, final rank 287 of 3,575 teams (top 9%), with a 192-experiment ledger and a label-noise ceiling analysis.
 
 - 2026 · tags: ml data · resumes: ml data quant
 - https://github.com/happyc0der/kaggle-s6e9-ev-purchases
 - stack: Python, LightGBM, XGBoost, CatBoost, PyTorch, scikit-learn, SciPy, Kaggle API
-- stats: public LB 0.94649 · 192 experiments · 669k rows
-- Kaggle Playground S6E9 (EV purchases, ROC AUC): out-of-fold AUC 0.94648, public leaderboard 0.94649 (hedge entry) and 0.94642 (best validated entry) against a leader at 0.94674, final ranking pending.
+- stats: 287th of 3,575 (top 9%) · 192 experiments · 669k rows
+- Kaggle Playground S6E9 (EV purchases, ROC AUC): out-of-fold AUC 0.94648, public leaderboard 0.94649 (hedge entry) and 0.94642 (best validated entry) against a leader at 0.94674; final rank 287 of 3,575 teams (top 9%), private AUC 0.94545 against a winning 0.94602.
 - Nested target encodings over the synthetic generator's artifacts on 668,665 rows, 20 folds with encoding-seed bags, and a logit blend of LightGBM, CatBoost and a 15-seed MLP with hard-edge post-processing.
 - Logged 192 experiments judged by paired DeLong tests (accept at +0.00008 with z ≥ 3, noise floor about 0.00003), and showed by label resampling that a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
 
@@ -264,7 +264,7 @@ LightGBM on the 13 raw columns scores 0.9419 out of fold. Per-value frequency, l
 
 Every idea ran against a fixed reference with a paired DeLong test and went into experiments/results.csv, 192 rows, most of them negative: interaction encodings in every form, similarity to original rows, density windows, digit residues, pseudo-labelling, native categorical handling, deeper or tuned trees, neural-net value embeddings, segment-wise calibration and more, all within ±0.00005 or worse. The accept rule was a paired gain of at least +0.00008 with z ≥ 3, against a noise floor near 0.00003. To see what was left, I resampled labels from the model's own calibrated probabilities: a perfect model scores 0.9459 ± 0.0003 on those, per cell of concern, subsidy and anxiety the real score matches that ceiling within 0.001, and a model trained to predict the blend's errors explains none of them (R² = −0.003). The rest is label noise the generator put there.
 
-The competition closes on 2026-09-30, so the final ranking is pending. The pipeline is public under GPL-3.0 with a rerun playbook, dataset-fact tests, a leak-freeness test for the encodings and a synthetic end-to-end smoke test.
+The competition closed on 2026-09-30. The entry finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against 0.94602 for the winner. The pipeline is public under GPL-3.0 with a rerun playbook, dataset-fact tests, a leak-freeness test for the encodings and a synthetic end-to-end smoke test.
 
 ### Blockwave (`blockwave`)
 
@@ -285,6 +285,24 @@ The second package is an agent that is never told the score. Score, lines and le
 A second seed of the 150M pixel configuration scored 0.0647 where the first scored 0.0991, a spread of 42% of their mean and about 19 times the within-run standard error I had been quoting. That made every single-seed comparison between reward variants and compute budgets uninterpretable, so I withdrew them in place in the research log rather than deleting them, and wrote `blockwave_rl.compare`, which groups runs by configuration and refuses to print a significance figure for a single seed. Resolving the effect I had reported would take about 214 seeds per arm at five hours each, so the question is closed as unanswerable at that cost. What survives is the deliverable: both seeds beat the drift baseline by 36x and 55x.
 
 The 465 tests run in about 40 seconds. They check kick-table transcription in both directions, audit board invariants after 10,000 random actions, check audio for clipping, DC offset and clicks at loop seams, render each visual setting on and off and fail if the frame does not change, and assert that two boards differing only in score give byte-identical observations to the agent. Policies that beat the reward are recorded as strict expected failures rather than hidden.
+
+### gtnh-agent (`gtnh-agent`)
+
+Safety-first agent that plays the Minecraft modpack GregTech: New Horizons on a private server: a local model decides and plans, and code checks every action before it runs and verifies it after.
+
+- 2026 · in progress · tags: ml swe · on no resume
+- https://github.com/happyc0der/gtnh-agent
+- stack: TypeScript, Node.js, Ollama, qwen3:14b, Zod, SQLite, Vitest
+- stats: 3 quests finished on a live server · 23 allowlisted actions · 92 test files
+- An agent that plays GregTech: New Horizons (Minecraft 1.7.10) on a private test server the way a person does: it explores, gathers, digs, shelters for the night, eats, crafts and turns in quests, and has finished the first three quests of the Stone Age chapter.
+- A local model (qwen3:14b on Ollama) decides at decision points and plans from a route that code calculates; code expands each step into checked actions, enforces the safety policy, executes, and verifies each result against the server's own updates. The models only propose; they never act.
+- Only 23 action types exist, each off until switched on and fenced to a play area; unknown or stale state pauses the agent. It joins through its own 1.7.10 Forge client because Mineflayer cannot join the modpack, and 92 test files run against a fake server.
+
+GregTech: New Horizons is one of the longest Minecraft modpacks, and its quest book is a natural benchmark: the 92 quests of the "Tier 0 - Stone Age" chapter plus 14 it needs from other chapters, counted only as the server records them.
+
+Each cycle observes the world through the agent's own client into a schema-validated game state in which anything unobservable is explicitly unknown. A pure-code safety policy decides whether that state is trustworthy and pauses if it is not. A deterministic router, or the local model at decision points, picks one bounded decision, which becomes exactly one allowlisted action. A single executor validates the action, runs it with a token only it can mint, re-observes, checks a postcondition derived in code, and logs the outcome to SQLite.
+
+The safety defaults are strict: localhost or private addresses only, a 256-block boundary, retreat below 10 health, at most two failures per action per task, digging limited to listed natural blocks and placing limited to listed plain blocks. `halt` stops every action at once. Built from 27 September 2026 and in progress; it is working on the fourth quest.
 
 ### ephys-mcp (`ephys-mcp`)
 

@@ -25,7 +25,7 @@ Some recent work:
 • DOOMCE and TRENCHFIRE: a first-person raycaster written from scratch for the TI-84 Plus CE calculator, then ported to a Garmin watch and published on the Connect IQ store.
 • TideFit: security audit, framework upgrade and production launch of a friend's Next.js app. 15 findings, npm audit from 6 vulnerabilities to 0, tests from 0 to 45.
 • ForgeLog: an offline Android gym tracker in Kotlin with no network permission and 830 tests.
-• Kaggle: Biohub Cell Tracking (public leaderboard 0.952), Playground S6E9 (AUC 0.9465), TrafficFlowBench (0.845), and a Gemma 4 Developer Agent entry in progress.
+• Kaggle: Playground S6E9 (287th of 3,575, top 9%), Biohub Cell Tracking (591st of 3,947, top 15%), and TrafficFlowBench and a Gemma 4 Developer Agent entry in progress.
 
 Everything, with code and screenshots: happyc0der.github.io
 GitHub: github.com/happyc0der
@@ -68,7 +68,7 @@ Written for a reader, not a parser: the first sentence says what the thing is an
 
 ### Atlas: C++23 engine for map-based strategy games
 Dates: Sep 2026 - present · Skills: C++, Game Engine Development, WebAssembly
-A game engine I am building alone in C++23, in 28 gated milestones so far: SDL_GPU renderer, hot-reloading assets, versioned saves and 24 written design decisions.
+A game engine I am building alone in C++23, in 32 gated milestones so far: SDL_GPU renderer, hot-reloading assets, versioned saves and 25 written design decisions.
 
 The simulation is deterministic. It advances in fixed ticks and hashes its state, so a replay, a save or a second machine playing in lockstep over ENet can be checked bit for bit. A million-cell tick runs in 694 microseconds. Mods run as WebAssembly with no clock, filesystem or randomness of their own.
 
@@ -105,7 +105,7 @@ Code: github.com/happyc0der/gemma-swe-agent
 Dates: Sep 2026 · Skills: C, Cryptography, Fuzzing
 A mutual authentication and session protocol in C11, designed to resist attacks from quantum computers: ML-DSA-65 signatures (FIPS 204) over a hybrid X25519 + ML-KEM-768 key exchange, with a padded ChaCha20-Poly1305 record layer.
 
-Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 192 must-kill mutations run nightly.
+Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 271 must-kill mutations run nightly.
 
 On top of it, mldsa-authd: a login service with single-use login codes, device enrolment, revocation, key rotation and recovery codes. The handshake has a ProVerif model.
 
@@ -175,13 +175,13 @@ Code: github.com/happyc0der/nyc-autoddg
 
 ### Kaggle 2026: Biohub Cell Tracking, Playground S6E9, TrafficFlowBench
 Dates: Sep 2026 - present · Skills: Machine Learning, LightGBM, PyTorch
-Three Kaggle competitions this year, all with final rankings pending.
+Three Kaggle competitions this year.
 
-Biohub Cell Tracking: public leaderboard 0.952 on free Kaggle GPU, against 0.947 for the public notebook it builds on. I built an offline harness that runs GPU inference once and re-tunes post-processing locally against the official scorer, and trained a 3D CNN on 134 annotated cell divisions to prune false branches.
+Biohub Cell Tracking: finished 591st of 3,947 teams (top 15%), on free Kaggle GPU. Public leaderboard 0.952, against 0.947 for the public notebook it builds on. I built an offline harness that runs GPU inference once and re-tunes post-processing locally against the official scorer, and trained a 3D CNN on 134 annotated cell divisions to prune false branches.
 
-Playground S6E9 (EV purchases, ROC AUC): 0.94649 on the public leaderboard against a leader at 0.94674. Nested target encodings, 20-fold cross-validation, a LightGBM, CatBoost and MLP blend, and 192 experiments judged by paired DeLong tests. Label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
+Playground S6E9 (EV purchases, ROC AUC): finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against the winner's 0.94602. Nested target encodings, 20-fold cross-validation, a LightGBM, CatBoost and MLP blend, and 192 experiments judged by paired DeLong tests. Label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
 
-TrafficFlowBench (IEEE Big Data Cup 2026): 0.845 against a 0.553 baseline. LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
+TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.845 against a 0.553 baseline. LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
 
 Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench
 

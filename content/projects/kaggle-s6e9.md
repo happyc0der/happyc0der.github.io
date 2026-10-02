@@ -1,19 +1,19 @@
 ---
 title: Kaggle S6E9, EV purchases
-blurb: Kaggle Playground S6E9, public leaderboard 0.94649 against a leader at 0.94674, with a 192-experiment ledger and a label-noise ceiling analysis, final ranking pending.
+blurb: Kaggle Playground S6E9, final rank 287 of 3,575 teams (top 9%), with a 192-experiment ledger and a label-noise ceiling analysis.
 repo: https://github.com/happyc0der/kaggle-s6e9-ev-purchases
 year: 2026
 order: 11
 featured: false
 stack: [Python, LightGBM, XGBoost, CatBoost, PyTorch, scikit-learn, SciPy, Kaggle API]
 tags: [ml, data]
-stats: ["public LB 0.94649", "192 experiments", "669k rows"]
+stats: ["287th of 3,575 (top 9%)", "192 experiments", "669k rows"]
 bullets:
-  - "Kaggle Playground S6E9 (EV purchases, ROC AUC): out-of-fold AUC 0.94648, public leaderboard 0.94649 (hedge entry) and 0.94642 (best validated entry) against a leader at 0.94674, final ranking pending."
+  - "Kaggle Playground S6E9 (EV purchases, ROC AUC): out-of-fold AUC 0.94648, public leaderboard 0.94649 (hedge entry) and 0.94642 (best validated entry) against a leader at 0.94674; final rank 287 of 3,575 teams (top 9%), private AUC 0.94545 against a winning 0.94602."
   - "Nested target encodings over the synthetic generator's artifacts on 668,665 rows, 20 folds with encoding-seed bags, and a logit blend of LightGBM, CatBoost and a 15-seed MLP with hard-edge post-processing."
   - "Logged 192 experiments judged by paired DeLong tests (accept at +0.00008 with z ≥ 3, noise floor about 0.00003), and showed by label resampling that a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise."
 resume_bullets:
-  - "Reached 0.94649 on the Kaggle Playground S6E9 public leaderboard (ROC AUC) against a leader at 0.94674, with out-of-fold 0.94648; final ranking pending."
+  - "Finished 287th of 3,575 teams (top 9%) in Kaggle Playground S6E9 (ROC AUC): private 0.94545 against a winning 0.94602, out-of-fold 0.94648."
   - "Engineered features with nested target encodings over the synthetic generator's artifacts on 668,665 rows with 20-fold cross-validation; blended LightGBM, CatBoost and a 15-seed MLP in logit space."
   - "Judged 192 experiments by paired DeLong hypothesis tests; label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise."
 ---
@@ -24,4 +24,4 @@ LightGBM on the 13 raw columns scores 0.9419 out of fold. Per-value frequency, l
 
 Every idea ran against a fixed reference with a paired DeLong test and went into experiments/results.csv, 192 rows, most of them negative: interaction encodings in every form, similarity to original rows, density windows, digit residues, pseudo-labelling, native categorical handling, deeper or tuned trees, neural-net value embeddings, segment-wise calibration and more, all within ±0.00005 or worse. The accept rule was a paired gain of at least +0.00008 with z ≥ 3, against a noise floor near 0.00003. To see what was left, I resampled labels from the model's own calibrated probabilities: a perfect model scores 0.9459 ± 0.0003 on those, per cell of concern, subsidy and anxiety the real score matches that ceiling within 0.001, and a model trained to predict the blend's errors explains none of them (R² = −0.003). The rest is label noise the generator put there.
 
-The competition closes on 2026-09-30, so the final ranking is pending. The pipeline is public under GPL-3.0 with a rerun playbook, dataset-fact tests, a leak-freeness test for the encodings and a synthetic end-to-end smoke test.
+The competition closed on 2026-09-30. The entry finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against 0.94602 for the winner. The pipeline is public under GPL-3.0 with a rerun playbook, dataset-fact tests, a leak-freeness test for the encodings and a synthetic end-to-end smoke test.
