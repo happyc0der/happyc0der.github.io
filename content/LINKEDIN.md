@@ -97,7 +97,7 @@ My solo entry to the Kaggle Gemma 4 Developer Agent competition: an LLM agent, w
 
 The organizers had not released their evaluation harness, so I re-implemented it as swelite: Docker sandboxes, the nine agent tools, an ADK YAML compiler and patch verification. 109 of 129 public tasks pass its gold checks.
 
-A 16 GB laptop GPU, reached over SSH, serves a smaller proxy model through vLLM so every prompt change can be tested on a 33-task holdout. Final ranking pending; the competition ends in December 2026.
+A 16 GB laptop GPU, reached over SSH, serves a smaller proxy model through vLLM so every prompt change can be tested on a 33-task holdout. Daily submissions scored 0.00 for the first two days and up to 0.10 since; final ranking pending, and the competition ends in December 2026.
 
 Code: github.com/happyc0der/gemma-swe-agent
 
