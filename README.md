@@ -25,3 +25,11 @@ Add a collection in `src/content.config.ts`, copy `src/pages/notes/` and rename,
     npm run build      # static site into dist/
 
 Pushing to `main` deploys to GitHub Pages. The PDFs are committed, so CI does not need to build them.
+
+## License
+
+This repository has two parts with different terms.
+
+**The code is public domain.** The site source and build tooling (`src/`, `scripts/`, `resume/`, `.github/`, and the config files at the root) are released under the [Unlicense](LICENSE): use them however you like, no credit needed. Fonts bundled from Fontsource, including the Inter font embedded in `resume/linkedin-banner.html`, keep the SIL Open Font License.
+
+**The content is not.** Everything in `content/` (my profile, resume settings and project write-ups) and in `public/` (the resume PDFs, images, screenshots and banner) is Copyright (C) 2026 Keshav Rajput, all rights reserved. Please don't reuse it; build your own from the template instead.

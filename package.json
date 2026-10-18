@@ -1,5 +1,6 @@
 {
   "name": "portfolio",
+  "license": "SEE LICENSE IN README.md",
   "type": "module",
   "private": true,
   "scripts": {
