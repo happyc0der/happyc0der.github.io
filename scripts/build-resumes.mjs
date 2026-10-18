@@ -104,8 +104,12 @@ async function printPdf(html, pdf) {
     if (now > 0 && now === size) break;
     size = now;
   }
-  child.kill('SIGKILL');
-  await new Promise((r) => child.once('exit', r));
+  // Newer Edge exits by itself after printing; only wait for 'exit' if it has not already happened.
+  if (child.exitCode === null && child.signalCode === null) {
+    const exited = new Promise((r) => child.once('exit', r));
+    child.kill('SIGKILL');
+    await exited;
+  }
   for (let i = 0; i < 10; i++) {
     try { fs.rmSync(profileDir, { recursive: true, force: true }); break; } catch { await new Promise((r) => setTimeout(r, 300)); }
   }
