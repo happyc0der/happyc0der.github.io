@@ -24,6 +24,7 @@ Some recent work:
 • EEG dementia re-evaluation: re-ran a course project on detecting Alzheimer's and frontotemporal dementia from EEG with subject-level splits and nested cross-validation. Honest accuracy is about 60%, and no deep model beat spectral features.
 • DOOMCE and TRENCHFIRE: a first-person raycaster written from scratch for the TI-84 Plus CE calculator, then ported to a Garmin watch and published on the Connect IQ store.
 • TideFit: security audit, framework upgrade and production launch of a friend's Next.js app. 15 findings, npm audit from 6 vulnerabilities to 0, tests from 0 to 45.
+• Ledger: a revenue-forecast agent I built solo at Block Convey's Money Talks 2 hackathon. Code checks every number and buyer quote, so it flagged 0 of 86 clean deals where the bare model flagged 10.
 • ForgeLog: an offline Android gym tracker in Kotlin with no network permission and 830 tests.
 • Kaggle: Playground S6E9 (287th of 3,575, top 9%), Biohub Cell Tracking (591st of 3,947, top 15%), and TrafficFlowBench and a Gemma 4 Developer Agent entry in progress.
 
@@ -91,13 +92,23 @@ The original model code is my teammates' (mainly Subhrajit Dey's); the re-evalua
 
 Code: github.com/happyc0der/eeg-dementia-graph-transformer
 
+### Ledger: a revenue forecast with receipts (Money Talks 2 hackathon)
+Dates: Oct 2026 · Skills: LLM Agents, Python, FastAPI
+My solo entry for the Money Operations track of Block Convey's AI x Fintech hackathon, Money Talks 2, in New York on 17 October 2026. Ledger reads every deal's calls, emails and meetings into a ledger of what the buyer actually said, with verbatim quotes, and code compares each claim against the CRM. The output is a commit and best-case forecast where every excluded dollar has a reason, draft CRM corrections a person approves, and a Monday digest per rep.
+
+On 235 real CRM deals with 18 planted problem types, run through the event's Claude Sonnet 5.5 gateway, Ledger found 94% of the problems with 0 of 86 clean deals falsely flagged and no invented numbers. The same model asked to "find the issues" found 72%, flagged 10 clean deals and invented 6 numbers.
+
+I ran the same pipeline on five models, including two local ones on my own GPUs. Reading improved with model size, judging win probability did not, and the code checks kept fabrications and false alarms at zero on every model. Every run is traced in PRISM, the sponsor's observability tool, and 27 failures are logged with their evidence and fixes.
+
+Code: github.com/happyc0der/ledger
+
 ### Gemma 4 Developer Agent (Kaggle): LLM agent that fixes GitHub issues
 Dates: Sep 2026 - present · Skills: LLM Agents, Python, Docker
 My solo entry to the Kaggle Gemma 4 Developer Agent competition: an LLM agent, written in Google ADK, that reads a GitHub issue and produces a fix with Gemma 4 31B.
 
 The organizers had not released their evaluation harness, so I re-implemented it as swelite: Docker sandboxes, the nine agent tools, an ADK YAML compiler and patch verification. 109 of 129 public tasks pass its gold checks.
 
-A 16 GB laptop GPU, reached over SSH, serves a smaller proxy model through vLLM so every prompt change can be tested on a 33-task holdout. Daily submissions scored 0.00 for the first two days and up to 0.10 since; final ranking pending, and the competition ends in December 2026.
+A 16 GB laptop GPU, reached over SSH, serves a smaller proxy model through vLLM so every prompt change can be tested on a 33-task holdout. Daily submissions scored 0.00 for the first two days and up to 0.12 since; final ranking pending, and the competition ends in December 2026.
 
 Code: github.com/happyc0der/gemma-swe-agent
 
@@ -105,7 +116,7 @@ Code: github.com/happyc0der/gemma-swe-agent
 Dates: Sep 2026 · Skills: C, Cryptography, Fuzzing
 A mutual authentication and session protocol in C11, designed to resist attacks from quantum computers: ML-DSA-65 signatures (FIPS 204) over a hybrid X25519 + ML-KEM-768 key exchange, with a padded ChaCha20-Poly1305 record layer.
 
-Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 271 must-kill mutations run nightly.
+Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 299 must-kill mutations run nightly.
 
 On top of it, mldsa-authd: a login service with single-use login codes, device enrolment, revocation, key rotation and recovery codes. The handshake has a ProVerif model.
 
@@ -181,7 +192,7 @@ Biohub Cell Tracking: finished 591st of 3,947 teams (top 15%), on free Kaggle GP
 
 Playground S6E9 (EV purchases, ROC AUC): finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against the winner's 0.94602. Nested target encodings, 20-fold cross-validation, a LightGBM, CatBoost and MLP blend, and 192 experiments judged by paired DeLong tests. Label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
 
-TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.845 against a 0.553 baseline. LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
+TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.883 against a 0.553 baseline. LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
 
 Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench
 

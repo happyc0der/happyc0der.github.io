@@ -1,6 +1,6 @@
 ---
 title: TrafficFlowBench
-blurb: Kaggle freeway traffic benchmark, public leaderboard 0.845 against a 0.5534 baseline, final ranking pending.
+blurb: Kaggle freeway traffic benchmark, public leaderboard 0.883 against a 0.5534 baseline, final ranking pending.
 repo: https://github.com/happyc0der/trafficflowbench
 year: 2026
 order: 10
@@ -8,13 +8,13 @@ featured: false
 status: in progress
 stack: [Python, LightGBM, scikit-learn, NumPy, SciPy, polars, pandas, Kaggle API]
 tags: [ml, data]
-stats: ["public LB 0.845", "onset IoU 0.57 to 0.93", "2 h bit-for-bit repro"]
+stats: ["public LB 0.883", "onset IoU 0.57 to 0.93", "2 h bit-for-bit repro"]
 bullets:
-  - "Kaggle TrafficFlowBench (2026 IEEE Big Data Cup): public leaderboard 0.84481 against the organizers' 0.5534 baseline, up from 0.67365 on my first submission, final ranking pending."
+  - "Kaggle TrafficFlowBench (2026 IEEE Big Data Cup): public leaderboard 0.88284 against the organizers' 0.5534 baseline, up from 0.67365 on my first submission, final ranking pending."
   - "Four-task pipeline: same-link time interpolation for missing detector cells, LightGBM queue forecasters trained out of core on 56M rows from 273 train days with causal features, and an exact-fit NNLS origin-destination solver."
   - "Found a window-selection regularity in the queue-onset task that lifted onset IoU from 0.57 to 0.93 and reported it on the competition forum; the hosts confirmed it and announced it to all teams."
 resume_bullets:
-  - "Scored 0.845 on the Kaggle TrafficFlowBench (IEEE Big Data Cup 2026) public leaderboard against a 0.553 baseline, up from 0.674 on the first submission; final ranking pending."
+  - "Scored 0.883 on the Kaggle TrafficFlowBench (IEEE Big Data Cup 2026) public leaderboard against a 0.553 baseline, up from 0.674 on the first submission; final ranking pending."
   - "Built the four-task pipeline: same-link interpolation for missing cells, LightGBM time-series queue forecasters trained out of core on 56M rows with causal features, and an exact NNLS origin-destination solver."
   - "Found a window-selection regularity that lifted queue-onset IoU from 0.57 to 0.93 and shared it on the forum; one script rebuilds the submission bit-for-bit in about two hours."
 ---

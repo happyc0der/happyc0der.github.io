@@ -1,6 +1,6 @@
 # Keshav Rajput: master data
 
-Generated from content/ on 2026-10-02. Do not edit; edit the source files and run `npm run master`.
+Generated from content/ on 2026-10-18. Do not edit; edit the source files and run `npm run master`.
 
 ## Profile
 
@@ -20,8 +20,8 @@ Generated from content/ on 2026-10-02. Do not edit; edit the source files and ru
 - Biohub Cell Tracking, Kaggle (2026): Final rank 591 of 3,947 teams (top 15%); private leaderboard 0.918, public 0.952
 - Kaggle Playground S6E9 (2026): Out-of-fold AUC 0.9465 from nested target encodings, a LightGBM, CatBoost and MLP blend and 192 experiments judged by paired DeLong tests. Final rank 287 of 3,575 teams (top 9%), private AUC 0.94545
 - Gemma 4 Developer Agent, Kaggle (Google DeepMind) (2026): LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends 2026-12-02
-- TrafficFlowBench (2026): Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
-- AI x GTM Hackathon (Block Convey), Revenue Intelligence track (2026): Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
+- TrafficFlowBench (2026): Public leaderboard 0.883 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
+- Money Talks 2, AI x Fintech Hackathon (Block Convey), Money Operations track (2026): Solo entry Ledger, a forecast agent that checks every claim against the CRM; 94% recall and 0 false alarms on 235 deals. Result pending
 
 ## Projects (38)
 
@@ -32,16 +32,16 @@ Post-quantum mutual authentication and session protocol in C11, with a login dae
 - 2026 · featured · tags: sec swe · resumes: swe sec
 - https://github.com/happyc0der/mldsa-auth
 - stack: C11, liboqs, libsodium, SQLite, CMake, libFuzzer, ProVerif, GitHub Actions
-- stats: 0.45 ms handshake · 271 mutations nightly · 12 fuzz targets
+- stats: 0.45 ms handshake · 299 mutations nightly · 12 fuzz targets
 - Post-quantum mutual authentication and session protocol in C11: ML-DSA-65 signatures over a hybrid X25519 and ML-KEM-768 key exchange, HKDF-SHA256, and a padded ChaCha20-Poly1305 record layer.
-- 0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 40 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 271 must-kill mutations run nightly in CI.
+- 0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 49 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 299 must-kill mutations run nightly in CI.
 - Built mldsa-authd on it, a login daemon with single-use login codes, device enrolment, revocation, key rotation and recovery codes, and a ProVerif model of the handshake, login and rotation.
 
 Two parties prove who they are with ML-DSA-65 (FIPS 204) signatures, agree a key from X25519 and ML-KEM-768 together, then talk over a padded ChaCha20-Poly1305 record layer. The specification lives beside the code and every design decision is written down in a decision log. Dependencies are pinned by hash or commit and built from source, so a clean checkout builds identical bits.
 
 `mldsa-authd` turns the protocol into a login system. A device authenticates with the handshake and gets a single-use login code, which the site exchanges over a local Unix socket for an opaque session token, so the token never reaches browser JavaScript. Devices can be enrolled, revoked and rotate their keys, a lost device is replaced with a recovery code, and browsers reach the daemon as a WebSocket behind a TLS proxy that states the client address in a PROXY v2 preamble the daemon rate-limits on. It is installable but not deployed: the runbook from an empty VPS to a first login exists, and nobody has run it against a real host yet.
 
-I do not trust a test I have not seen fail. Every push runs the 40-test suite in debug, ASan and UBSan builds on Linux and macOS. Every night, 271 must-kill mutations across 27 campaigns run against a fresh ASan tree, each of the 12 fuzz targets runs for 600 s, and a ProVerif model must prove mutual agreement, session-key secrecy, login-code secrecy and rotation binding while eight derived variants are checked too: three that leak one secret must still prove, and five that remove a check must fail. Each CI gate was shown to go red by breaking it on purpose before it was trusted.
+I do not trust a test I have not seen fail. Every push runs the 49-test suite in debug, ASan and UBSan builds on Linux and macOS. Every night, 299 must-kill mutations across 39 campaigns run against a fresh ASan tree, each of the 12 fuzz targets runs for 600 s, and a ProVerif model must prove mutual agreement, session-key secrecy, login-code secrecy and rotation binding while eight derived variants are checked too: three that leak one secret must still prove, and five that remove a check must fail. Each CI gate was shown to go red by breaking it on purpose before it was trusted.
 
 Measured, not estimated: 0.45 ms median hybrid handshake in process on an Apple M4 Pro against a 15 ms target, 0.78 to 1.02 ms on GitHub's shared x86_64 runners, and 736 MiB/s record sealing at 64 KiB. The README says plainly that it is not production-ready: trust is manual key pinning with no CA, and the library is single-threaded by design.
 
@@ -193,8 +193,8 @@ Solo Kaggle SWE-agent entry, in progress, built on a re-implementation of the or
 - 2026 · in progress · featured · tags: ml swe · resumes: ml
 - https://github.com/happyc0der/gemma-swe-agent
 - stack: Python, Google ADK, vLLM, LiteLLM, Docker, Gemma 4, Tailscale, Kaggle API
-- stats: 109/129 gold checks · best public score 0.10 · $0 cloud spend
-- Kaggle Gemma 4 Developer Agent competition (solo, in progress): a declarative Google ADK agent that fixes GitHub issues with Gemma 4 31B, submitted daily: 0.00 on the first two days, then 0.06 to 0.10 (best 0.10, 317th of 1,356 teams on 2026-10-02); final ranking pending.
+- stats: 109/129 gold checks · best public score 0.12 · $0 cloud spend
+- Kaggle Gemma 4 Developer Agent competition (solo, in progress): a declarative Google ADK agent that fixes GitHub issues with Gemma 4 31B, submitted daily: 0.00 on the first two days, then 0.06 to 0.12 over 19 scored submissions (best 0.12 on 2026-10-17); final ranking pending.
 - swelite, a re-implementation of the organizers' unreleased evaluation harness (Docker sandboxes, the 9 fixed tools, ADK YAML compiler with skills, multi-pass patch verification, failure-taxonomy analyzer), validated with gold and null checks on all 129 public tasks: 109 pass, 0 pass unfixed.
 - Provisioned a 16 GB laptop GPU over SSH as a vLLM proxy box and ran 33-task holdouts per prompt change (best 7/33); found that ADK never compacts context inside a task and that temperature 0.7 cut identical retries from 13.5 to 5.1 per task.
 
@@ -204,7 +204,7 @@ The organizers' evaluator is unreleased, so I re-implemented it from their spec 
 
 The 31B model's roughly 17 GB of weights do not fit my laptop's 16 GB GPU, so that laptop serves Gemma 4 12B through vLLM 0.30 as a proxy. I set it up over SSH and Tailscale: WSL2, Docker, vLLM fitted into 16 GB, and Task Scheduler for jobs that survive SSH logoff. Runs are logged under `experiments/` with a config snapshot, per-task results and notes.
 
-Two findings drove the prompt. ADK's context compaction never fires inside a task, so trajectories die at the 32k window after about 20 full-size tool outputs. Temperature 0.2 makes the model retry failed calls verbatim; 0.7 cut identical repeats from 13.5 to 5.1 per task. The holdout went from 6/33 to 7/33 with a prompt written around a context budget. The first two daily submissions scored 0.00 on the public leaderboard; after the prompt was rewritten around a context budget and the per-task time scaled to the 12 hour global cap, they scored 0.06, 0.10, 0.08 and 0.10, which put the entry 317th of 1,356 teams on 2026-10-02. The competition closes 2026-12-02; final ranking pending.
+Two findings drove the prompt. ADK's context compaction never fires inside a task, so trajectories die at the 32k window after about 20 full-size tool outputs. Temperature 0.2 makes the model retry failed calls verbatim; 0.7 cut identical repeats from 13.5 to 5.1 per task. The holdout went from 6/33 to 7/33 with a prompt written around a context budget. The first two daily submissions scored 0.00 on the public leaderboard; after the prompt was rewritten around a context budget and the per-task time scaled to the 12 hour global cap, the scores rose to between 0.06 and 0.12; the best so far is 0.12, on 2026-10-17. The competition closes 2026-12-02; final ranking pending.
 
 ### Biohub cell tracking (`biohub-cell-tracking`)
 
@@ -228,13 +228,13 @@ The competition closed on 2026-09-29. The entry finished 591st of 3,947 teams (t
 
 ### TrafficFlowBench (`trafficflowbench`)
 
-Kaggle freeway traffic benchmark, public leaderboard 0.845 against a 0.5534 baseline, final ranking pending.
+Kaggle freeway traffic benchmark, public leaderboard 0.883 against a 0.5534 baseline, final ranking pending.
 
 - 2026 · in progress · tags: ml data · resumes: data
 - https://github.com/happyc0der/trafficflowbench
 - stack: Python, LightGBM, scikit-learn, NumPy, SciPy, polars, pandas, Kaggle API
-- stats: public LB 0.845 · onset IoU 0.57 to 0.93 · 2 h bit-for-bit repro
-- Kaggle TrafficFlowBench (2026 IEEE Big Data Cup): public leaderboard 0.84481 against the organizers' 0.5534 baseline, up from 0.67365 on my first submission, final ranking pending.
+- stats: public LB 0.883 · onset IoU 0.57 to 0.93 · 2 h bit-for-bit repro
+- Kaggle TrafficFlowBench (2026 IEEE Big Data Cup): public leaderboard 0.88284 against the organizers' 0.5534 baseline, up from 0.67365 on my first submission, final ranking pending.
 - Four-task pipeline: same-link time interpolation for missing detector cells, LightGBM queue forecasters trained out of core on 56M rows from 273 train days with causal features, and an exact-fit NNLS origin-destination solver.
 - Found a window-selection regularity in the queue-onset task that lifted onset IoU from 0.57 to 0.93 and reported it on the competition forum; the hosts confirmed it and announced it to all teams.
 
@@ -324,24 +324,27 @@ On MC_Maze_Small (DANDI 000140, 142 units) ridge decodes hand velocity at R² 0.
 
 The source contract has no write, stimulate or configure method, and none will be added without a separate safety design. The server runs on stdio with no telemetry; HTTP is opt-in, refuses to bind off loopback without a bearer token, and the README says to put TLS in front of it. No third-party data is bundled and every adapter returns the dataset's licence and citation. Of the 52 tests, 51 run offline with ruff in GitHub Actions and one streams a real file from DANDI on demand. Published under CC0 as `io.github.happyc0der/ephys-mcp`; research software, not a medical device.
 
-### ledger (`ledger`)
+### Ledger (`ledger`)
 
-CRM pipeline-review agent whose every number and quote is checked in code before a manager sees it.
+Revenue-forecast agent with receipts, built for Block Convey's Money Talks 2 hackathon: every number and buyer quote is checked in code before a finance team sees it.
 
-- 2026 · not yet public · tags: swe ml data · on no resume
-- stack: Python, FastAPI, pandas, SQLite, Gemini Flash-Lite, Ollama, PRISM, pytest
-- stats: 92% semantic recall · 0 of 86 false alarms · 97 to 0 fabrications
-- Pipeline-review agent for the Revenue Intelligence track of Block Convey's AI x GTM Hackathon: the model fills a fixed claim schema with verbatim buyer quotes, and code compares each claim to the CRM, including across deals in one account.
-- On 235 deals with 18 planted anomaly types, 92% semantic recall at 100% precision and 0 of 86 clean deals flagged, where the same model asked to list issues scored 32% recall and flagged 15 of 86.
-- From the naive v1 to v3, revenue captured in the agent's top 20 rose from 60% to 77% of what real outcomes allowed, fabricated amounts, day gaps and quotes fell from 97 to 0, and every model call is traced in PRISM.
+- 2026 · Hackathon entry, Oct 2026 · tags: swe ml data · on no resume
+- https://github.com/happyc0der/ledger
+- stack: Python, FastAPI, pandas, SQLite, Claude Sonnet 5.5, Gemini, Ollama, PRISM, pytest
+- stats: 94% recall, 0 of 86 false alarms · 97 to 0 fabrications · 5 models compared
+- Solo entry for the Money Operations track of Block Convey's AI x Fintech hackathon Money Talks 2 (2026-10-17): the model fills a fixed claim schema with verbatim buyer quotes, and code compares each claim to the CRM to build a commit and best-case forecast where every excluded dollar has a receipt.
+- On 235 real CRM deals with 18 planted anomaly types, run through the event's Claude Sonnet 5.5 gateway: Ledger found 94% of the semantic problems at 99% precision with 0 of 86 clean deals flagged and nothing invented, where the same model asked to find the issues found 72%, flagged 10 and invented 6 numbers.
+- Compared five models under one pipeline (Gemini, Sonnet 5.5, Opus 5.5, and local 12B and 14B models): reading recall scales with model size but win-probability judgement does not, while the verification layer kept fabrications and false alarms at zero on every one; every run traced in PRISM, 27 failures logged with fixes, 45 tests.
 
-Ledger is my solo entry for the Revenue Intelligence track of Block Convey's AI x GTM Hackathon, a one-day build in New York on 2026-10-17. A sales manager asks what the team should work on this week. Ledger reads the CRM snapshot and every call note and email, and answers per deal with a win probability, the buyer's objection quoted from the record and one next action. The model only reads: it fills a fixed claim schema (budget status, decision timeline, economic buyer, competitor, last promise) with a verbatim quote per slot, and code compares each claim to the CRM fields, including across deals in the same account. A claim without a quote is dropped, and every check shows as a pass or fail receipt in the UI.
+Ledger is my solo entry for the Money Operations track of Block Convey's AI x Fintech hackathon Money Talks 2, held in New York on 2026-10-17. A finance team signs off a revenue forecast built from a CRM that reps fill in optimistically. Ledger reads the CRM snapshot and every call note and email, and answers per deal with a win probability, the buyer's objection quoted from the record and one next action. The model only reads: it fills a fixed claim schema (budget status, decision timeline, economic buyer, competitor, last promise) with a verbatim quote per slot, and code compares each claim to the CRM fields, including across deals in the same account. A claim without a quote is dropped, and every check shows as a pass or fail receipt in the UI.
 
 The demo company comes from the public Maven Analytics CRM dataset: the 228 open deals of one team, with their real later outcomes hidden from the agent. The source has no text, so I generated call notes conditioned on each deal's real outcome and planted 18 anomaly types, such as a stage that contradicts the buyer, a contact who left the company or a promise that expired. On the resulting 235 deals a CRM-rules baseline finds 0% of the semantic anomalies, the same model asked to list issues finds 32% and falsely flags 15 of 86 clean deals, and Ledger finds 92% at 100% precision with 0 clean deals flagged. Against the real outcomes, the naive v1 captured 60% of the closable revenue in its top 20 and fabricated 97 amounts, day gaps or quotes; v3 captures 77% and fabricates none. Objection and next-action accuracy (82% to 94%, 87% to 92%) are scored against labels I planted, so I read them as a check that the model hears the buyer, not as independent truth.
 
-Every model call and agent run is traced in PRISM, the sponsor's observability tool. Its PII guardrail flagged phone numbers in v1 traces that do not exist in the data; the local model I used to paraphrase the notes had invented them. That failure and 12 others, each with its evidence and attribution and all but one with a fix, are in FINDINGS.md, and a deterministic auditor now re-finds them without ground truth. No prompt or model setting was changed after seeing results; the fixes were comparison bugs and label gaps, all listed.
+On the day, the event required model calls through the Nicrron gateway, so the whole benchmark was re-run on Claude Sonnet 5.5 with no prompt changes: Ledger found 94% of the semantic anomalies at 99% precision with 0 of 86 clean deals flagged and no fabrications, against 72%, 10 false alarms and 6 invented numbers for the same model asked to list issues. The same pipeline on Opus 5.5 and on local gemma4:12b and qwen3:14b models showed that reading recall scales with the model while win-probability judgement does not, and that the verification layer holds fabrications and false alarms at zero on every model.
 
-The rest is built for a weekly loop: run history in SQLite, a lifecycle per finding, draft CRM updates a person approves before export, per-rep digests, HubSpot and Salesforce ingest presets, and a FastAPI page with a receipt beside every claim. 32 tests pass. Inference defaults to a local Ollama model; the full comparison ran on Gemini Flash-Lite. The code is not yet public.
+Every model call and agent run is traced in PRISM, the sponsor's observability tool. Its PII guardrail flagged phone numbers in v1 traces that do not exist in the data; the local model I used to paraphrase the notes had invented them. That failure and 26 others, each with its evidence and attribution and all but one with a fix, are in FINDINGS.md, and a deterministic auditor now re-finds them without ground truth. No prompt or model setting was changed after seeing results; the fixes were comparison bugs and label gaps, all listed.
+
+The rest is built for a weekly loop: run history in SQLite, a lifecycle per finding, draft CRM updates a person approves before export, per-rep digests, HubSpot and Salesforce ingest presets, and a FastAPI page with a receipt beside every claim. 45 tests pass with no model calls. The code is public; the hackathon result is not yet announced.
 
 ### NYC AutoDDG (`nyc-autoddg`)
 

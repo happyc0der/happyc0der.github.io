@@ -17,11 +17,11 @@
   tags: [ml, swe]
 - name: TrafficFlowBench
   project: trafficflowbench
-  result: Public leaderboard 0.845 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
+  result: Public leaderboard 0.883 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
   year: 2026
   tags: [data, ml, quant]
-- name: AI x GTM Hackathon (Block Convey), Revenue Intelligence track
+- name: Money Talks 2, AI x Fintech Hackathon (Block Convey), Money Operations track
   project: ledger
-  result: Entry is Ledger, a pipeline-review agent that checks every claim against the CRM. Event on 2026-10-17
+  result: Solo entry Ledger, a forecast agent that checks every claim against the CRM; 94% recall and 0 false alarms on 235 deals. Result pending
   year: 2026
   tags: [ml, data]
