@@ -13,7 +13,7 @@ ml:
   label: AI / ML
   track: ml
   headline: "Machine learning engineer, new grad. MS Computer Science, NYU Tandon, May 2026. PyTorch, LLM agents, Kaggle."
-  projects: [lfp2vec-audit, gemma-swe-agent, biohub-cell-tracking, blockwave, kaggle-s6e9]
+  projects: [lfp2vec-audit, eeg-dementia, gemma-swe-agent, biohub-cell-tracking, blockwave, kaggle-s6e9]
   skills: [languages, ml, ai, tools]
 data:
   file: Keshav_Rajput_Data
