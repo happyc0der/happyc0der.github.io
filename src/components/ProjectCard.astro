@@ -9,7 +9,7 @@ const thumbSrc = d.image ? d.image.replace(/^\/img\/(.+)\.(png|jpe?g)$/, '/img/t
 <a class:list={['card', { 'has-thumb': thumb }]} href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
   {thumb && (
     d.image
-      ? <div class="thumb"><img src={thumbSrc} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width="800" height="450" /></div>
+      ? <div class="thumb" style={`view-transition-name: shot-${project.id}`}><img src={thumbSrc} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width="800" height="450" /></div>
       : <div class="thumb text"><span>{d.stats[0] ?? d.title}</span></div>
   )}
   <div class="top">

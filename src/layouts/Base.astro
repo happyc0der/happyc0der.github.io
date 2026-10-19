@@ -36,6 +36,15 @@ const nav = [
     <meta name="twitter:image" content={new URL('/og.png', Astro.site).href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title ? `${title} · ${profile.name}` : profile.name}</title>
+    <script is:inline>
+      // Motion is opt-in: it needs JS and IntersectionObserver, and stays off for reduced-motion users.
+      (() => {
+        const h = document.documentElement;
+        if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('motion');
+        // Arriving through a cross-page view transition: the transition already moves the page, so skip entrances.
+        addEventListener('pagereveal', (e) => { if (e.viewTransition) h.classList.add('arrived'); });
+      })();
+    </script>
   </head>
   <body>
     <header class="site">
@@ -62,5 +71,6 @@ const nav = [
         <p class="foot-note muted">Built with Astro from one content folder · <a href="https://github.com/happyc0der/happyc0der.github.io">source</a> (code public domain, content © {new Date().getFullYear()} {profile.name})</p>
       </div>
     </footer>
+    <script is:inline src="/motion.js"></script>
   </body>
 </html>
