@@ -194,7 +194,7 @@ footer.site p { margin: 0; }
   .row { grid-template-columns: 1fr; }
   .row .when { grid-row: auto; grid-column: 1; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
 
 /* Projects index */
 .chip span { margin-left: 0.3rem; opacity: 0.6; }
@@ -245,4 +245,82 @@ a.tag:hover { color: var(--text); }
   .prow-meta .tags { justify-content: flex-start; }
   .pager { grid-template-columns: 1fr; }
   .pager .next { text-align: left; }
+}
+
+/* ---------- Motion ----------
+   Decoration only. Without JS, or with reduced motion, every page renders complete and still.
+   public/motion.js adds .rv to reveal targets and .in when they scroll into view; the inline
+   script in Base.astro adds .motion (motion allowed) and .arrived (page came in by view transition). */
+:root { --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes rise { from { opacity: 0; translate: 0 14px; } }
+@keyframes grow-y { from { transform: scaleY(0); } }
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes cell { from { opacity: 0; transform: scale(0.3); } }
+@keyframes ping { 70%, 100% { transform: scale(2.8); opacity: 0; } }
+@keyframes pan { to { background-position: 32px 32px, 32px 32px; } }
+
+/* Page transitions between pages of this site (Chrome, Edge, Safari 18.2+; others just navigate). */
+@view-transition { navigation: auto; }
+header.site { view-transition-name: site-header; }
+::view-transition-old(root) { animation: 0.16s ease-in both vt-out; }
+::view-transition-new(root) { animation: 0.34s var(--ease-out) both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; translate: 0 12px; } }
+::view-transition-group(*) { animation-duration: 0.42s; animation-timing-function: var(--ease-out); }
+/* A card's image grows into the project page's hero image (names set in ProjectCard and [slug]). */
+.thumb, .hero-figure { view-transition-class: shot; }
+::view-transition-image-pair(.shot) { overflow: clip; border-radius: var(--radius); }
+
+/* First paint: the hero and page titles rise in, one line after another. */
+:is(.hero, .project-head, .notfound) > *, main > .page-title, main > .page-title + .lead { animation: rise 0.8s var(--ease-out) both; }
+:is(.hero, .project-head, .notfound) > :nth-child(2), main > .page-title + .lead { animation-delay: 0.08s; }
+:is(.hero, .project-head, .notfound) > :nth-child(3) { animation-delay: 0.16s; }
+:is(.hero, .project-head, .notfound) > :nth-child(4) { animation-delay: 0.24s; }
+:is(.hero, .project-head, .notfound) > :nth-child(n + 5) { animation-delay: 0.32s; }
+.arrived :is(.hero, .project-head, .notfound) > *, .arrived main > .page-title, .arrived main > .page-title + .lead { animation: none; }
+
+/* Hero: the grid behind the name drifts slowly and the availability dot pulses. */
+.hero::after { animation: pan 26s linear infinite; }
+.status .dot { position: relative; }
+.status .dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--good); animation: ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+/* Scroll reveal, staggered within each batch by --d. */
+.motion .rv:not(.in) { opacity: 0; }
+.motion .rv.in:not(.now) { animation: rise 0.7s var(--ease-out) both var(--d, 0ms); }
+/* Charts draw in once their tile is revealed; --i is each mark's position in its chart. */
+.motion .rv.in:not(.now) .weekbars .bar { transform-box: fill-box; transform-origin: 50% 100%; animation: grow-y 0.7s var(--ease-out) backwards calc(var(--d, 0ms) + 0.15s + var(--i, 0) * 30ms); }
+.motion .rv.in:not(.now) .heatmap rect { transform-box: fill-box; transform-origin: center; animation: cell 0.45s ease-out backwards calc(var(--d, 0ms) + var(--i, 0) * 1.4ms); }
+.motion .rv.in:not(.now) .shares .track i { transform-origin: left; animation: grow-x 0.8s var(--ease-out) backwards calc(var(--d, 0ms) + 0.15s + var(--i, 0) * 60ms); }
+.motion .rv.in:not(.now) .ticks i { transform-origin: bottom; animation: grow-y 0.4s ease-out backwards calc(var(--d, 0ms) + var(--i, 0) * 18ms); }
+.tile .stat strong, .kv dd { font-variant-numeric: tabular-nums; }
+
+/* Cursor spotlight on link cards (position from motion.js). */
+@media (hover: hover) {
+  :is(.card, .resume-card, .pager a, .prow) { position: relative; isolation: isolate; }
+  :is(.card, .resume-card, .pager a, .prow)::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+    background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 0%), rgba(167, 139, 250, 0.13), transparent 65%); }
+  :is(.card, .resume-card, .pager a, .prow):hover::before { opacity: 1; }
+}
+
+/* Small hover cues: nav underline, lifted buttons, arrows that lean the way they point. */
+nav a { position: relative; }
+nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -0.3rem; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.25s var(--ease-out); }
+nav a:hover::after, nav a[aria-current='page']::after { transform: scaleX(1); }
+.btn { transition: border-color 0.15s, background 0.15s, translate 0.2s var(--ease-out), box-shadow 0.2s; }
+.btn:hover { translate: 0 -1px; }
+.btn.primary:hover { box-shadow: 0 8px 22px -10px rgba(167, 139, 250, 0.8); }
+:is(.section-head, .tile-head) a, .back { display: inline-block; transition: translate 0.2s var(--ease-out), color 0.15s; }
+:is(.section-head, .tile-head) a:hover { translate: 3px 0; }
+.back:hover { translate: -3px 0; }
+
+/* A thin progress line under the header as the page scrolls (CSS scroll timelines only). */
+@supports (animation-timeline: scroll()) {
+  header.site::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: linear-gradient(90deg, var(--heat-2), var(--accent-hi)); transform-origin: left; transform: scaleX(0); animation: progress linear both; animation-timeline: scroll(root); pointer-events: none; }
+  @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+}
+
+@media print { .motion .rv { opacity: 1 !important; animation: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  @view-transition { navigation: none; }
 }
