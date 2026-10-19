@@ -1,13 +1,13 @@
 {
  "days": {
   "2026-10-18": {
-   "steps": 10868,
-   "distance_m": 8831,
+   "steps": 11024,
+   "distance_m": 8958,
    "floors": 9.46129,
    "active_kcal": 262,
    "intensity_min": 0,
-   "resting_hr": 54,
-   "stress": 35,
+   "resting_hr": 56,
+   "stress": 37,
    "body_battery_high": 62,
    "hrv": 56,
    "hrv_status": "LOW",
@@ -211,14 +211,14 @@
    "sleep_score": 74
   },
   "2026-10-19": {
-   "steps": null,
-   "distance_m": null,
-   "floors": null,
-   "active_kcal": null,
-   "intensity_min": null,
-   "resting_hr": null,
-   "stress": null,
-   "body_battery_high": null,
+   "steps": 638,
+   "distance_m": 517,
+   "floors": 0,
+   "active_kcal": 6,
+   "intensity_min": 0,
+   "resting_hr": 57,
+   "stress": 46,
+   "body_battery_high": 10,
    "hrv": null,
    "hrv_status": null,
    "readiness": null,
@@ -893,7 +893,7 @@
    "calories": 148
   }
  ],
- "updated": "2026-10-19T04:45:20.028Z",
+ "updated": "2026-10-19T10:15:36.127Z",
  "records": {
   "farthest_run_m": {
    "value": 3045,
