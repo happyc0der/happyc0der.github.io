@@ -12,7 +12,7 @@ const gh = githubStats(), langs = languageStats(), commits = commitStats(), kagg
 const cl = claudeStats(), cb = claudeBreakdown(), gt = gtnhStats();
 const ga = garminStats(), st = stravaStats(), sp = spotifyStats();
 const pub = publicStats();
-const { overwatch: ow, codeforces: cf, leetcode: lc, twitch: tw, steam: sm, pypi, connectiq, uptime } = pub;
+const { overwatch: ow, codeforces: cf, leetcode: lc, twitch: tw, steam: sm, typeracer: tr, pypi, connectiq, uptime } = pub;
 const graw = garminRaw();
 const rec = graw.records || {}, body = graw.body;
 
@@ -79,6 +79,21 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
           {kaggle.active.map((a: any) => <li><span>{a.name}</span><span class="mono muted">ends {fmtDay(a.ends)}</span></li>)}
         </ul>
         <p class="sub muted">Final ranks only; the two still running show their end date instead.</p>
+      </div>
+    )}
+    {tr?.recent_wpm && (
+      <div class="tile">
+        <div class="tile-head">
+          <p class="label">Typing · TypeRacer</p>
+          <a class="mono" href={`https://data.typeracer.com/pit/profile?user=${encodeURIComponent(tr.user)}`}>{tr.user} →</a>
+        </div>
+        <p class="stat"><strong>{tr.recent_wpm}</strong> WPM over the last 10 races</p>
+        <dl class="kv">
+          {tr.cert_wpm && <div><dt>Certified</dt><dd>{tr.cert_wpm} <span class="muted">WPM</span></dd></div>}
+          {tr.avg_wpm && <div><dt>All races</dt><dd>{tr.avg_wpm} <span class="muted">WPM</span></dd></div>}
+          {tr.best_wpm && <div><dt>Best race</dt><dd>{tr.best_wpm} <span class="muted">WPM</span></dd></div>}
+          {tr.races != null && <div><dt>Races</dt><dd>{tr.races.toLocaleString('en-US')}</dd></div>}
+        </dl>
       </div>
     )}
     {(cf || lc) && (

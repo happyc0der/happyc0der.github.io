@@ -154,6 +154,14 @@ const sources = {
     } catch {}
     return { login, display_name: user.display_name, followers: fol.total ?? null, live: live.data.length > 0, game: live.data[0]?.game_name ?? null, ...(recent || {}) };
   },
+  // TypeRacer's public data API (no key): typing speed in words per minute.
+  async typeracer(user) {
+    const d = await json(`https://data.typeracer.com/users?id=tr:${encodeURIComponent(user)}`);
+    const t = d?.tstats;
+    if (!t) throw new Error(`no TypeRacer user ${user}`);
+    const wpm = (x) => (x ? Math.round(x) : null);
+    return { user, recent_wpm: wpm(t.recentAvgWpm), avg_wpm: wpm(t.wpm), best_wpm: wpm(t.bestGameWpm), cert_wpm: wpm(t.certWpm), races: t.cg ?? null };
+  },
 };
 
 for (const [name, fn] of Object.entries(sources)) {
