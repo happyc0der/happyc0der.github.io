@@ -1,15 +1,20 @@
-/* The whole theme lives here. Change a value, the site follows. */
+/* The whole theme lives here. Change a value, the site follows.
+   Components use only these steps; a value outside them needs a reason. */
 :root {
   --bg: #0b0a10;
   --surface: #14121c;
   --surface-2: #1b1826;
   --line: #262233;
   --text: #e7e5ee;
+  --text-2: #cfcbdb;        /* long-form body copy, a step softer than headings */
   --muted: #8f8aa3;
   --accent: #a78bfa;
   --accent-hi: #c4b5fd;
+  --accent-deep: #8b5cf6;   /* glows and shadows only, never text */
   --accent-dim: rgba(167, 139, 250, 0.12);
   --good: #4ade80;
+  --danger: #f43f5e;
+  --paper: #f4f4f6;         /* behind resume previews, which are white pages */
 
   /* Sequential ramp for counts (heatmap): validated 4-step ordinal on the card surface. */
   --heat-0: #1f1b2b;
@@ -21,7 +26,39 @@
   --sans: 'Inter Variable', system-ui, sans-serif;
   --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
+  /* Type: ten sizes. 2xs is for uppercase mono labels, tags and badges. */
+  --fs-2xs: 0.7rem;
+  --fs-xs: 0.78rem;
+  --fs-sm: 0.9rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 2rem;
+  --fs-lead: clamp(1.05rem, 2.4vw, 1.3rem);
+  --fs-title: clamp(2rem, 5vw, 3rem);
+  --fs-hero: clamp(2.6rem, 8vw, 4.75rem);
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 650;
+
+  /* Space: one scale for every margin, padding and gap. Steps under --space-1 are optical nudges inside pills. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 2rem;
+  --space-8: 2.5rem;
+  --space-9: 3.5rem;
+  --space-10: 5rem;
+
+  --radius-xs: 2px;         /* chart marks */
+  --radius-sm: 4px;         /* inline code, small badges */
+  --radius: 10px;           /* cards, tiles, panels, rows */
+  --radius-pill: 999px;     /* buttons, chips, tags */
+  --shadow-lift: 0 10px 30px -18px color-mix(in srgb, var(--accent-deep) 60%, transparent);
+
   --width: 64rem;
   --gutter: clamp(1rem, 4vw, 2rem);
-  --radius: 10px;
 }

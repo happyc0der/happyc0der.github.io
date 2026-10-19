@@ -1,0 +1,154 @@
+{
+ "/img/atlas-engine.png": {
+  "width": 1600,
+  "height": 900,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/autoddg-scaling.png": {
+  "width": 1800,
+  "height": 720,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/blockwave.png": {
+  "width": 960,
+  "height": 1000,
+  "opt": [
+   800,
+   960
+  ]
+ },
+ "/img/custodian.png": {
+  "width": 1600,
+  "height": 829,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/customer-churn.jpg": {
+  "width": 900,
+  "height": 563,
+  "opt": [
+   800,
+   900
+  ]
+ },
+ "/img/doom-ports-watch.png": {
+  "width": 1475,
+  "height": 1600,
+  "opt": [
+   800,
+   1475
+  ]
+ },
+ "/img/doom-ports.png": {
+  "width": 1600,
+  "height": 1200,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/eeg-dementia.png": {
+  "width": 1157,
+  "height": 742,
+  "opt": [
+   800,
+   1157
+  ]
+ },
+ "/img/ephys-mcp.png": {
+  "width": 944,
+  "height": 781,
+  "opt": [
+   800,
+   944
+  ]
+ },
+ "/img/forgelog.png": {
+  "width": 1599,
+  "height": 1131,
+  "opt": [
+   800,
+   1599
+  ]
+ },
+ "/img/gridsentry.png": {
+  "width": 1440,
+  "height": 900,
+  "opt": [
+   800,
+   1440
+  ]
+ },
+ "/img/hawk-signature-study.jpg": {
+  "width": 1600,
+  "height": 1333,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/infoviz.png": {
+  "width": 1600,
+  "height": 1145,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/ledger.png": {
+  "width": 1600,
+  "height": 1000,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/lfp2vec-fixes.png": {
+  "width": 1600,
+  "height": 738,
+  "opt": [
+   800,
+   1600
+  ]
+ },
+ "/img/library-loans.png": {
+  "width": 1400,
+  "height": 891,
+  "opt": [
+   800,
+   1400
+  ]
+ },
+ "/img/localagent.jpg": {
+  "width": 1200,
+  "height": 1800,
+  "opt": [
+   800,
+   1200
+  ]
+ },
+ "/img/ow2-career-tracker.png": {
+  "width": 1400,
+  "height": 972,
+  "opt": [
+   800,
+   1400
+  ]
+ },
+ "/img/tidefit.png": {
+  "width": 1440,
+  "height": 1000,
+  "opt": [
+   800,
+   1440
+  ]
+ }
+}

@@ -4,17 +4,6 @@
 (() => {
   const html = document.documentElement;
 
-  // Cursor spotlight on link cards: the CSS reads --mx / --my.
-  if (matchMedia('(hover: hover)').matches) {
-    addEventListener('pointermove', (e) => {
-      const el = e.target.closest?.('.card, .resume-card, .pager a, .prow');
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
-      el.style.setProperty('--my', `${e.clientY - r.top}px`);
-    }, { passive: true });
-  }
-
   if (!html.classList.contains('motion')) return;
 
   // Count a figure up from zero: "2,345", "1.23B", "94%". Anything else (ranks, times, "7h 12m") is left alone.

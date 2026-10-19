@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Picture from '../../components/Picture.astro';
 import { tagNames } from '../../lib';
 
 export async function getStaticPaths() {
@@ -26,7 +27,7 @@ const demoLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ sto
 
     <div class="project-grid">
       <div class="project-main">
-        {d.image && <figure class="figure hero-figure" style={`view-transition-name: shot-${project.id}`}><img src={d.image} alt={`Screenshot or figure from ${d.title}`} /></figure>}
+        {d.image && <figure class="figure hero-figure" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} alt={`Screenshot or figure from ${d.title}`} priority sizes="(min-width: 64rem) 44rem, (min-width: 56rem) calc(100vw - 24rem), calc(100vw - 2rem)" /></figure>}
         <h2 class="mini">Highlights</h2>
         <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
         <h2 class="mini">The story</h2>
