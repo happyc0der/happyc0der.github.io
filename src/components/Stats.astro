@@ -4,8 +4,9 @@ import WeekBars from './WeekBars.astro';
 import HourBars from './HourBars.astro';
 import {
   claudeStats, claudeBreakdown, githubStats, languageStats, commitStats, kaggleStats, garminStats, gtnhStats,
-  publicStats, stravaStats, spotifyStats, garminRaw, compact, fmtDay, nyDay,
+  publicStats, stravaStats, spotifyStats, garminRaw, emulatorStats, compact, fmtDay, nyDay,
 } from '../stats';
+import { profile } from '../lib';
 
 const gh = githubStats(), langs = languageStats(), commits = commitStats(), kaggle = kaggleStats();
 const cl = claudeStats(), cb = claudeBreakdown(), gt = gtnhStats();
@@ -21,7 +22,8 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 const updated = [gh?.updated, cl?.updated, ga?.updated].filter(Boolean).sort().pop();
 const shipped = [pypi?.packages?.length, connectiq?.apps?.length, uptime?.sites?.length].some(Boolean);
-const play = [ow, tw, sm, sp].some(Boolean);
+const emu = emulatorStats(profile.stats?.emulators_extra);
+const play = [ow, tw, sm, sp, emu].some(Boolean);
 ---
 {(gh || cl || ga || ow) && (
 <section class="stats" id="numbers">
@@ -238,6 +240,13 @@ const play = [ow, tw, sm, sp].some(Boolean);
         <p class="label">Steam</p>
         <p class="stat"><strong>{sm.hours.toLocaleString('en-US')}</strong> hours across {sm.games} games</p>
         <ul class="split">{sm.top.slice(0, 4).map((g: any) => <li><span>{g.name}</span><span class="mono">{g.hours} h</span></li>)}</ul>
+      </div>
+    )}
+    {emu && (
+      <div class="tile">
+        <p class="label">Emulators</p>
+        <p class="stat"><strong>{emu.total}</strong> games across {emu.count} emulators</p>
+        <ul class="split">{emu.rows.map((e: any) => <li><span>{e.platform} <span class="muted">· {e.name} · {e.device}</span></span><span class="mono">{e.games}</span></li>)}</ul>
       </div>
     )}
     {sp && sp.artists?.length > 0 && (

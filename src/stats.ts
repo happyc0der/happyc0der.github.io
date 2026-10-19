@@ -174,3 +174,17 @@ export function kaggleStats() {
 export const gtnhStats = () => read('gtnh.json');
 export const spotifyStats = () => read('spotify.json');
 export const garminRaw = () => read('garmin.json') || {};
+
+export function emulatorStats(extra: any[] = []) {
+  const e = read('emulators.json');
+  const rows: any[] = (e?.emulators || []).map((x: any) => ({ ...x, device: 'PC' }));
+  for (const x of extra || []) {
+    const twin = x.synced && rows.find((r) => r.name === x.name);
+    if (twin) twin.device = `${twin.device} + ${x.device}`; // same library on another device: count once
+    else if (!x.synced) rows.push(x);
+  }
+  for (let i = rows.length - 1; i >= 0; i--) if (!(rows[i].games > 0)) rows.splice(i, 1);
+  if (!rows.length) return null;
+  rows.sort((a, b) => b.games - a.games);
+  return { rows, total: rows.reduce((s, x) => s + x.games, 0), count: rows.length };
+}

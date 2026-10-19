@@ -28,6 +28,12 @@ stats:
   twitch: ""
   steam: ""          # 64-bit Steam ID; also needs the STEAM_API_KEY secret
   strava: false      # turned on by ~/.config/portfolio-stats/strava.json on the Mac
+  # Emulators on the MSI are counted by scripts/stats/emulators.ps1. Others are added here by hand
+  # (the phone is never read). "synced: true" marks a copy of a PC emulator whose games are the same,
+  # so it adds the device without counting the games twice.
+  emulators_extra:
+    - { name: AetherSX2, platform: PlayStation 2, device: Android, games: 1 }
+    - { name: PPSSPP, device: Android, synced: true }
 
 education:
   - school: New York University, Tandon School of Engineering
