@@ -2,6 +2,8 @@ name: Deploy
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 11 * * *' # daily, after the Mac's stats job, so the public stats stay fresh
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,6 +17,12 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      - name: Fetch public stats (each source keeps its committed value if it fails)
+        run: node scripts/stats/fetch-public.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
       - run: npx astro build
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }

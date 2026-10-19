@@ -1,0 +1,118 @@
+---
+import Heatmap from './Heatmap.astro';
+import WeekBars from './WeekBars.astro';
+import { claudeStats, githubStats, garminStats, publicStats, stravaStats, compact, fmtDay, nyDay } from '../stats';
+
+const gh = githubStats();
+const cl = claudeStats();
+const ga = garminStats();
+const pub = publicStats();
+const ow = pub.overwatch;
+const cf = pub.codeforces;
+const lc = pub.leetcode;
+const tw = pub.twitch;
+const st = stravaStats();
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const hm = (h: number | null) => (h == null ? '—' : `${Math.floor(h)}h ${String(Math.round((h % 1) * 60)).padStart(2, '0')}m`);
+const updated = [gh?.updated, cl?.updated, ga?.updated].filter(Boolean).sort().pop();
+// Overwatch stretches across the row while it is the only tile left on it.
+const owWide = !tw && !cf && !lc && !st;
+---
+{(gh || cl || ga || ow) && (
+<section class="stats" id="numbers">
+  <div class="section-head">
+    <h2>By the numbers</h2>
+    {updated && <span class="mono muted">updated {fmtDay(nyDay(updated))}</span>}
+  </div>
+
+  {gh && (
+    <div class="tile wide">
+      <div class="tile-head">
+        <p class="label">GitHub</p>
+        <a class="mono" href={`https://github.com/${gh.login}`}>@{gh.login} →</a>
+      </div>
+      <p class="stat"><strong>{gh.totalYear.toLocaleString('en-US')}</strong> contributions in the last year</p>
+      <p class="sub">{gh.last7} in the last 7 days · {gh.streak}-day streak</p>
+      <Heatmap weeks={gh.weeks} level={gh.level} label={`GitHub contribution calendar: ${gh.totalYear} contributions in the last year, ${gh.last7} in the last 7 days.`} />
+    </div>
+  )}
+
+  <div class="tiles">
+    {cl && (
+      <div class="tile">
+        <p class="label">Claude Code</p>
+        <p class="stat"><strong>{compact(cl.weekTotal, 2)}</strong> tokens last week</p>
+        <WeekBars data={cl.week} unit=" tokens" label={`Claude Code tokens per day over the last 7 days, ${compact(cl.weekTotal)} in total.`} />
+        <p class="sub"><strong>{compact(cl.allTotal)}</strong> tokens since {fmtDay(cl.since, { month: 'short', year: 'numeric' })}, across {cl.machines} machines. Most are cached context re-read each turn; the model wrote {compact(cl.allOutput)}.</p>
+      </div>
+    )}
+
+    {ga && (
+      <div class="tile">
+        <p class="label">Garmin · last night</p>
+        <dl class="kv">
+          <div><dt>Sleep</dt><dd>{hm(ga.sleep ? ga.sleep.value / 3600 : null)}{ga.sleepScore && <span class="muted"> · score {ga.sleepScore.value}</span>}</dd></div>
+          <div><dt>Resting HR</dt><dd>{ga.rhr?.value ?? '—'} <span class="muted">bpm</span></dd></div>
+          <div><dt>HRV</dt><dd>{ga.hrv?.value ?? '—'} <span class="muted">ms{ga.hrvStatus && ` · ${ga.hrvStatus.value.toLowerCase()}`}</span></dd></div>
+          <div><dt>Readiness</dt><dd>{ga.readiness?.value ?? '—'} <span class="muted">/ 100</span></dd></div>
+        </dl>
+        <WeekBars data={ga.steps} unit=" steps" partialLast label={`Steps per day over the last 7 days; average ${compact(ga.avgSteps, 1)}.`} />
+        <p class="sub">Steps, last 7 days · average {compact(ga.avgSteps, 1)} a day · {hm(ga.avgSleepH)} sleep a night</p>
+      </div>
+    )}
+
+    {ga && ga.activities > 0 && (
+      <div class="tile">
+        <p class="label">Training · {ga.year}</p>
+        <p class="stat"><strong>{ga.activities}</strong> workouts, {Math.round(ga.hours)} hours</p>
+        {ga.swimKm > 0 && <p class="sub"><strong>{ga.swimKm.toFixed(0)} km</strong> swum this year</p>}
+        <ul class="split">{ga.byType.slice(0, 5).map((t: any) => <li><span>{t.type}</span><span class="mono">{t.n}</span></li>)}</ul>
+        {ga.lastActivity && <p class="sub muted">Last logged {fmtDay(ga.lastActivity)}</p>}
+      </div>
+    )}
+
+    {st && (st.ytd_run || st.ytd_ride) && (
+      <div class="tile">
+        <p class="label">Strava · this year</p>
+        <dl class="kv">
+          {st.ytd_run?.count > 0 && <div><dt>Runs</dt><dd>{st.ytd_run.distance_km} <span class="muted">km · {st.ytd_run.count}</span></dd></div>}
+          {st.ytd_ride?.count > 0 && <div><dt>Rides</dt><dd>{st.ytd_ride.distance_km} <span class="muted">km · {st.ytd_ride.count}</span></dd></div>}
+        </dl>
+      </div>
+    )}
+
+    {ow && (
+      <div class:list={['tile', { 'span-all': owWide }]}>
+        <p class="label">Overwatch 2</p>
+        {ow.ranks?.length > 0 && <p class="stat"><strong>{cap(ow.ranks[0].division)} {ow.ranks[0].tier}</strong> {ow.ranks[0].role === 'open' ? 'open queue' : ow.ranks[0].role}</p>}
+        <dl class="kv">
+          <div><dt>Win rate</dt><dd>{ow.winrate}%</dd></div>
+          <div><dt>KDA</dt><dd>{ow.kda}</dd></div>
+          <div><dt>Games</dt><dd>{ow.games?.toLocaleString('en-US')}</dd></div>
+          <div><dt>Played</dt><dd>{ow.hours} <span class="muted">h</span></dd></div>
+        </dl>
+        <p class="sub muted">{ow.name}{ow.season && ` · season ${ow.season}`}</p>
+      </div>
+    )}
+
+    {tw && (
+      <div class="tile">
+        <p class="label">Twitch {tw.live && <span class="live">live</span>}</p>
+        <p class="stat"><strong>{compact(tw.followers)}</strong> followers</p>
+        <p class="sub">{tw.live && tw.game ? `Streaming ${tw.game} now · ` : ''}<a href={`https://twitch.tv/${tw.login}`}>twitch.tv/{tw.login} →</a></p>
+      </div>
+    )}
+
+    {(cf || lc) && (
+      <div class="tile">
+        <p class="label">Competitive programming</p>
+        <dl class="kv">
+          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && `max ${cf.max_rating}`}</span></dd></div>}
+          {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
+          {lc?.hard != null && <div><dt>Hard</dt><dd>{lc.hard}</dd></div>}
+        </dl>
+      </div>
+    )}
+  </div>
+</section>
+)}
