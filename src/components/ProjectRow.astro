@@ -1,0 +1,17 @@
+---
+import { tagNames, badge } from '../lib';
+const { project } = Astro.props;
+const d = project.data;
+const b = badge(d);
+---
+<a class="prow" href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
+  <div class="prow-main">
+    <h3>{d.title}</h3>
+    <p>{d.blurb}</p>
+  </div>
+  <div class="prow-meta">
+    <span class:list={['mono', b.live ? 'pill' : 'muted']}>{b.text}</span>
+    <span class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</span>
+    {d.stats[0] && <span class="mono stat-line">{d.stats[0]}</span>}
+  </div>
+</a>

@@ -10,6 +10,7 @@ const path = Astro.url.pathname;
 // Add a nav entry here when a new section goes live.
 const nav = [
   { href: '/projects/', text: 'Projects' },
+  { href: '/#numbers', text: 'Numbers' },
   ...(hasNotes ? [{ href: '/notes/', text: 'Notes' }] : []),
   { href: '/resume/', text: 'Resume' },
 ];
@@ -41,17 +42,24 @@ const nav = [
       <div class="wrap">
         <a class="home" href="/"><span>~/</span>keshav</a>
         <nav>
-          {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.text}</a>)}
+          {nav.map((n) => <a href={n.href} aria-current={!n.href.includes('#') && path.startsWith(n.href) ? 'page' : undefined}>{n.text}</a>)}
         </nav>
       </div>
     </header>
     <main class="wrap"><slot /></main>
     <footer class="site">
       <div class="wrap">
-        <span>{profile.name}, {profile.location}</span>
-        <span>
-          <a href={`mailto:${profile.email}`}>Email</a> · <a href={profile.links.github}>GitHub</a> · <a href={profile.links.linkedin}>LinkedIn</a>
-        </span>
+        <div>
+          <p class="foot-name">{profile.name}</p>
+          <p class="muted">{profile.location} · open to new-grad roles</p>
+        </div>
+        <nav class="foot-links" aria-label="Elsewhere">
+          <a href={`mailto:${profile.email}`}>Email</a>
+          <a href={profile.links.github}>GitHub</a>
+          <a href={profile.links.linkedin}>LinkedIn</a>
+          <a href="/resume/">Resume</a>
+        </nav>
+        <p class="foot-note muted">Built with Astro from one content folder · <a href="https://github.com/happyc0der/happyc0der.github.io">source</a> (code public domain, content © {new Date().getFullYear()} {profile.name})</p>
       </div>
     </footer>
   </body>
