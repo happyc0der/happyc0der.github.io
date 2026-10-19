@@ -1,8 +1,8 @@
 {
  "github": {
   "login": "happyc0der",
-  "total_year": 1263,
-  "last_7": 219,
+  "total_year": 1264,
+  "last_7": 220,
   "streak": 5,
   "days": [
    [
@@ -1463,10 +1463,37 @@
    ],
    [
     "2026-10-18",
-    80
+    81
    ]
   ],
-  "updated": "2026-10-19T03:05:25.294Z"
+  "public_repos": 32,
+  "stars": 8,
+  "merged_prs": 25,
+  "languages": {
+   "TypeScript": 5600773,
+   "Python": 4867071,
+   "C++": 3029673,
+   "C": 2455909,
+   "Kotlin": 1697770,
+   "Jupyter Notebook": 730356,
+   "HTML": 318638,
+   "Shell": 284283,
+   "CMake": 228837,
+   "JavaScript": 225711,
+   "Monkey C": 94742,
+   "CSS": 58049,
+   "PowerShell": 20994,
+   "Astro": 19674,
+   "HLSL": 8869,
+   "TeX": 7398,
+   "Makefile": 7049,
+   "Cuda": 5723,
+   "Batchfile": 881,
+   "Dockerfile": 637,
+   "VBScript": 366,
+   "Julia": 21
+  },
+  "updated": "2026-10-19T03:16:25.487Z"
  },
  "overwatch": {
   "name": "DankAxon",
@@ -1483,6 +1510,68 @@
   "winrate": 58.8,
   "kda": 4.29,
   "hours": 131,
-  "updated": "2026-10-19T03:05:26.198Z"
+  "updated": "2026-10-19T03:16:26.214Z"
+ },
+ "pypi": {
+  "packages": [
+   {
+    "name": "ephys-mcp",
+    "last_month": 740,
+    "last_week": 72,
+    "total": 870
+   }
+  ],
+  "updated": "2026-10-19T03:16:26.400Z"
+ },
+ "connectiq": {
+  "apps": [
+   {
+    "name": "TRENCHFIRE",
+    "id": "f81aaa08-71a6-4bc2-8faa-716f37a8ad44",
+    "downloads": 1,
+    "rating": 0,
+    "reviews": 0,
+    "released": "2026-09-25",
+    "version": "1.0"
+   }
+  ],
+  "updated": "2026-10-19T03:16:26.555Z"
+ },
+ "uptime": {
+  "sites": [
+   {
+    "name": "TideFit",
+    "url": "https://tide-fit.vercel.app",
+    "last": {
+     "at": "2026-10-19T03:16:26.822Z",
+     "ok": true,
+     "status": 200,
+     "ms": 267
+    },
+    "history": [
+     {
+      "at": "2026-10-19T03:12:57.926Z",
+      "ok": true,
+      "status": 200,
+      "ms": 2093
+     },
+     {
+      "at": "2026-10-19T03:15:05.087Z",
+      "ok": true,
+      "status": 200,
+      "ms": 312
+     },
+     {
+      "at": "2026-10-19T03:16:26.822Z",
+      "ok": true,
+      "status": 200,
+      "ms": 267
+     }
+    ],
+    "up": 3,
+    "checks": 3
+   }
+  ],
+  "updated": "2026-10-19T03:16:26.823Z"
  }
 }

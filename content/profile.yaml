@@ -16,10 +16,20 @@ stats:
   overwatch:
     name: DankAxon
     player_id: "d65fa281926994a3a4a12ea6dd|09da774c5ab3d84f981a4520bfd146d6"
+  pypi: [ephys-mcp]
+  connectiq:
+    - name: TRENCHFIRE
+      id: f81aaa08-71a6-4bc2-8faa-716f37a8ad44
+  uptime:
+    - name: TideFit
+      url: https://tide-fit.vercel.app
   codeforces: ""
   leetcode: ""
   twitch: ""
-  strava: false
+  lichess: ""
+  chesscom: ""
+  steam: ""          # 64-bit Steam ID; also needs the STEAM_API_KEY secret
+  strava: false      # turned on by ~/.config/portfolio-stats/strava.json on the Mac
 
 education:
   - school: New York University, Tandon School of Engineering

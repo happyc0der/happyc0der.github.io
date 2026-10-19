@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Sums Claude Code token usage per day (New York time) from the local transcripts in ~/.claude/projects.
-// Prints JSON: { "machine": ..., "days": { "YYYY-MM-DD": { "total": n, "output": n } } }.
+// Prints JSON: { machine, days: { "YYYY-MM-DD": { total, output } }, projects: { <folder>: total }, models: { <model>: total } }.
+// "Project" is the session's working directory (the cwd recorded in the transcript), else its folder under projects/.
 // Self-contained (no imports outside Node) so it can be piped over SSH: `ssh msi node - < claude-usage.mjs`.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -12,6 +13,8 @@ const seen = new Set();
 // Days follow New York time on every machine, so the Mac and the MSI agree on where a day ends.
 const dayOf = (ts) => new Date(ts).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 const days = {};
+const projects = {};
+const models = {};
 
 function* walk(dir) {
   let entries = [];
@@ -24,6 +27,7 @@ function* walk(dir) {
 }
 
 for (const file of walk(root)) {
+  const project = path.relative(root, file).split(path.sep)[0];
   const rl = readline.createInterface({ input: fs.createReadStream(file), crlfDelay: Infinity });
   for await (const line of rl) {
     if (!line.includes('"usage"')) continue;
@@ -42,7 +46,11 @@ for (const file of walk(root)) {
     const slot = (days[day] ||= { total: 0, output: 0 });
     slot.total += total;
     slot.output += out;
+    const where = d.cwd || project;
+    projects[where] = (projects[where] || 0) + total;
+    const model = (m.model || 'unknown').replace(/-\d{8}$/, '');
+    if (model !== '<synthetic>') models[model] = (models[model] || 0) + total;
   }
 }
 
-process.stdout.write(JSON.stringify({ machine: os.hostname(), days }));
+process.stdout.write(JSON.stringify({ machine: os.hostname(), days, projects, models }));
