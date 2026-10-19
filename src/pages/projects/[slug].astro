@@ -4,27 +4,68 @@ import Base from '../../layouts/Base.astro';
 import { tagNames } from '../../lib';
 
 export async function getStaticPaths() {
-  return (await getCollection('projects')).filter((p) => p.data.listed).map((project) => ({ params: { slug: project.id }, props: { project } }));
+  const all = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
+  return all.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, prev: all[i - 1] ?? null, next: all[i + 1] ?? null },
+  }));
 }
-const { project } = Astro.props;
+const { project, prev, next } = Astro.props;
 const d = project.data;
 const { Content } = await render(project);
+const demoLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Page' : 'Live site') : null;
 ---
 <Base title={d.title} description={d.blurb}>
-  <a class="back" href="/projects/">← Projects</a>
-  <p class="label">{d.year}{d.team && ` · team of ${d.team}`}{d.status && ` · ${d.status}`}</p>
-  <h1 class="page-title">{d.title}</h1>
-  <p class="muted" style="font-size:1.15rem;max-width:40rem">{d.blurb}</p>
-  {d.credit && <p class="muted" style="max-width:40rem">{d.credit}</p>}
-  <div class="tags" style="margin:1.25rem 0 1.5rem">
-    {d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}
-    {d.stack.map((s: string) => <span class="tag" style="background:var(--surface-2);color:var(--muted)">{s}</span>)}
-  </div>
-  <div class="links">
-    {d.repo && <a class="btn primary" href={d.repo}>Source</a>}
-    {d.demo && <a class="btn" href={d.demo}>{d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Page' : 'Live'}</a>}
-  </div>
-  <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
-  {d.image && <div class="figure"><img src={d.image} alt={`Figure from ${d.title}`} loading="lazy" /></div>}
-  <div class="prose"><Content /></div>
+  <article class="project">
+    <header class="project-head">
+      <a class="back" href="/projects/">← All projects</a>
+      <p class="label">{d.year}{d.team && ` · team of ${d.team}`}{d.status && ` · ${d.status}`}</p>
+      <h1 class="page-title">{d.title}</h1>
+      <p class="muted lead">{d.blurb}</p>
+    </header>
+
+    <div class="project-grid">
+      <div class="project-main">
+        {d.image && <figure class="figure hero-figure"><img src={d.image} alt={`Screenshot or figure from ${d.title}`} /></figure>}
+        <h2 class="mini">Highlights</h2>
+        <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
+        <h2 class="mini">The story</h2>
+        <div class="prose"><Content /></div>
+      </div>
+
+      <aside class="project-side">
+        {(d.repo || d.demo) && (
+          <div class="links">
+            {d.repo && <a class="btn primary" href={d.repo}>Source</a>}
+            {d.demo && <a class="btn" href={d.demo}>{demoLabel}</a>}
+          </div>
+        )}
+        {d.stats.length > 0 && (
+          <div class="side-block">
+            <p class="label">By the numbers</p>
+            <ul class="side-stats">{d.stats.map((s: string) => <li>{s}</li>)}</ul>
+          </div>
+        )}
+        <div class="side-block">
+          <p class="label">Area</p>
+          <div class="tags">{d.tags.map((t: string) => <a class="tag" href={`/projects/#${t}`}>{tagNames[t]}</a>)}</div>
+        </div>
+        <div class="side-block">
+          <p class="label">Stack</p>
+          <div class="tags">{d.stack.map((s: string) => <span class="tag plain">{s}</span>)}</div>
+        </div>
+        {d.credit && (
+          <div class="side-block">
+            <p class="label">Credit</p>
+            <p class="muted small-text">{d.credit}</p>
+          </div>
+        )}
+      </aside>
+    </div>
+
+    <nav class="pager" aria-label="More projects">
+      {prev ? <a href={`/projects/${prev.id}/`} class="prev"><span class="mono muted">← previous</span><span>{prev.data.title}</span></a> : <span></span>}
+      {next ? <a href={`/projects/${next.id}/`} class="next"><span class="mono muted">next →</span><span>{next.data.title}</span></a> : <span></span>}
+    </nav>
+  </article>
 </Base>

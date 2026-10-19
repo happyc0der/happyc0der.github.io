@@ -1,17 +1,20 @@
 ---
-import { tagNames } from '../lib';
+import { tagNames, badge } from '../lib';
 const { project, thumb = false, eager = false } = Astro.props;
 const d = project.data;
+const b = badge(d);
+// Cards use the 800 px thumbnail from scripts/make-thumbs.sh; the full image stays on the project page.
+const thumbSrc = d.image ? d.image.replace(/^\/img\/(.+)\.(png|jpe?g)$/, '/img/thumb/$1.jpg') : null;
 ---
 <a class:list={['card', { 'has-thumb': thumb }]} href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
   {thumb && (
     d.image
-      ? <div class="thumb"><img src={d.image} alt="" loading={eager ? "eager" : "lazy"} decoding="async" /></div>
+      ? <div class="thumb"><img src={thumbSrc} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width="800" height="450" /></div>
       : <div class="thumb text"><span>{d.stats[0] ?? d.title}</span></div>
   )}
   <div class="top">
     <h3>{d.title}</h3>
-    <span class="mono muted">{d.status ? d.status : d.year}</span>
+    <span class:list={['mono', b.live ? 'pill' : 'muted']}>{b.text}</span>
   </div>
   <p>{d.blurb}</p>
   <div class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</div>

@@ -1,16 +1,31 @@
 ---
+import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import { resumes } from '../lib';
+
+const updated = (file: string) => {
+  try { return fs.statSync(`./public/resume/${file}.pdf`).mtime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' }); } catch { return null; }
+};
 ---
-<Base title="Resume">
+<Base title="Resume" description="One-page resumes for software, ML, data, security and quant roles.">
   <h1 class="page-title">Resume</h1>
-  <p class="muted" style="margin-bottom:2rem">One page each. Pick the one that fits the role.</p>
-  <div class="rows" style="max-width:36rem">
+  <p class="muted lead">One page each, built from the same project data as this site. Pick the one that fits the role.</p>
+  <div class="resumes">
     {Object.values(resumes).map((r: any) => (
-      <div class="row">
-        <span class="what">{r.label}</span>
-        <a class="when mono" href={`/resume/${r.file}.pdf`}>PDF ↓</a>
-      </div>
+      <article class="resume-card">
+        <a class="preview" href={`/resume/${r.file}.pdf`} aria-label={`Open the ${r.label} resume (PDF)`}>
+          <img src={`/resume/${r.file}.png`} alt="" loading="lazy" decoding="async" width="612" height="792" />
+        </a>
+        <div class="body">
+          <h2>{r.label}</h2>
+          <p class="muted">{r.headline}</p>
+          <div class="links">
+            <a class="btn primary" href={`/resume/${r.file}.pdf`}>Open PDF</a>
+            <a class="btn" href={`/resume/${r.file}.pdf`} download>Download</a>
+          </div>
+          {updated(r.file) && <p class="mono muted small">Updated {updated(r.file)}</p>}
+        </div>
+      </article>
     ))}
   </div>
 </Base>

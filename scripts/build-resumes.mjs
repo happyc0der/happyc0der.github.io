@@ -204,6 +204,8 @@ for (const [key, cfg] of Object.entries(resumes)) {
   }
   fs.writeFileSync(path.join(outDir, `${cfg.file}.txt`), r.text);
   fs.copyFileSync(pdf, path.join(publicDir, `${cfg.file}.pdf`));
+  // First-page preview for the resume page.
+  execFileSync('gs', ['-q', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m', '-r72', '-dFirstPage=1', '-dLastPage=1', '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', `-sOutputFile=${path.join(publicDir, `${cfg.file}.png`)}`, pdf]);
   console.log(`${key.padEnd(6)} ${r.pages} page, ${r.words} words${note} ${r.problems.length ? 'PROBLEMS: ' + r.problems.join('; ') : 'ok'}`);
   if (r.problems.length) failed = true;
 }
