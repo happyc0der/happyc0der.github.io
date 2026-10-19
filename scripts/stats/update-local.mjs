@@ -113,4 +113,12 @@ run('git', ['add', 'content/stats']);
 const changed = run('git', ['status', '--porcelain', 'content/stats']).trim();
 if (!changed) { log('no changes'); process.exit(0); }
 run('git', ['-c', 'user.name=happyc0der', '-c', 'user.email=KeshavRajput.4@gmail.com', 'commit', '-q', '-m', 'Update homepage stats']);
-if (push) { run('git', ['push', '-q', 'origin', 'HEAD:main']); log('pushed'); } else log('committed locally, not pushed (--no-push)');
+if (!push) { log('committed locally, not pushed (--no-push)'); process.exit(0); }
+try {
+  run('git', ['push', '-q', 'origin', 'HEAD:main']);
+} catch {
+  // Someone pushed meanwhile: replay this one commit on top and try once more.
+  run('git', ['pull', '-q', '--rebase', 'origin', 'main']);
+  run('git', ['push', '-q', 'origin', 'HEAD:main']);
+}
+log('pushed');
