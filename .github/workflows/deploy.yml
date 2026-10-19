@@ -9,6 +9,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+# One deploy at a time: a second push waits instead of colliding with the first (failed 2026-10-19).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
