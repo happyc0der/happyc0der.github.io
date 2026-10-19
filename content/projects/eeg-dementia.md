@@ -8,7 +8,7 @@ order: 3.5
 featured: true
 team: 4
 credit: "The Spring 2025 project was a team of four in NYU's Neuroinformatics course: Subhrajit Dey (subro608 on GitHub), who wrote most of the original graph-transformer model and training code, Sirish Visweswar, terka2610 and me. It is kept unchanged in the repository's legacy folder. The 2026 re-evaluation is mine: the subject-level evaluation harness, the 16 feature pipelines, the foundation-model and CNN comparisons, the statistics and the tests."
-resume_credit: "2025 team course project (4 people); the 2026 re-evaluation, harness, models and statistics are mine."
+resume_credit: "Started as a 2025 team course project; the 2026 re-evaluation, harness, models and statistics are mine."
 stack: [Python, PyTorch, braindecode, MNE, scikit-learn, LightGBM, pyRiemann, uv, pytest]
 tags: [ml, data]
 stats: ["88 subjects, 10x5-fold nested CV", "61.1% vs 33% chance", "no deep model beats features"]

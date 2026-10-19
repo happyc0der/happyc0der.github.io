@@ -89,7 +89,7 @@ Every training run passes a synthetic smoke test, a leakage check on its split a
 
 Honest, subject-level re-evaluation of a course project that classified Alzheimer's, frontotemporal dementia and healthy controls from EEG: about 60% balanced accuracy, and no deep model beats spectral features.
 
-- 2026 · team of 4 · featured · tags: ml data · on no resume
+- 2026 · team of 4 · featured · tags: ml data · resumes: ml
 - https://github.com/happyc0der/eeg-dementia-graph-transformer
 - credit: The Spring 2025 project was a team of four in NYU's Neuroinformatics course: Subhrajit Dey (subro608 on GitHub), who wrote most of the original graph-transformer model and training code, Sirish Visweswar, terka2610 and me. It is kept unchanged in the repository's legacy folder. The 2026 re-evaluation is mine: the subject-level evaluation harness, the 16 feature pipelines, the foundation-model and CNN comparisons, the statistics and the tests.
 - stack: Python, PyTorch, braindecode, MNE, scikit-learn, LightGBM, pyRiemann, uv, pytest
