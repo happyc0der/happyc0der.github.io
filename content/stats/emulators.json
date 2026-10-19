@@ -1,0 +1,26 @@
+{
+ "updated": "2026-10-19T04:46:04.951Z",
+ "machine": "MSI",
+ "emulators": [
+  {
+   "name": "RPCS3",
+   "platform": "PlayStation 3",
+   "games": 4
+  },
+  {
+   "name": "PPSSPP",
+   "platform": "PSP",
+   "games": 19
+  },
+  {
+   "name": "Xenia",
+   "platform": "Xbox 360",
+   "games": 2
+  },
+  {
+   "name": "Cemu",
+   "platform": "Wii U",
+   "games": 0
+  }
+ ]
+}

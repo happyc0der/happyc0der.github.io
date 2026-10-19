@@ -203,6 +203,14 @@ try {
   log('gtnh ok:', res.quests, 'quests');
 } catch (e) { log('gtnh skipped:', e.message.split('\n')[0]); }
 
+// 7b. Emulators on the MSI: names and game counts only, never titles.
+try {
+  const raw = run('ssh', ['-o', 'ConnectTimeout=10', '-o', 'BatchMode=yes', 'msi', 'powershell -NoProfile -Command -'], { input: fs.readFileSync('scripts/stats/emulators.ps1') });
+  const res = JSON.parse(raw.trim().split('\n').filter((l) => l.trim().startsWith('{')).pop());
+  writeJson('content/stats/emulators.json', { updated: new Date().toISOString(), ...res });
+  log('emulators ok:', res.emulators.map((e) => `${e.name} ${e.games}`).join(', '));
+} catch (e) { log('emulators skipped:', e.message.split('\n')[0]); }
+
 // 8. Spotify (optional): ~/.config/portfolio-stats/spotify.json with client_id, client_secret, refresh_token.
 const SPOTIFY_CONF = path.join(HOME, '.config', 'portfolio-stats', 'spotify.json');
 if (fs.existsSync(SPOTIFY_CONF)) {
