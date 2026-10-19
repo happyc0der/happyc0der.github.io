@@ -63,6 +63,8 @@ Description: Distributed Systems, Operating Systems, Computer Networks, Advanced
 4. https://apps.garmin.com/apps/f81aaa08-71a6-4bc2-8faa-716f37a8ad44 (TRENCHFIRE on the Connect IQ store, link)
 5. https://github.com/happyc0der/atlas-engine (link)
 
+Featured descriptions: mldsa-auth "ML-DSA-65 signatures over hybrid X25519 + ML-KEM-768. 0.45 ms handshake, 12 fuzz targets, 299 mutations nightly, ProVerif model."; Atlas "Deterministic lockstep simulation with state hashing, WebAssembly-sandboxed mods, over 1,000 tests, CI on macOS, Linux and Windows."
+
 ## Projects (LinkedIn "Projects" section, one entry each; the form has no URL field, so links go at the end of the description)
 
 Written for a reader, not a parser: the first sentence says what the thing is and the main result, then short sentences, then links. Numbers match content/ and the resumes.
@@ -186,7 +188,7 @@ Code: github.com/happyc0der/nyc-autoddg
 
 ### Kaggle 2026: Biohub Cell Tracking, Playground S6E9, TrafficFlowBench
 Dates: Sep 2026 - present · Skills: Machine Learning, LightGBM, PyTorch
-Three Kaggle competitions this year, plus the Gemma agent entry below.
+Three Kaggle competitions this year, plus the separate Gemma 4 agent entry.
 
 Biohub Cell Tracking: finished 591st of 3,947 teams (top 15%), on free Kaggle GPU. Public leaderboard 0.952, against 0.947 for the public notebook it builds on. I built an offline harness that runs GPU inference once and re-tunes post-processing locally against the official scorer, and trained a 3D CNN on 134 annotated cell divisions to prune false branches.
 
@@ -195,6 +197,16 @@ Playground S6E9 (EV purchases, ROC AUC): finished 287th of 3,575 teams (top 9%),
 TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.889 against a 0.553 baseline. A PyTorch U-Net and LightGBM models for state reconstruction, LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
 
 Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench
+
+### Split/Second PC fixes: wireless Xbox controllers, Xbox button names and 60 FPS
+Dates: Oct 2026 · Skills: C++, Reverse Engineering
+Fixes for Split/Second, a 2010 PC racing game, built by proxying its DirectInput and patching it in memory.
+
+The game reads input only through DirectInput and picks default controls by exact product ID, so a modern Bluetooth Xbox controller got no bindings at all. PadFix, a drop-in DirectInput proxy DLL in C++, presents any Microsoft pad as a wired Xbox 360 controller and answers the game's reads from XInput. It also renames the game's 22 DirectInput prompt names ("Button 1", "Axis Z Pos") to Xbox names in memory, pausing the game's threads to re-check and write each match in well under a millisecond. ButtonNames does the same rename on disk, with a byte-identical restore.
+
+I also ported preseznik's community 60 FPS mod to a second build of the game: I mapped every hooked address from runtime memory dumps of the copy-protected exe, checked each patch against the expected original bytes, and held 59.8 to 60.1 FPS in 209 of 223 five-second windows over a 19-minute session.
+
+Code: github.com/happyc0der/SplitSecond-PadFix, github.com/happyc0der/SplitSecond-ButtonNames and github.com/happyc0der/SplitSecond-HFR
 
 ## Skills (add these, pin the first three)
 
