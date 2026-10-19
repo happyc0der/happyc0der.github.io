@@ -140,7 +140,19 @@ const sources = {
       json(`https://api.twitch.tv/helix/channels/followers?broadcaster_id=${user.id}`, { headers: h }),
       json(`https://api.twitch.tv/helix/streams?user_id=${user.id}`, { headers: h }),
     ]);
-    return { login, display_name: user.display_name, followers: fol.total ?? null, live: live.data.length > 0, game: live.data[0]?.game_name ?? null };
+    // How often he streams, from saved past broadcasts (Twitch keeps them 7 to 60 days). Never fails the source.
+    let recent = null;
+    try {
+      const [vods, chan] = await Promise.all([
+        json(`https://api.twitch.tv/helix/videos?user_id=${user.id}&type=archive&first=100`, { headers: h }),
+        json(`https://api.twitch.tv/helix/channels?broadcaster_id=${user.id}`, { headers: h }),
+      ]);
+      const hours = (d) => { const m = String(d || '').match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/); return (+(m?.[1] || 0)) + (+(m?.[2] || 0)) / 60 + (+(m?.[3] || 0)) / 3600; };
+      const week = (vods.data || []).filter((v) => Date.now() - new Date(v.created_at).getTime() < 7 * 86400e3);
+      recent = { streams_7d: week.length, hours_7d: Math.round(week.reduce((a, v) => a + hours(v.duration), 0) * 10) / 10,
+                 last_stream: vods.data?.[0]?.created_at ?? null, category: chan.data?.[0]?.game_name || null };
+    } catch {}
+    return { login, display_name: user.display_name, followers: fol.total ?? null, live: live.data.length > 0, game: live.data[0]?.game_name ?? null, ...(recent || {}) };
   },
 };
 

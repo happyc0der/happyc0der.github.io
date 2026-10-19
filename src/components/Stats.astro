@@ -223,13 +223,6 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         <p class="sub muted">{ow.name}{ow.season && ` · season ${ow.season}`}</p>
       </div>
     )}
-    {tw && (
-      <div class="tile">
-        <p class="label">Twitch {tw.live && <span class="live">live</span>}</p>
-        <p class="stat"><strong>{compact(tw.followers)}</strong> followers</p>
-        <p class="sub">{tw.live && tw.game ? `Streaming ${tw.game} now · ` : ''}<a href={`https://twitch.tv/${tw.login}`}>twitch.tv/{tw.login} →</a></p>
-      </div>
-    )}
     {sm && (
       <div class="tile">
         <p class="label">Steam</p>
@@ -242,6 +235,22 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         <p class="label">Emulators</p>
         <p class="stat"><strong>{emu.total}</strong> games across {emu.count} emulators</p>
         <ul class="split">{emu.rows.map((e: any) => <li><span>{e.platform} <span class="muted">· {e.name} · {e.device}</span></span><span class="mono">{e.games}</span></li>)}</ul>
+      </div>
+    )}
+    {tw && (
+      <div class="tile">
+        <p class="label">Twitch {tw.live && <span class="live">live</span>}</p>
+        {tw.streams_7d > 0
+          ? <p class="stat"><strong>{tw.streams_7d}</strong> streams in the last 7 days</p>
+          : <p class="stat"><strong>{compact(tw.followers)}</strong> followers</p>}
+        {(tw.streams_7d > 0 || tw.category) && (
+          <dl class="kv">
+            {tw.streams_7d > 0 && <div><dt>Streamed</dt><dd>{tw.hours_7d} <span class="muted">h</span></dd></div>}
+            {tw.streams_7d > 0 && tw.followers != null && <div><dt>Followers</dt><dd>{tw.followers.toLocaleString('en-US')}</dd></div>}
+            {tw.category && <div><dt>Category</dt><dd>{tw.category}</dd></div>}
+          </dl>
+        )}
+        <p class="sub">{tw.live && tw.game ? `Streaming ${tw.game} now · ` : tw.last_stream ? `Last stream ${fmtDay(nyDay(tw.last_stream))} · ` : ''}<a class="nowrap" href={`https://twitch.tv/${tw.login}`}>twitch.tv/{tw.login} →</a></p>
       </div>
     )}
     {sp && sp.artists?.length > 0 && (

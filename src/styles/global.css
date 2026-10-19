@@ -89,6 +89,7 @@ section + section { margin-top: var(--space-10); }
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .tiles > .tile:last-child:nth-child(2n + 1) { grid-column: auto; }
   .tiles > .tile:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .tiles > .tile:last-child:nth-child(3n + 2) { grid-column: span 2; }   /* two in the last row: the second fills the gap */
 }
 /* A tile that spans the row (a lone last tile, or one on a tablet) spreads its figures out. */
 .tile { container-type: inline-size; }
