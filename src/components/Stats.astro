@@ -81,6 +81,18 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         <p class="sub muted">Final ranks only; the two still running show their end date instead.</p>
       </div>
     )}
+    {(cf || lc) && (
+      <div class="tile">
+        <p class="label">Competitive programming</p>
+        <dl class="kv">
+          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && cf.max_rating !== cf.rating ? `rating · max ${cf.max_rating}` : 'rating'}</span></dd></div>}
+          {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
+          {lc?.hard != null && <div><dt>Hard solved</dt><dd>{lc.hard}</dd></div>}
+          {cf?.contests != null && <div><dt>CF contests</dt><dd>{cf.contests}</dd></div>}
+        </dl>
+        <p class="sub">{[cf && <a class="nowrap" href={`https://codeforces.com/profile/${cf.handle}`}>Codeforces {cf.rank ? `(${cf.rank})` : ''} →</a>, lc && <a class="nowrap" href={`https://leetcode.com/u/${lc.username}/`}>LeetCode →</a>].filter(Boolean).map((a, i) => <>{i > 0 && ' · '}{a}</>)}</p>
+      </div>
+    )}
     {tr?.recent_wpm && (
       <div class="tile">
         <div class="tile-head">
@@ -93,17 +105,6 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
           {tr.avg_wpm && <div><dt>All races</dt><dd>{tr.avg_wpm} <span class="muted">WPM</span></dd></div>}
           {tr.best_wpm && <div><dt>Best race</dt><dd>{tr.best_wpm} <span class="muted">WPM</span></dd></div>}
           {tr.races != null && <div><dt>Races</dt><dd>{tr.races.toLocaleString('en-US')}</dd></div>}
-        </dl>
-      </div>
-    )}
-    {(cf || lc) && (
-      <div class="tile">
-        <p class="label">Competitive programming</p>
-        <dl class="kv">
-          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && cf.max_rating !== cf.rating ? `rating · max ${cf.max_rating}` : 'rating'}</span></dd></div>}
-          {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
-          {lc?.hard != null && <div><dt>Hard solved</dt><dd>{lc.hard}</dd></div>}
-          {cf?.contests != null && <div><dt>CF contests</dt><dd>{cf.contests}</dd></div>}
         </dl>
       </div>
     )}
