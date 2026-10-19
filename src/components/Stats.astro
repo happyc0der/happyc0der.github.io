@@ -11,7 +11,7 @@ const gh = githubStats(), langs = languageStats(), commits = commitStats(), kagg
 const cl = claudeStats(), cb = claudeBreakdown(), gt = gtnhStats();
 const ga = garminStats(), st = stravaStats(), sp = spotifyStats();
 const pub = publicStats();
-const { overwatch: ow, codeforces: cf, leetcode: lc, twitch: tw, lichess: li, chesscom: cc, steam: sm, pypi, connectiq, uptime } = pub;
+const { overwatch: ow, codeforces: cf, leetcode: lc, twitch: tw, steam: sm, pypi, connectiq, uptime } = pub;
 const graw = garminRaw();
 const rec = graw.records || {}, body = graw.body;
 
@@ -21,7 +21,7 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 const updated = [gh?.updated, cl?.updated, ga?.updated].filter(Boolean).sort().pop();
 const shipped = [pypi?.packages?.length, connectiq?.apps?.length, uptime?.sites?.length].some(Boolean);
-const play = [ow, tw, sm, li, cc, sp].some(Boolean);
+const play = [ow, tw, sm, sp].some(Boolean);
 ---
 {(gh || cl || ga || ow) && (
 <section class="stats" id="numbers">
@@ -238,17 +238,6 @@ const play = [ow, tw, sm, li, cc, sp].some(Boolean);
         <p class="label">Steam</p>
         <p class="stat"><strong>{sm.hours.toLocaleString('en-US')}</strong> hours across {sm.games} games</p>
         <ul class="split">{sm.top.slice(0, 4).map((g: any) => <li><span>{g.name}</span><span class="mono">{g.hours} h</span></li>)}</ul>
-      </div>
-    )}
-    {(li || cc) && (
-      <div class="tile">
-        <p class="label">Chess</p>
-        <dl class="kv">
-          {li?.rapid && <div><dt>Lichess rapid</dt><dd>{li.rapid.rating}</dd></div>}
-          {li?.blitz && <div><dt>Lichess blitz</dt><dd>{li.blitz.rating}</dd></div>}
-          {cc?.rapid && <div><dt>Chess.com rapid</dt><dd>{cc.rapid.rating}</dd></div>}
-          {cc?.blitz && <div><dt>Chess.com blitz</dt><dd>{cc.blitz.rating}</dd></div>}
-        </dl>
       </div>
     )}
     {sp && sp.artists?.length > 0 && (
