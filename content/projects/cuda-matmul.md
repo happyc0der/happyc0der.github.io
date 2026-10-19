@@ -14,4 +14,4 @@ bullets:
   - "The README explains what the host-side timing includes (allocation, copies and CUDA context creation) and lists the next steps: shared-memory tiling, cuBLAS and CUDA events."
 ---
 
-Learning exercises, not an optimised GEMM: there is no tiling, cuBLAS or error checking. Kept in the dataset, off the site.
+Learning exercises, not an optimized GEMM: there is no tiling, cuBLAS or error checking. Kept in the dataset, off the site.

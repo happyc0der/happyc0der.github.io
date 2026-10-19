@@ -3,6 +3,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { color-scheme: dark; scroll-behavior: smooth; overflow-x: clip; }
 body { overflow-x: clip; }
+/* Short pages (404) keep the footer at the bottom of the window */
+body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+body > main { flex: 1 0 auto; }
 body {
   margin: 0;
   background: var(--bg);
@@ -328,3 +331,4 @@ nav a:hover::after, nav a[aria-current='page']::after { transform: scaleX(1); }
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   @view-transition { navigation: none; }
 }
+.nowrap { white-space: nowrap; }

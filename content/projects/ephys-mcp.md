@@ -6,16 +6,16 @@ image: /img/ephys-mcp.png
 year: 2026
 order: 13
 featured: false
-stack: [Python, MCP, numpy, scipy, pynwb, spikeinterface, matplotlib, GitHub Actions]
+stack: [Python, MCP, NumPy, SciPy, pynwb, spikeinterface, Matplotlib, GitHub Actions]
 tags: [swe, ml]
 stats: ["24 tools, 5 sources", "PyPI + MCP Registry", "52 tests, CI"]
 bullets:
-  - "Python MCP server that lets an LLM analyse intracortical, spike-level brain-computer-interface recordings: 24 read-only tools over synthetic, local NWB, WAV, live Lab Streaming Layer and DANDI Archive sources, released as v0.5.1 on PyPI and the official MCP Registry."
-  - "Covers signal quality, threshold spike detection, firing rates, ridge and Kalman decoders scored on held-out data, trial-aligned PSTHs, geometry-aware spike sorting through spikeinterface, FALCON-style cross-session evaluation and GPFA written from the paper's equations in numpy and scipy, with figures returned inline as PNG."
-  - "Reference results on public data: ridge R² 0.50 for hand velocity on MC_Maze_Small, and on FALCON H1 a decoder that scores 0.43 on its own day and 0.07 one week later; 52 tests, 51 of them run with ruff in CI, a token-gated HTTP transport, no bundled third-party data and a CC0 licence."
+  - "Python MCP server that lets an LLM analyze intracortical, spike-level brain-computer-interface recordings: 24 read-only tools over synthetic, local NWB, WAV, live Lab Streaming Layer and DANDI Archive sources, released as v0.5.1 on PyPI and the official MCP Registry."
+  - "Covers signal quality, threshold spike detection, firing rates, ridge and Kalman decoders scored on held-out data, trial-aligned PSTHs, geometry-aware spike sorting through spikeinterface, FALCON-style cross-session evaluation and GPFA written from the paper's equations in NumPy and SciPy, with figures returned inline as PNG."
+  - "Reference results on public data: ridge R² 0.50 for hand velocity on MC_Maze_Small, and on FALCON H1 a decoder that scores 0.43 on its own day and 0.07 one week later; 52 tests, 51 of them run with ruff in CI, a token-gated HTTP transport, no bundled third-party data and a CC0 license."
 resume_bullets:
   - "Python MCP server for spike-level BCI recordings: 24 read-only tools over synthetic, NWB, WAV, Lab Streaming Layer and DANDI sources; v0.5.1 on PyPI."
-  - "Spike detection, ridge and Kalman decoders scored on held-out data, PSTHs, spike sorting via spikeinterface, FALCON-style cross-session evaluation, GPFA in numpy."
+  - "Spike detection, ridge and Kalman decoders scored on held-out data, PSTHs, spike sorting via spikeinterface, FALCON-style cross-session evaluation, GPFA in NumPy."
   - "Ridge decodes hand velocity at R² 0.50 on MC_Maze_Small; on FALCON H1 0.43 same day and 0.07 a week later; 52 tests, token-gated HTTP."
 ---
 
@@ -25,4 +25,4 @@ The analysis side covers signal quality, threshold spike detection with precisio
 
 On MC_Maze_Small (DANDI 000140, 142 units) ridge decodes hand velocity at R² 0.50 and Kalman at 0.34. On FALCON H1 (DANDI 000954, 176 channels) a ridge decoder trained on the first held-in day scores 0.43 on that day's minival split, 0.07 one week later and below zero on the held-out days, which is the decay the benchmark exists to measure. On the simulator, whose true latent is 2-D cursor velocity, GPFA finds two dominant factors that explain velocity with R² 0.95 against 0.68 for PCA. The decoders are simple causal linear baselines, not state of the art, and FALCON's test labels are private, so none of them is a leaderboard score.
 
-The source contract has no write, stimulate or configure method, and none will be added without a separate safety design. The server runs on stdio with no telemetry; HTTP is opt-in, refuses to bind off loopback without a bearer token, and the README says to put TLS in front of it. No third-party data is bundled and every adapter returns the dataset's licence and citation. Of the 52 tests, 51 run offline with ruff in GitHub Actions and one streams a real file from DANDI on demand. Published under CC0 as `io.github.happyc0der/ephys-mcp`; research software, not a medical device.
+The source contract has no write, stimulate or configure method, and none will be added without a separate safety design. The server runs on stdio with no telemetry; HTTP is opt-in, refuses to bind off loopback without a bearer token, and the README says to put TLS in front of it. No third-party data is bundled and every adapter returns the dataset's license and citation. Of the 52 tests, 51 run offline with ruff in GitHub Actions and one streams a real file from DANDI on demand. Published under CC0 as `io.github.happyc0der/ephys-mcp`; research software, not a medical device.

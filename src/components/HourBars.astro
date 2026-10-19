@@ -1,5 +1,5 @@
 ---
-// 24 hourly columns (New York time), one series; the peak hour is labelled, every bar has a hover title.
+// 24 hourly columns (New York time), one series; the peak hour is labeled, every bar has a hover title.
 const { hours, peak, hourLabel, label } = Astro.props;
 const W = 288, H = 70, base = H - 14, slot = W / 24, BAR = 8;
 const max = Math.max(1, ...hours);

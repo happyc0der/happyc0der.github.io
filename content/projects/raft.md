@@ -6,7 +6,7 @@ year: 2024
 order: 27
 featured: false
 team: 3
-status: "Course project 2024, maintained 2026"
+status: "Maintained 2026"
 credit: "The team was Aditya Ahuja, Deeptanshu Barman and me, for CSE530 at IIIT Delhi in 2024; the repository is my fork of Aditya's Raft-Implementation with the full history. Aditya wrote the node, the election, the client handling and request forwarding. Deeptanshu wrote the replication and commit logic, the lease timers and the metadata class. My 2024 part was the leader lease and the first per-node dump and metadata files. The 2026 maintenance, the bug fixes, the smoke test and the README are mine."
 resume_credit: "Team of three (2024); the leader lease and the 2026 fixes and maintenance are mine."
 stack: [Python, gRPC, Protocol Buffers, Google Cloud]

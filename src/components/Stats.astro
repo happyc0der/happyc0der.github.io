@@ -67,7 +67,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         <p class="label">When I commit</p>
         <p class="stat"><strong>{commits.peakLabel}</strong> busiest hour</p>
         <HourBars hours={commits.hours} peak={commits.peak} hourLabel={commits.hourLabel} label={`My ${commits.total} commits in the last year by hour of day, New York time; busiest at ${commits.peakLabel}.`} />
-        <p class="sub">{commits.total.toLocaleString('en-US')} commits in a year, New York time · {pct(commits.nightShare)} between 10pm and 5am · busiest day {commits.busiestDay}</p>
+        <p class="sub">{commits.total.toLocaleString('en-US')} commits in a year across {commits.repos} repos, private ones included · {pct(commits.nightShare)} between 10pm and 5am ET · busiest day {commits.busiestDay}</p>
       </div>
     )}
     {kaggle && (kaggle.finished.length > 0 || kaggle.active.length > 0) && (
@@ -85,7 +85,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
       <div class="tile">
         <p class="label">Competitive programming</p>
         <dl class="kv">
-          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && cf.max_rating !== cf.rating && `max ${cf.max_rating}`}</span></dd></div>}
+          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && cf.max_rating !== cf.rating ? `rating · max ${cf.max_rating}` : 'rating'}</span></dd></div>}
           {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
           {lc?.hard != null && <div><dt>Hard solved</dt><dd>{lc.hard}</dd></div>}
           {cf?.contests != null && <div><dt>CF contests</dt><dd>{cf.contests}</dd></div>}
@@ -109,7 +109,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
       <div class="tile">
         <p class="label">Where the tokens went</p>
         <ul class="shares">{cb.projects.map((r) => <li class:list={{ other: r.label === 'Other work' }}><span class="name">{r.label}</span><span class="track"><i style={`width:${Math.max(3, (r.share / Math.max(...cb.projects.map((x) => x.share))) * 100)}%`}></i></span><span class="mono">{pct(r.share)}</span></li>)}</ul>
-        <p class="sub">By model: {cb.models.map((m) => `${m.label} ${pct(m.share)}`).join(' · ')}</p>
+        <p class="sub">By model: {cb.models.map((m) => `${pct(m.share)} ${m.label}`).join(' · ')}</p>
       </div>
     )}
     {gt && (
@@ -147,7 +147,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         <p class="label">{s.name} · uptime</p>
         <p class="stat"><strong>{s.last.ok ? 'Up' : 'Down'}</strong> {s.last.ok ? `${s.last.ms.toLocaleString('en-US')} ms response` : `status ${s.last.status || 'no answer'}`}</p>
         <div class="ticks" aria-label={`${s.up} of the last ${s.checks} daily checks succeeded`}>{s.history.map((c: any) => <i class={c.ok ? 'ok' : 'bad'} title={`${fmtDay(nyDay(c.at))}: ${c.ok ? `up, ${c.ms} ms` : `down (${c.status || 'no answer'})`}`}></i>)}</div>
-        <p class="sub">{s.up} of the last {s.checks} checks up · <a href={s.url}>{s.url.replace('https://', '')} →</a></p>
+        <p class="sub">{s.up} of the last {s.checks} checks up · <a class="nowrap" href={s.url}>{s.url.replace('https://', '')} →</a></p>
       </div>
     ))}
   </div>
@@ -165,7 +165,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
           <div><dt>Readiness</dt><dd>{ga.readiness?.value ?? '—'} <span class="muted">/ 100</span></dd></div>
         </dl>
         <WeekBars data={ga.steps} unit=" steps" partialLast label={`Steps per day over the last 7 days; average ${compact(ga.avgSteps, 1)}.`} />
-        <p class="sub">Steps, last 7 days · average {compact(ga.avgSteps, 1)} a day · {hm(ga.avgSleepH)} sleep a night</p>
+        <p class="sub">Steps, last 7 days · full-day average {compact(ga.avgSteps, 1)} a day · {hm(ga.avgSleepH)} sleep a night</p>
       </div>
     )}
     {ga && ga.activities > 0 && (
@@ -175,6 +175,10 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         {ga.swimKm > 0 && <p class="sub"><strong>{ga.swimKm.toFixed(0)} km</strong> swum this year</p>}
         <ul class="split">{ga.byType.slice(0, 4).map((t: any) => <li><span>{t.type}</span><span class="mono">{t.n}</span></li>)}</ul>
         {ga.lastActivity && <p class="sub muted">Last logged {fmtDay(ga.lastActivity)}</p>}
+        {/* Strava holds copies of the Garmin workouts made public, so it is a line here, not a tile of its own */}
+        {st && (st.ytd_ride?.count > 0 || st.ytd_run?.count > 0) && (
+          <p class="sub muted">Shared to Strava this year: {[st.ytd_ride?.count > 0 && `${st.ytd_ride.count} rides, ${st.ytd_ride.distance_km}\u00a0km`, st.ytd_run?.count > 0 && `${st.ytd_run.count} runs, ${st.ytd_run.distance_km}\u00a0km`].filter(Boolean).join(' · ')}</p>
+        )}
       </div>
     )}
     {(rec.longest_pool_swim_m || rec.pool_1500m_s || rec.farthest_ride_m) && (
@@ -186,7 +190,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
           {rec.pool_400m_s && <div><dt>Swim 400</dt><dd>{mmss(rec.pool_400m_s.value)} <span class="muted">min</span></dd></div>}
           {rec.farthest_ride_m && <div><dt>Longest ride</dt><dd>{(rec.farthest_ride_m.value / 1000).toFixed(1)} <span class="muted">km</span></dd></div>}
         </dl>
-        <p class="sub muted">Pool distances in metres, from Garmin; times that look like watch glitches are left out</p>
+        <p class="sub muted">Pool distances in meters, from Garmin; times that look like watch glitches are left out</p>
       </div>
     )}
     {body && (
@@ -199,15 +203,6 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
           {body.body_water_pct && <div><dt>Body water</dt><dd>{body.body_water_pct}<span class="muted">%</span></dd></div>}
         </dl>
         <p class="sub muted">Hume Pod, last weigh-in {body.date && fmtDay(body.date)}</p>
-      </div>
-    )}
-    {st && (st.ytd_run || st.ytd_ride) && (
-      <div class="tile">
-        <p class="label">Strava · this year</p>
-        <dl class="kv">
-          {st.ytd_run?.count > 0 && <div><dt>Runs</dt><dd>{st.ytd_run.distance_km} <span class="muted">km · {st.ytd_run.count}</span></dd></div>}
-          {st.ytd_ride?.count > 0 && <div><dt>Rides</dt><dd>{st.ytd_ride.distance_km} <span class="muted">km · {st.ytd_ride.count}</span></dd></div>}
-        </dl>
       </div>
     )}
   </div>

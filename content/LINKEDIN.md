@@ -1,6 +1,6 @@
 # LinkedIn, paste-ready
 
-Written from content/ on 2026-09-26; rewritten for human readers the same day. Limits: headline 220 characters, About 2,600, each project description 2,000, skills 50 (3 pinned). Paste each block as is.
+Written from content/; last updated 2026-10-19. Limits: headline 220 characters, About 2,600, each project description 2,000, skills 50 (3 pinned). Paste each block as is.
 
 ## Profile URL
 
@@ -86,7 +86,7 @@ A re-evaluation of a Spring 2025 NYU Neuroinformatics team project that classifi
 
 I rebuilt the evaluation so every split is over subjects, with nested model selection, 10 repeats of 5-fold cross-validation, bootstrap confidence intervals and permutation tests. Honest three-class accuracy is about 60% against 33% chance: the best pre-specified model reaches 61.1%.
 
-I then compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs under a plan written before any run. No deep model beat the spectral features. Alzheimer's vs controls reaches 84.6%, but Alzheimer's vs frontotemporal dementia stays near 60% with everything tried. I also found that 92% of each channel's variance in the distributed recordings is one common-mode artefact.
+I then compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs under a plan written before any run. No deep model beat the spectral features. Alzheimer's vs controls reaches 84.6%, but Alzheimer's vs frontotemporal dementia stays near 60% with everything tried. I also found that 92% of each channel's variance in the distributed recordings is one common-mode artifact.
 
 The original model code is my teammates' (mainly Subhrajit Dey's); the re-evaluation is mine.
 
@@ -96,9 +96,9 @@ Code: github.com/happyc0der/eeg-dementia-graph-transformer
 Dates: Oct 2026 · Skills: LLM Agents, Python, FastAPI
 My solo entry for the Money Operations track of Block Convey's AI x Fintech hackathon, Money Talks 2, in New York on 17 October 2026. Ledger reads every deal's calls, emails and meetings into a ledger of what the buyer actually said, with verbatim quotes, and code compares each claim against the CRM. The output is a commit and best-case forecast where every excluded dollar has a reason, draft CRM corrections a person approves, and a Monday digest per rep.
 
-On 235 real CRM deals with 18 planted problem types, run through the event's Claude Sonnet 5.5 gateway, Ledger found 94% of the problems with 0 of 86 clean deals falsely flagged and no invented numbers. The same model asked to "find the issues" found 72%, flagged 10 clean deals and invented 6 numbers.
+On 235 deals built from the public Maven CRM dataset with 18 planted problem types, run through the event's Claude Sonnet 5.5 gateway, Ledger found 94% of the problems with 0 of 86 clean deals falsely flagged and no invented numbers. The same model asked to "find the issues" found 72%, flagged 10 clean deals and invented 6 numbers.
 
-I ran the same pipeline on five models, including two local ones on my own GPUs. Reading improved with model size, judging win probability did not, and the code checks kept fabrications and false alarms at zero on every model. Every run is traced in PRISM, the sponsor's observability tool, and 27 failures are logged with their evidence and fixes.
+I ran the same pipeline on five models, including two local ones on my own GPUs. Reading improved with model size, judging win probability did not, and the code checks kept fabrications and false alarms at zero on every model. Every run is traced in PRISM, the sponsor's observability tool, and 27 failures are logged with their evidence, 26 of them fixed.
 
 Code: github.com/happyc0der/ledger
 
@@ -118,7 +118,7 @@ A mutual authentication and session protocol in C11, designed to resist attacks 
 
 Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 299 must-kill mutations run nightly.
 
-On top of it, mldsa-authd: a login service with single-use login codes, device enrolment, revocation, key rotation and recovery codes. The handshake has a ProVerif model.
+On top of it, mldsa-authd: a login service with single-use login codes, device enrollment, revocation, key rotation and recovery codes. The handshake has a ProVerif model.
 
 Code: github.com/happyc0der/mldsa-auth
 
@@ -128,7 +128,7 @@ An MCP server and app that checks what you own against the CPSC, NHTSA and openF
 
 10 tools and 5 screen views. A deterministic matcher writes a reason for every recall it flags. The OAuth 2.1 authorization server is hand-written: client credentials, authorization code with PKCE, ES256 JWTs, rotating refresh tokens, per-method scopes.
 
-Every tool call finishes inside the 500 ms voice budget; tests assert p95 under 100 ms. TypeScript monorepo, 79 tests, AWS CDK stack synthesised in CI.
+Every tool call finishes inside the 500 ms voice budget; tests assert p95 under 100 ms. TypeScript monorepo, 79 tests, AWS CDK stack synthesized in CI.
 
 Code: github.com/happyc0der/custodian
 
@@ -167,7 +167,7 @@ Code: github.com/happyc0der/lfp2vec-audit
 Dates: Sep 2026 · Skills: Application Security, Next.js, TypeScript
 TideFit is Utkarsh Mittal's Next.js trip planner for athletes. The audit, the upgrade, the tests, the CI and the launch are my work.
 
-I reviewed all 45 source files and probed the running app, and confirmed 15 vulnerabilities: OAuth callbacks that accepted any authorization code, a database policy that exposed every user's trips, a secret in a plaintext cookie, unmetered paid endpoints. 13 are fixed and verified.
+I reviewed all 45 source files and probed the running app, and confirmed 15 security and correctness findings: OAuth callbacks that accepted any authorization code, a database policy that exposed every user's trips, a secret in a plaintext cookie, unmetered paid endpoints. 13 are fixed and verified.
 
 I upgraded Next 14 to 16 and React 18 to 19 by hand across 16 merged pull requests. npm audit went from 6 vulnerabilities to 0 and tests from 0 to 45, with CI that deploys main to Vercel. It is live with private file storage, an edge rate limit, and Strava and Google Calendar sign-in verified end to end.
 
@@ -186,13 +186,13 @@ Code: github.com/happyc0der/nyc-autoddg
 
 ### Kaggle 2026: Biohub Cell Tracking, Playground S6E9, TrafficFlowBench
 Dates: Sep 2026 - present · Skills: Machine Learning, LightGBM, PyTorch
-Three Kaggle competitions this year.
+Three Kaggle competitions this year, plus the Gemma agent entry below.
 
 Biohub Cell Tracking: finished 591st of 3,947 teams (top 15%), on free Kaggle GPU. Public leaderboard 0.952, against 0.947 for the public notebook it builds on. I built an offline harness that runs GPU inference once and re-tunes post-processing locally against the official scorer, and trained a 3D CNN on 134 annotated cell divisions to prune false branches.
 
 Playground S6E9 (EV purchases, ROC AUC): finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against the winner's 0.94602. Nested target encodings, 20-fold cross-validation, a LightGBM, CatBoost and MLP blend, and 192 experiments judged by paired DeLong tests. Label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
 
-TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.883 against a 0.553 baseline. LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
+TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.889 against a 0.553 baseline. A PyTorch U-Net and LightGBM models for state reconstruction, LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
 
 Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench
 
@@ -202,7 +202,9 @@ Python, C++, Machine Learning, C, TypeScript, Kotlin, SQL, R, PyTorch, scikit-le
 
 ## Honors and awards
 
-Nothing yet. Add Kaggle placements when the final leaderboards post (Biohub 2026-09-29, S6E9 2026-09-30, TrafficFlowBench 2026-11-06, Gemma 2026-12-02).
+Kaggle Playground Series S6E9: 287th of 3,575 teams (top 9%), 2026.
+Biohub Cell Tracking (Kaggle): 591st of 3,947 teams (top 15%), 2026.
+Still running: TrafficFlowBench (ends Nov 7, 2026) and Gemma 4 Developer Agent (ends Dec 2, 2026).
 
 ## Leave off
 
@@ -212,7 +214,7 @@ The GitHub bio line, the political meme game, the SOVEREIGN job-search tooling, 
 
 I finished my MS in Computer Science at NYU Tandon in May and I'm looking for a new-grad role in software engineering, machine learning or security, in New York or remote in the US.
 
-While searching I kept building. This year: a post-quantum authentication protocol in C11 with fuzzing and a ProVerif model, a C++23 game engine with a deterministic lockstep simulation, a security audit and production launch of a friend's Next.js app, a raycaster for a graphing calculator that is now on the Garmin watch store, and three Kaggle competitions.
+While searching I kept building. This year: a post-quantum authentication protocol in C11 with fuzzing and a ProVerif model, a C++23 game engine with a deterministic lockstep simulation, a security audit and production launch of a friend's Next.js app, a raycaster for a graphing calculator that is now on the Garmin watch store, and four Kaggle competitions.
 
 Everything, with code, screenshots and the numbers: happyc0der.github.io
 
