@@ -117,17 +117,6 @@ const sources = {
     }
     return { sites: out };
   },
-  async lichess(username) {
-    const u = await json(`https://lichess.org/api/user/${encodeURIComponent(username)}`);
-    const p = u.perfs || {};
-    const pick = (k) => (p[k]?.games ? { rating: p[k].rating, games: p[k].games } : null);
-    return { username, bullet: pick('bullet'), blitz: pick('blitz'), rapid: pick('rapid'), puzzle: p.puzzle?.rating ?? null, games: u.count?.all ?? null };
-  },
-  async chesscom(username) {
-    const st = await json(`https://api.chess.com/pub/player/${encodeURIComponent(username.toLowerCase())}/stats`);
-    const pick = (k) => (st[k]?.last ? { rating: st[k].last.rating, best: st[k].best?.rating ?? null, games: (st[k].record?.win || 0) + (st[k].record?.loss || 0) + (st[k].record?.draw || 0) } : null);
-    return { username, rapid: pick('chess_rapid'), blitz: pick('chess_blitz'), bullet: pick('chess_bullet'), puzzles: st.tactics?.highest?.rating ?? null };
-  },
   async steam(steamid) {
     const key = process.env.STEAM_API_KEY;
     if (!key) throw new Error('STEAM_API_KEY not set');
