@@ -241,7 +241,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
       <div class="tile">
         <p class="label">Twitch {tw.live && <span class="live">live</span>}</p>
         {tw.streams_7d > 0
-          ? <p class="stat"><strong>{tw.streams_7d}</strong> streams in the last 7 days</p>
+          ? <p class="stat"><strong>{tw.streams_7d}</strong> {tw.streams_7d === 1 ? 'stream' : 'streams'} in the last 7 days</p>
           : <p class="stat"><strong>{compact(tw.followers)}</strong> followers</p>}
         {(tw.streams_7d > 0 || tw.category) && (
           <dl class="kv">
