@@ -4,7 +4,9 @@ import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import { profile, hasNotes } from '../lib';
 
-const { title, description = profile.tagline } = Astro.props;
+// image: a 1200x630 link-preview card (project pages pass theirs from scripts/make-og.mjs)
+const { title, description = profile.tagline, image = '/og.png' } = Astro.props;
+const ogImage = new URL(image, Astro.site).href;
 const path = Astro.url.pathname;
 
 // Add a nav entry here when a new section goes live.
@@ -27,13 +29,13 @@ const nav = [
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
     <meta property="og:title" content={title ? `${title} · ${profile.name}` : profile.name} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL('/og.png', Astro.site).href} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title ? `${title} · ${profile.name}` : profile.name} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og.png', Astro.site).href} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title ? `${title} · ${profile.name}` : profile.name}</title>
     <script is:inline>
