@@ -4,7 +4,7 @@ blurb: Kaggle cell-tracking competition entry on free GPU, final rank 591 of 3,9
 year: 2026
 order: 9
 featured: false
-status: "Finished September 2026"
+status: "Finished"
 credit: "The submission is a fork of Igor Zharov's public Harmonic Fusion notebook (Apache-2.0). The offline harness, the division classifiers and every experiment are mine."
 resume_credit: "Builds on Igor Zharov's public notebook (Apache-2.0); the harness, classifiers and experiments are mine."
 stack: [Python, PyTorch, NumPy, SciPy, polars, scikit-learn, uv, Kaggle API]

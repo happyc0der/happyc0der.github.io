@@ -15,11 +15,11 @@ stats: ["88 subjects, 10x5-fold nested CV", "61.1% vs 33% chance", "no deep mode
 bullets:
   - "Re-evaluated a course project that reported 63.6% accuracy for Alzheimer's (AD), frontotemporal dementia (FTD) and controls from resting EEG after model selection leaked subjects (99% validation accuracy): every split is now over subjects, with nested model selection, 10 repeats of 5-fold CV, bootstrap CIs and permutation tests."
   - "Compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs under one protocol, pre-registered for the deep models: the best pre-specified model reaches 61.1 ± 3.0% subject-level balanced accuracy (chance 33%), and no deep model beats it; AD vs controls reaches 84.6%, AD vs FTD stays near 60%."
-  - "Found that 92% of every channel's variance in the distributed recordings is one common-mode artefact, which the average reference removes; leakage tests with spy estimators, and a test that fails if the README tables and the result files disagree."
+  - "Found that 92% of every channel's variance in the distributed recordings is one common-mode artifact, which the average reference removes; leakage tests with spy estimators, and a test that fails if the README tables and the result files disagree."
 resume_bullets:
   - "Re-evaluated a course project on classifying Alzheimer's, frontotemporal dementia and controls from EEG (88 subjects): subject-level splits, nested model selection, 10x5-fold CV, bootstrap CIs, permutation tests."
   - "Compared 16 feature pipelines with EEG foundation models (LaBraM, CBraMod, BIOT) and CNNs, pre-registered: best model 61.1% balanced accuracy vs 33% chance, and no deep model beat spectral features."
-  - "Found a common-mode artefact holding 92% of each channel's variance and removed it with an average reference; spy-estimator leakage tests and README tables checked against result files."
+  - "Found a common-mode artifact holding 92% of each channel's variance and removed it with an average reference; spy-estimator leakage tests and README tables checked against result files."
 ---
 
 The project started in Spring 2025 in NYU's Neuroinformatics course: a graph transformer that classified Alzheimer's disease (AD), frontotemporal dementia (FTD) and cognitively normal controls from resting-state EEG on the public OpenNeuro ds004504 dataset (88 subjects, 19 channels). It reported 63.6% accuracy on one 18-subject test split, after model selection on 15-second chunks that put chunks of the same recording in both training and validation, which is why validation accuracy was 99%.

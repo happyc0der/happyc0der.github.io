@@ -50,6 +50,7 @@ const out = new Writable({ write(chunk, enc, cb) { if (!out.muted) process.stdou
 const rl = readline.createInterface({ input: process.stdin, output: out, terminal: process.stdin.isTTY });
 const lines = rl[Symbol.asyncIterator]();   // buffers lines, so pasted or piped input is not lost between prompts
 const ask = async (prompt, hidden = false) => {
+  rl.setPrompt(prompt);            // readline redraws the line with its own prompt, which defaults to "> "
   process.stdout.write(prompt);
   out.muted = hidden;
   const { value } = await lines.next();

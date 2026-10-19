@@ -72,6 +72,10 @@ export function garminStats() {
   };
   // Garmin days are local dates; end the chart on the newest day it has, not on today's UTC date.
   const steps = lastDays(7, new Date(`${days[days.length - 1]}T12:00:00Z`)).map((d) => ({ day: d, total: g.days[d]?.steps ?? 0 }));
+  // Average over the chart's full days: the newest is usually today, still in progress when the job runs.
+  const today = new Date(g.updated).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  const full = steps.filter((d) => d.day !== today && g.days[d.day]?.steps != null);
+  const avgSteps = full.length ? full.reduce((a, d) => a + d.total, 0) / full.length : null;
   const acts: any[] = g.activities || [];
   const year = new Date(g.updated).getUTCFullYear();
   const swims = acts.filter((a) => /swim/.test(a.type || ''));
@@ -80,7 +84,7 @@ export function garminStats() {
     .sort((a, b) => b[1] - a[1]).map(([t, n]) => ({ type: label(t), n }));
   return {
     sleep: latest('sleep_s'), sleepScore: latest('sleep_score'), rhr: latest('resting_hr'), hrv: latest('hrv'), hrvStatus: latest('hrv_status'),
-    readiness: latest('readiness'), avgSleepH: avg('sleep_s') != null ? avg('sleep_s')! / 3600 : null, avgSteps: avg('steps'), steps,
+    readiness: latest('readiness'), avgSleepH: avg('sleep_s') != null ? avg('sleep_s')! / 3600 : null, avgSteps, steps,
     year, activities: acts.length, hours: acts.reduce((s, a) => s + (a.duration_s || 0), 0) / 3600,
     swimKm: swims.reduce((s, a) => s + (a.distance_m || 0), 0) / 1000, byType, lastActivity: acts.map((a) => a.date).filter(Boolean).sort().pop(),
     updated: g.updated as string,

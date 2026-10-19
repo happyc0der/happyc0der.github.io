@@ -12,12 +12,12 @@
   tags: [ml, data, quant]
 - name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)
   project: gemma-swe-agent
-  result: LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends 2026-12-02
+  result: LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends Dec 2, 2026
   year: 2026
   tags: [ml, swe]
 - name: TrafficFlowBench
   project: trafficflowbench
-  result: Public leaderboard 0.883 against a 0.553 baseline, with LightGBM time-series queue forecasting and an NNLS origin-destination solver. In progress, ends 2026-11-06
+  result: Public leaderboard 0.889 against a 0.553 baseline (LightGBM queue forecasts, a PyTorch U-Net, an NNLS origin-destination solver). In progress, ends Nov 7, 2026
   year: 2026
   tags: [data, ml, quant]
 - name: Money Talks 2, AI x Fintech Hackathon (Block Convey), Money Operations track

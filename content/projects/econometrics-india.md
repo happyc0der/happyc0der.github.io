@@ -1,6 +1,6 @@
 ---
 title: Econometrics re-analysis
-blurb: "Re-analysis of my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts: the original headline effects were artefacts of the crop-index construction and of iid standard errors."
+blurb: "Re-analysis of my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts: the original headline effects were artifacts of the crop-index construction and of iid standard errors."
 repo: https://github.com/utkar22/Econometric-Analysis-of-Agriculture-and-Health-Across-India
 year: 2026
 order: 18
@@ -12,11 +12,11 @@ stack: [R, fixest, data.table, Python, pandas, GNU make, GitHub Actions]
 tags: [data, quant]
 stats: ["673 districts, 6 years", "tables match to 6 dp", "within-R2 under 0.02"]
 bullets:
-  - "Re-analysed my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts and six years: I reproduced both original regression tables to six decimals, then showed the crop indices were the yield of whichever crop row came first in the CSV, so the Kharif cash-crop effect (p < 1e-16 originally) is not significant once the index is built per category and the nitrate sample restriction is lifted."
+  - "Re-analyzed my 2023 econometrics team project on crop yields and infant deaths across 673 Indian districts and six years: I reproduced both original regression tables to six decimals, then showed the crop indices were the yield of whichever crop row came first in the CSV, so the Kharif cash-crop effect (p < 1e-16 originally) is not significant once the index is built per category and the nitrate sample restriction is lifted."
   - "Rebuilt it as a deterministic pipeline, Python for a 3,585-row district-year panel with Census 2011, NFHS-4 and IMD rainfall joined through LGD district codes, R in fixest for six specifications with state-clustered standard errors and district and year fixed effects, under which the child-marriage and hospital-bed effects are indistinguishable from zero and within-R2 is below 0.02."
   - "Wrote the review, archived the original scripts with seven run-breaking bugs fixed, added a GPL-3.0 license and CI that reruns the whole pipeline on Ubuntu and fails if any committed table, the panel or the README changes; merged as PR #1 (114 files) with three follow-up commits for the CI and cross-platform reproducibility."
 resume_bullets:
-  - "Re-analysed a 2023 econometrics team project on 673 Indian districts: reproduced both regression tables to 6 decimals, then showed the crop indices were artefacts of row order."
+  - "Re-analyzed a 2023 econometrics team project on 673 Indian districts: reproduced both regression tables to 6 decimals, then showed the crop indices were artifacts of row order."
   - "Built a Python ETL for a 3,585-row district-year panel from Census 2011, NFHS-4 and IMD data; R (fixest) panel regressions with fixed effects and state-clustered errors show the headline effects vanish (within-R2 below 0.02)."
   - "Wrote the review, fixed 7 run-breaking bugs in the archived scripts, and added CI that reruns the deterministic pipeline and fails on any changed table."
 ---

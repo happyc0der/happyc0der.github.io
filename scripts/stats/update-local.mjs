@@ -163,11 +163,14 @@ try {
   })).filter((r) => r.ref);
   const now = Date.now();
   const nameOf = (ref) => ref.split('/').pop();
+  // The CLI prints deadlines in UTC without a zone; the site shows New York dates.
+  const utc = (s) => new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(s) ? s : `${s.replace(' ', 'T')}Z`);
+  const nyDate = (s) => utc(s).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
   writeJson('content/stats/kaggle.json', {
     updated: new Date().toISOString(),
-    finished: rows.filter((r) => new Date(r.deadline).getTime() < now && r.rank).map((r) => ({ slug: nameOf(r.ref), rank: r.rank, teams: r.teams, ended: r.deadline.slice(0, 10) })),
+    finished: rows.filter((r) => utc(r.deadline).getTime() < now && r.rank).map((r) => ({ slug: nameOf(r.ref), rank: r.rank, teams: r.teams, ended: nyDate(r.deadline) })),
     // Submitted-to only (rank > 0); the rank itself is not stored until the competition ends.
-    active: rows.filter((r) => new Date(r.deadline).getTime() >= now && r.rank).map((r) => ({ slug: nameOf(r.ref), ends: r.deadline.slice(0, 10), teams: r.teams })),
+    active: rows.filter((r) => utc(r.deadline).getTime() >= now && r.rank).map((r) => ({ slug: nameOf(r.ref), ends: nyDate(r.deadline), teams: r.teams })),
   });
   log('kaggle ok');
 } catch (e) { log('kaggle skipped:', e.message.split('\n')[0]); }

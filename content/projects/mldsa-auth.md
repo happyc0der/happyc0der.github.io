@@ -11,11 +11,11 @@ stats: ["0.45 ms handshake", "299 mutations nightly", "12 fuzz targets"]
 bullets:
   - "Post-quantum mutual authentication and session protocol in C11: ML-DSA-65 signatures over a hybrid X25519 and ML-KEM-768 key exchange, HKDF-SHA256, and a padded ChaCha20-Poly1305 record layer."
   - "0.45 ms median handshake and 736 MiB/s record sealing on an M4 Pro; 49 tests in debug, ASan and UBSan builds on Linux and macOS, 12 libFuzzer targets and 299 must-kill mutations run nightly in CI."
-  - "Built mldsa-authd on it, a login daemon with single-use login codes, device enrolment, revocation, key rotation and recovery codes, and a ProVerif model of the handshake, login and rotation."
+  - "Built mldsa-authd on it, a login daemon with single-use login codes, device enrollment, revocation, key rotation and recovery codes, and a ProVerif model of the handshake, login and rotation."
 resume_bullets:
   - "Built a post-quantum mutual authentication protocol in C11: ML-DSA-65 (FIPS 204) signatures over hybrid X25519 + ML-KEM-768, HKDF-SHA256, ChaCha20-Poly1305 records."
   - "Measured a 0.45 ms median handshake and 736 MiB/s record encryption; ASan/UBSan CI on Linux and macOS, 12 libFuzzer targets, nightly mutation testing (299 must-kill mutations)."
-  - "Built mldsa-authd, a login service on it: login codes, device enrolment, revocation, key rotation, recovery codes; ProVerif model of the handshake."
+  - "Built mldsa-authd, a login service on it: login codes, device enrollment, revocation, key rotation, recovery codes; ProVerif model of the handshake."
 ---
 
 Two parties prove who they are with ML-DSA-65 (FIPS 204) signatures, agree a key from X25519 and ML-KEM-768 together, then talk over a padded ChaCha20-Poly1305 record layer. The specification lives beside the code and every design decision is written down in a decision log. Dependencies are pinned by hash or commit and built from source, so a clean checkout builds identical bits.

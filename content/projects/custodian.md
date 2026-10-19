@@ -12,7 +12,7 @@ stats: ["10 MCP tools", "79 tests", "p95 under 100 ms"]
 bullets:
   - "Self-hosted MCP server plus MCP App that checks a household inventory against the CPSC, NHTSA and openFDA recall feeds and tracks home maintenance: 10 tools, 5 screen views, and a deterministic matcher that writes a reason for every match; built for the Alexa+ track of Amazon Build, Ship, Shape 2026."
   - "Wrote the two-tier OAuth 2.1 authorization server by hand to fit the Alexa+ account-linking shape: client_credentials for service calls, authorization_code with PKCE S256 for household calls, ES256 JWTs, single-use codes, rotating 180-day refresh tokens and scope gating per JSON-RPC method, all covered end to end by tests."
-  - "Kept every tool call inside the 500 ms Alexa+ voice budget by moving all network and model calls into an hourly sweeper (tests assert p95 under 100 ms per tool through the real HTTP stack), in a TypeScript monorepo with file and single-table DynamoDB stores under one contract suite, 79 vitest tests on recorded feed fixtures, and a CDK stack synthesised in CI."
+  - "Kept every tool call inside the 500 ms Alexa+ voice budget by moving all network and model calls into an hourly sweeper (tests assert p95 under 100 ms per tool through the real HTTP stack), in a TypeScript monorepo with file and single-table DynamoDB stores under one contract suite, 79 vitest tests on recorded feed fixtures, and a CDK stack synthesized in CI."
 resume_bullets:
   - "Self-hosted MCP server and MCP App that checks a household inventory against CPSC, NHTSA and openFDA recalls; Amazon Build, Ship, Shape 2026 (Alexa+)."
   - "Hand-written two-tier OAuth 2.1 server: client_credentials and authorization_code with PKCE S256, ES256 JWTs, rotating refresh tokens, per-method scopes."
