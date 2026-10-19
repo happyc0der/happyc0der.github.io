@@ -1,0 +1,882 @@
+{
+ "days": {
+  "2026-10-18": {
+   "steps": 10868,
+   "distance_m": 8831,
+   "floors": 9.46129,
+   "active_kcal": 262,
+   "intensity_min": 0,
+   "resting_hr": 54,
+   "stress": 35,
+   "body_battery_high": 62,
+   "hrv": 56,
+   "hrv_status": "LOW",
+   "readiness": 58,
+   "sleep_s": 23340,
+   "sleep_score": 74
+  },
+  "2026-10-17": {
+   "steps": 5440,
+   "distance_m": 4459,
+   "floors": 10,
+   "active_kcal": 124,
+   "intensity_min": 26,
+   "resting_hr": 53,
+   "stress": 23,
+   "body_battery_high": 46,
+   "hrv": 71,
+   "hrv_status": "LOW",
+   "readiness": 65,
+   "sleep_s": 22140,
+   "sleep_score": 81
+  },
+  "2026-10-16": {
+   "steps": 7848,
+   "distance_m": 6386,
+   "floors": 3.33169,
+   "active_kcal": 212,
+   "intensity_min": 0,
+   "resting_hr": 54,
+   "stress": 43,
+   "body_battery_high": 43,
+   "hrv": 67,
+   "hrv_status": "UNBALANCED",
+   "readiness": 61,
+   "sleep_s": 15960,
+   "sleep_score": 60
+  },
+  "2026-10-15": {
+   "steps": 3772,
+   "distance_m": 3063,
+   "floors": 5.15059,
+   "active_kcal": 51,
+   "intensity_min": 0,
+   "resting_hr": 51,
+   "stress": 37,
+   "body_battery_high": 79,
+   "hrv": 94,
+   "hrv_status": "BALANCED",
+   "readiness": 83,
+   "sleep_s": 25020,
+   "sleep_score": 89
+  },
+  "2026-10-14": {
+   "steps": 828,
+   "distance_m": 698,
+   "floors": 0,
+   "active_kcal": 2,
+   "intensity_min": 0,
+   "resting_hr": 51,
+   "stress": 45,
+   "body_battery_high": 49,
+   "hrv": 87,
+   "hrv_status": "BALANCED",
+   "readiness": 42,
+   "sleep_s": 13200,
+   "sleep_score": 55
+  },
+  "2026-10-13": {
+   "steps": 523,
+   "distance_m": 424,
+   "floors": 0,
+   "active_kcal": 3,
+   "intensity_min": 0,
+   "resting_hr": 51,
+   "stress": 29,
+   "body_battery_high": 63,
+   "hrv": 79,
+   "hrv_status": "BALANCED",
+   "readiness": 63,
+   "sleep_s": 20460,
+   "sleep_score": 78
+  },
+  "2026-10-12": {
+   "steps": 2302,
+   "distance_m": 1864,
+   "floors": 0,
+   "active_kcal": 28,
+   "intensity_min": 0,
+   "resting_hr": 52,
+   "stress": 37,
+   "body_battery_high": 29,
+   "hrv": 73,
+   "hrv_status": "BALANCED",
+   "readiness": 40,
+   "sleep_s": 11640,
+   "sleep_score": 47
+  },
+  "2026-10-11": {
+   "steps": 6054,
+   "distance_m": 4966,
+   "floors": 3.20112,
+   "active_kcal": 174,
+   "intensity_min": 9,
+   "resting_hr": 47,
+   "stress": 41,
+   "body_battery_high": 78,
+   "hrv": 87,
+   "hrv_status": "BALANCED",
+   "readiness": 90,
+   "sleep_s": 19800,
+   "sleep_score": 78
+  },
+  "2026-10-10": {
+   "steps": 3013,
+   "distance_m": 2453,
+   "floors": 0,
+   "active_kcal": 23,
+   "intensity_min": 0,
+   "resting_hr": 46,
+   "stress": 26,
+   "body_battery_high": 94,
+   "hrv": 97,
+   "hrv_status": "BALANCED",
+   "readiness": 95,
+   "sleep_s": 23100,
+   "sleep_score": 89
+  },
+  "2026-10-09": {
+   "steps": 3547,
+   "distance_m": 2872,
+   "floors": 6.42159,
+   "active_kcal": 100,
+   "intensity_min": 0,
+   "resting_hr": 48,
+   "stress": 28,
+   "body_battery_high": 83,
+   "hrv": 90,
+   "hrv_status": "BALANCED",
+   "readiness": 91,
+   "sleep_s": 25140,
+   "sleep_score": 85
+  },
+  "2026-10-08": {
+   "steps": 4241,
+   "distance_m": 3465,
+   "floors": 5.34547,
+   "active_kcal": 90,
+   "intensity_min": 0,
+   "resting_hr": 51,
+   "stress": 34,
+   "body_battery_high": 68,
+   "hrv": 86,
+   "hrv_status": "BALANCED",
+   "readiness": 87,
+   "sleep_s": 21240,
+   "sleep_score": 77
+  },
+  "2026-10-07": {
+   "steps": 8637,
+   "distance_m": 6995,
+   "floors": 7,
+   "active_kcal": 219,
+   "intensity_min": 0,
+   "resting_hr": 49,
+   "stress": 33,
+   "body_battery_high": 72,
+   "hrv": 86,
+   "hrv_status": "BALANCED",
+   "readiness": 74,
+   "sleep_s": 18720,
+   "sleep_score": 76
+  },
+  "2026-10-06": {
+   "steps": 2405,
+   "distance_m": 1985,
+   "floors": 0,
+   "active_kcal": 46,
+   "intensity_min": 0,
+   "resting_hr": 46,
+   "stress": 27,
+   "body_battery_high": 85,
+   "hrv": 93,
+   "hrv_status": "BALANCED",
+   "readiness": 68,
+   "sleep_s": 21360,
+   "sleep_score": 61
+  },
+  "2026-10-05": {
+   "steps": 2424,
+   "distance_m": 1970,
+   "floors": 4.60433,
+   "active_kcal": 46,
+   "intensity_min": 0,
+   "resting_hr": 48,
+   "stress": 30,
+   "body_battery_high": 81,
+   "hrv": 87,
+   "hrv_status": "BALANCED",
+   "readiness": 84,
+   "sleep_s": 18660,
+   "sleep_score": 74
+  }
+ },
+ "activities": [
+  {
+   "date": "2026-08-31",
+   "type": "lap_swimming",
+   "duration_s": 2718.949951171875,
+   "distance_m": 2606.0400390625,
+   "calories": 285
+  },
+  {
+   "date": "2026-08-27",
+   "type": "lap_swimming",
+   "duration_s": 2606.18408203125,
+   "distance_m": 2468.8798828125,
+   "calories": 201
+  },
+  {
+   "date": "2026-08-26",
+   "type": "lap_swimming",
+   "duration_s": 2734.464111328125,
+   "distance_m": 2606.0400390625,
+   "calories": 330
+  },
+  {
+   "date": "2026-08-24",
+   "type": "lap_swimming",
+   "duration_s": 2727.012939453125,
+   "distance_m": 2560.320068359375,
+   "calories": 278
+  },
+  {
+   "date": "2026-08-21",
+   "type": "lap_swimming",
+   "duration_s": 2741.85595703125,
+   "distance_m": 2697.47998046875,
+   "calories": 213
+  },
+  {
+   "date": "2026-08-19",
+   "type": "lap_swimming",
+   "duration_s": 2710.212890625,
+   "distance_m": 2651.760009765625,
+   "calories": 351
+  },
+  {
+   "date": "2026-08-18",
+   "type": "lap_swimming",
+   "duration_s": 2731.701904296875,
+   "distance_m": 2450,
+   "calories": 352
+  },
+  {
+   "date": "2026-08-17",
+   "type": "lap_swimming",
+   "duration_s": 2716.501953125,
+   "distance_m": 2697.47998046875,
+   "calories": 226
+  },
+  {
+   "date": "2026-08-13",
+   "type": "road_biking",
+   "duration_s": 7154.14794921875,
+   "distance_m": 25407.060546875,
+   "calories": 654
+  },
+  {
+   "date": "2026-08-10",
+   "type": "lap_swimming",
+   "duration_s": 2490.327880859375,
+   "distance_m": 2400,
+   "calories": 280
+  },
+  {
+   "date": "2026-08-08",
+   "type": "lap_swimming",
+   "duration_s": 2672.324951171875,
+   "distance_m": 2600,
+   "calories": 229
+  },
+  {
+   "date": "2026-08-06",
+   "type": "lap_swimming",
+   "duration_s": 2318.7900390625,
+   "distance_m": 2200,
+   "calories": 232
+  },
+  {
+   "date": "2026-08-03",
+   "type": "lap_swimming",
+   "duration_s": 2595.73291015625,
+   "distance_m": 2500,
+   "calories": 310
+  },
+  {
+   "date": "2026-07-31",
+   "type": "lap_swimming",
+   "duration_s": 2703.27294921875,
+   "distance_m": 2743.199951171875,
+   "calories": 229
+  },
+  {
+   "date": "2026-07-30",
+   "type": "lap_swimming",
+   "duration_s": 2686.06103515625,
+   "distance_m": 2651.760009765625,
+   "calories": 276
+  },
+  {
+   "date": "2026-07-27",
+   "type": "road_biking",
+   "duration_s": 1187.0050048828125,
+   "distance_m": 5718.18994140625,
+   "calories": 141
+  },
+  {
+   "date": "2026-07-25",
+   "type": "lap_swimming",
+   "duration_s": 1810.4520263671875,
+   "distance_m": 1851.6600341796875,
+   "calories": 167
+  },
+  {
+   "date": "2026-07-24",
+   "type": "lap_swimming",
+   "duration_s": 2583.39208984375,
+   "distance_m": 2514.60009765625,
+   "calories": 323
+  },
+  {
+   "date": "2026-07-23",
+   "type": "lap_swimming",
+   "duration_s": 2666.0380859375,
+   "distance_m": 2606.0400390625,
+   "calories": 270
+  },
+  {
+   "date": "2026-07-17",
+   "type": "lap_swimming",
+   "duration_s": 2705.93603515625,
+   "distance_m": 2700,
+   "calories": 264
+  },
+  {
+   "date": "2026-07-13",
+   "type": "lap_swimming",
+   "duration_s": 2248.51708984375,
+   "distance_m": 2250,
+   "calories": 153
+  },
+  {
+   "date": "2026-07-09",
+   "type": "lap_swimming",
+   "duration_s": 2599.572998046875,
+   "distance_m": 2514.60009765625,
+   "calories": 319
+  },
+  {
+   "date": "2026-07-03",
+   "type": "open_water_swimming",
+   "duration_s": 2240.779052734375,
+   "distance_m": 1223.3900146484375,
+   "calories": 197
+  },
+  {
+   "date": "2026-07-02",
+   "type": "open_water_swimming",
+   "duration_s": 968.5269775390625,
+   "distance_m": 562.7100219726562,
+   "calories": 82
+  },
+  {
+   "date": "2026-07-01",
+   "type": "walking",
+   "duration_s": 5053.9619140625,
+   "distance_m": 2358.72998046875,
+   "calories": 259
+  },
+  {
+   "date": "2026-06-30",
+   "type": "walking",
+   "duration_s": 12616.4736328125,
+   "distance_m": 7199.1201171875,
+   "calories": 1592
+  },
+  {
+   "date": "2026-06-28",
+   "type": "open_water_swimming",
+   "duration_s": 1082.8740234375,
+   "distance_m": 787.0499877929688,
+   "calories": 184
+  },
+  {
+   "date": "2026-06-26",
+   "type": "lap_swimming",
+   "duration_s": 2535.839111328125,
+   "distance_m": 2514.60009765625,
+   "calories": 532
+  },
+  {
+   "date": "2026-06-25",
+   "type": "lap_swimming",
+   "duration_s": 2562.0048828125,
+   "distance_m": 2491.739990234375,
+   "calories": 530
+  },
+  {
+   "date": "2026-06-23",
+   "type": "lap_swimming",
+   "duration_s": 2643.77197265625,
+   "distance_m": 2606.0400390625,
+   "calories": 583
+  },
+  {
+   "date": "2026-06-22",
+   "type": "lap_swimming",
+   "duration_s": 2258.51806640625,
+   "distance_m": 2148.840087890625,
+   "calories": 395
+  },
+  {
+   "date": "2026-06-18",
+   "type": "lap_swimming",
+   "duration_s": 2383.1220703125,
+   "distance_m": 2331.719970703125,
+   "calories": 454
+  },
+  {
+   "date": "2026-06-16",
+   "type": "lap_swimming",
+   "duration_s": 2720.7529296875,
+   "distance_m": 2651.760009765625,
+   "calories": 455
+  },
+  {
+   "date": "2026-06-15",
+   "type": "lap_swimming",
+   "duration_s": 2382.881103515625,
+   "distance_m": 2331.719970703125,
+   "calories": 462
+  },
+  {
+   "date": "2026-06-13",
+   "type": "open_water_swimming",
+   "duration_s": 3941.10498046875,
+   "distance_m": 2579,
+   "calories": 418
+  },
+  {
+   "date": "2026-06-12",
+   "type": "lap_swimming",
+   "duration_s": 2668.949951171875,
+   "distance_m": 2606.0400390625,
+   "calories": 587
+  },
+  {
+   "date": "2026-05-15",
+   "type": "lap_swimming",
+   "duration_s": 2650.64794921875,
+   "distance_m": 2697.47998046875,
+   "calories": 494
+  },
+  {
+   "date": "2026-05-08",
+   "type": "lap_swimming",
+   "duration_s": 2639.470947265625,
+   "distance_m": 2606.0400390625,
+   "calories": 558
+  },
+  {
+   "date": "2026-05-04",
+   "type": "lap_swimming",
+   "duration_s": 2693.384033203125,
+   "distance_m": 2697.47998046875,
+   "calories": 592
+  },
+  {
+   "date": "2026-05-02",
+   "type": "lap_swimming",
+   "duration_s": 2672.7509765625,
+   "distance_m": 2697.47998046875,
+   "calories": 580
+  },
+  {
+   "date": "2026-04-28",
+   "type": "lap_swimming",
+   "duration_s": 2681.43994140625,
+   "distance_m": 2697.47998046875,
+   "calories": 587
+  },
+  {
+   "date": "2026-04-26",
+   "type": "lap_swimming",
+   "duration_s": 2612.428955078125,
+   "distance_m": 2606.0400390625,
+   "calories": 578
+  },
+  {
+   "date": "2026-04-24",
+   "type": "lap_swimming",
+   "duration_s": 2597.64111328125,
+   "distance_m": 2606.0400390625,
+   "calories": 465
+  },
+  {
+   "date": "2026-04-22",
+   "type": "lap_swimming",
+   "duration_s": 2522.470947265625,
+   "distance_m": 2560.320068359375,
+   "calories": 444
+  },
+  {
+   "date": "2026-04-20",
+   "type": "lap_swimming",
+   "duration_s": 2721.906005859375,
+   "distance_m": 2697.47998046875,
+   "calories": 407
+  },
+  {
+   "date": "2026-04-18",
+   "type": "lap_swimming",
+   "duration_s": 2535.64599609375,
+   "distance_m": 2468.8798828125,
+   "calories": 470
+  },
+  {
+   "date": "2026-04-14",
+   "type": "lap_swimming",
+   "duration_s": 2732.97607421875,
+   "distance_m": 2697.47998046875,
+   "calories": 405
+  },
+  {
+   "date": "2026-04-12",
+   "type": "lap_swimming",
+   "duration_s": 2718.37109375,
+   "distance_m": 2697.47998046875,
+   "calories": 498
+  },
+  {
+   "date": "2026-04-11",
+   "type": "lap_swimming",
+   "duration_s": 2714.197998046875,
+   "distance_m": 2606.0400390625,
+   "calories": 553
+  },
+  {
+   "date": "2026-03-26",
+   "type": "lap_swimming",
+   "duration_s": 2701.842041015625,
+   "distance_m": 2651.760009765625,
+   "calories": 529
+  },
+  {
+   "date": "2026-03-25",
+   "type": "lap_swimming",
+   "duration_s": 2406.074951171875,
+   "distance_m": 2423.159912109375,
+   "calories": 514
+  },
+  {
+   "date": "2026-03-24",
+   "type": "lap_swimming",
+   "duration_s": 2714.875,
+   "distance_m": 2697.47998046875,
+   "calories": 574
+  },
+  {
+   "date": "2026-03-23",
+   "type": "lap_swimming",
+   "duration_s": 2518.68701171875,
+   "distance_m": 2468.8798828125,
+   "calories": 527
+  },
+  {
+   "date": "2026-03-22",
+   "type": "lap_swimming",
+   "duration_s": 2508.886962890625,
+   "distance_m": 2514.60009765625,
+   "calories": 538
+  },
+  {
+   "date": "2026-03-20",
+   "type": "lap_swimming",
+   "duration_s": 2673.260009765625,
+   "distance_m": 2743.199951171875,
+   "calories": 558
+  },
+  {
+   "date": "2026-03-19",
+   "type": "lap_swimming",
+   "duration_s": 2706.196044921875,
+   "distance_m": 2743.199951171875,
+   "calories": 583
+  },
+  {
+   "date": "2026-03-17",
+   "type": "lap_swimming",
+   "duration_s": 2697.402099609375,
+   "distance_m": 2743.199951171875,
+   "calories": 578
+  },
+  {
+   "date": "2026-03-15",
+   "type": "lap_swimming",
+   "duration_s": 3999.72607421875,
+   "distance_m": 3817.6201171875,
+   "calories": 757
+  },
+  {
+   "date": "2026-03-11",
+   "type": "lap_swimming",
+   "duration_s": 2718.14794921875,
+   "distance_m": 2651.760009765625,
+   "calories": 532
+  },
+  {
+   "date": "2026-03-10",
+   "type": "lap_swimming",
+   "duration_s": 2754.489990234375,
+   "distance_m": 2697.47998046875,
+   "calories": 575
+  },
+  {
+   "date": "2026-03-09",
+   "type": "lap_swimming",
+   "duration_s": 2701.679931640625,
+   "distance_m": 2651.760009765625,
+   "calories": 557
+  },
+  {
+   "date": "2026-03-08",
+   "type": "lap_swimming",
+   "duration_s": 2733.010009765625,
+   "distance_m": 2697.47998046875,
+   "calories": 584
+  },
+  {
+   "date": "2026-03-05",
+   "type": "lap_swimming",
+   "duration_s": 1716.7120361328125,
+   "distance_m": 1691.6400146484375,
+   "calories": 362
+  },
+  {
+   "date": "2026-03-03",
+   "type": "lap_swimming",
+   "duration_s": 1871.5489501953125,
+   "distance_m": 1874.52001953125,
+   "calories": 407
+  },
+  {
+   "date": "2026-03-01",
+   "type": "lap_swimming",
+   "duration_s": 2608.294921875,
+   "distance_m": 2560.320068359375,
+   "calories": 542
+  },
+  {
+   "date": "2026-02-28",
+   "type": "indoor_cycling",
+   "duration_s": 1551.7330322265625,
+   "distance_m": 0,
+   "calories": 321
+  },
+  {
+   "date": "2026-02-27",
+   "type": "lap_swimming",
+   "duration_s": 2526.635986328125,
+   "distance_m": 2423.159912109375,
+   "calories": 505
+  },
+  {
+   "date": "2026-02-26",
+   "type": "lap_swimming",
+   "duration_s": 2777.653076171875,
+   "distance_m": 2743.199951171875,
+   "calories": 581
+  },
+  {
+   "date": "2026-02-25",
+   "type": "indoor_cycling",
+   "duration_s": 1694.5240478515625,
+   "distance_m": 0,
+   "calories": 311
+  },
+  {
+   "date": "2026-02-19",
+   "type": "lap_swimming",
+   "duration_s": 2744.842041015625,
+   "distance_m": 2560.320068359375,
+   "calories": 509
+  },
+  {
+   "date": "2026-02-18",
+   "type": "lap_swimming",
+   "duration_s": 2834.547119140625,
+   "distance_m": 2674.6201171875,
+   "calories": 510
+  },
+  {
+   "date": "2026-02-17",
+   "type": "lap_swimming",
+   "duration_s": 2751.06494140625,
+   "distance_m": 2606.0400390625,
+   "calories": 553
+  },
+  {
+   "date": "2026-02-16",
+   "type": "lap_swimming",
+   "duration_s": 2708.487060546875,
+   "distance_m": 2514.60009765625,
+   "calories": 525
+  },
+  {
+   "date": "2026-02-15",
+   "type": "lap_swimming",
+   "duration_s": 2725.125,
+   "distance_m": 2514.60009765625,
+   "calories": 554
+  },
+  {
+   "date": "2026-02-14",
+   "type": "indoor_rowing",
+   "duration_s": 1485.718994140625,
+   "distance_m": 0,
+   "calories": 270
+  },
+  {
+   "date": "2026-02-09",
+   "type": "lap_swimming",
+   "duration_s": 2595.81201171875,
+   "distance_m": 2537.4599609375,
+   "calories": 566
+  },
+  {
+   "date": "2026-02-08",
+   "type": "lap_swimming",
+   "duration_s": 1908.1650390625,
+   "distance_m": 1920.239990234375,
+   "calories": 423
+  },
+  {
+   "date": "2026-02-07",
+   "type": "indoor_cycling",
+   "duration_s": 1515.2740478515625,
+   "distance_m": 0,
+   "calories": 266
+  },
+  {
+   "date": "2026-02-06",
+   "type": "lap_swimming",
+   "duration_s": 2451.74609375,
+   "distance_m": 2377.43994140625,
+   "calories": 542
+  },
+  {
+   "date": "2026-02-04",
+   "type": "lap_swimming",
+   "duration_s": 2719.56494140625,
+   "distance_m": 2628.89990234375,
+   "calories": 611
+  },
+  {
+   "date": "2026-02-03",
+   "type": "lap_swimming",
+   "duration_s": 2676.051025390625,
+   "distance_m": 2606.0400390625,
+   "calories": 594
+  },
+  {
+   "date": "2026-02-02",
+   "type": "lap_swimming",
+   "duration_s": 2736.843994140625,
+   "distance_m": 2606.0400390625,
+   "calories": 581
+  },
+  {
+   "date": "2026-01-30",
+   "type": "lap_swimming",
+   "duration_s": 2744.37109375,
+   "distance_m": 2697.47998046875,
+   "calories": 622
+  },
+  {
+   "date": "2026-01-30",
+   "type": "indoor_rowing",
+   "duration_s": 796.9420166015625,
+   "distance_m": 0,
+   "calories": 151
+  },
+  {
+   "date": "2026-01-29",
+   "type": "lap_swimming",
+   "duration_s": 2500.72900390625,
+   "distance_m": 2468.8798828125,
+   "calories": 563
+  },
+  {
+   "date": "2026-01-28",
+   "type": "lap_swimming",
+   "duration_s": 2416.80810546875,
+   "distance_m": 2331.719970703125,
+   "calories": 549
+  },
+  {
+   "date": "2026-01-27",
+   "type": "lap_swimming",
+   "duration_s": 2593.35205078125,
+   "distance_m": 2514.60009765625,
+   "calories": 592
+  },
+  {
+   "date": "2026-01-25",
+   "type": "lap_swimming",
+   "duration_s": 2637.014892578125,
+   "distance_m": 2514.60009765625,
+   "calories": 609
+  },
+  {
+   "date": "2026-01-23",
+   "type": "lap_swimming",
+   "duration_s": 2747.931884765625,
+   "distance_m": 2583.179931640625,
+   "calories": 595
+  },
+  {
+   "date": "2026-01-22",
+   "type": "lap_swimming",
+   "duration_s": 2725.049072265625,
+   "distance_m": 2606.0400390625,
+   "calories": 613
+  },
+  {
+   "date": "2026-01-21",
+   "type": "lap_swimming",
+   "duration_s": 2670.318115234375,
+   "distance_m": 2491.739990234375,
+   "calories": 589
+  },
+  {
+   "date": "2026-01-20",
+   "type": "walking",
+   "duration_s": 6490.30419921875,
+   "distance_m": 8180.60009765625,
+   "calories": 535
+  },
+  {
+   "date": "2026-01-18",
+   "type": "lap_swimming",
+   "duration_s": 2779.547119140625,
+   "distance_m": 2697.47998046875,
+   "calories": 371
+  },
+  {
+   "date": "2026-01-17",
+   "type": "lap_swimming",
+   "duration_s": 1287.97998046875,
+   "distance_m": 1234.43994140625,
+   "calories": 183
+  },
+  {
+   "date": "2026-01-08",
+   "type": "walking",
+   "duration_s": 1383.98095703125,
+   "distance_m": 1564.52001953125,
+   "calories": 148
+  }
+ ],
+ "updated": "2026-10-19T03:02:01.990Z"
+}

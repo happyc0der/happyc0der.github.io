@@ -9,6 +9,14 @@
   --accent: #a78bfa;
   --accent-hi: #c4b5fd;
   --accent-dim: rgba(167, 139, 250, 0.12);
+  --good: #4ade80;
+
+  /* Sequential ramp for counts (heatmap): validated 4-step ordinal on the card surface. */
+  --heat-0: #1f1b2b;
+  --heat-1: #4c3d8f;
+  --heat-2: #6d58c4;
+  --heat-3: #9b82f7;
+  --heat-4: #cdbffd;
 
   --sans: 'Inter Variable', system-ui, sans-serif;
   --mono: 'JetBrains Mono Variable', ui-monospace, monospace;

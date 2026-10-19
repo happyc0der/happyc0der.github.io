@@ -1,0 +1,29 @@
+---
+// Seven daily columns, one series. Value labelled on the tallest only; every bar has a hover title.
+import { compact, fmtDay } from '../stats';
+const { data, unit = '', label, partialLast = false } = Astro.props; // data: [{ day, total }]
+const W = 196, H = 64, BAR = 18, base = H - 14;
+const slot = W / data.length;
+const max = Math.max(1, ...data.map((d: any) => d.total));
+const top = data.reduce((m: number, d: any, i: number) => (d.total > data[m].total ? i : m), 0);
+const bar = (i: number, v: number) => {
+  const h = v <= 0 ? 0 : Math.max(3, (v / max) * (base - 14));
+  const x = i * slot + (slot - BAR) / 2, y = base - h, r = Math.min(4, h);
+  return h === 0 ? '' : `M${x},${base} V${y + r} Q${x},${y} ${x + r},${y} H${x + BAR - r} Q${x + BAR},${y} ${x + BAR},${y + r} V${base} Z`;
+};
+---
+<svg class="weekbars" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
+  <line x1="0" x2={W} y1={base + 0.5} y2={base + 0.5} class="baseline" />
+  {data.map((d: any, i: number) => (
+    <g>
+      <path d={bar(i, d.total)} class={partialLast && i === data.length - 1 ? 'bar partial' : 'bar'} />
+      <rect x={i * slot} y="0" width={slot} height={base} fill="transparent">
+        <title>{`${fmtDay(d.day, { weekday: 'short', month: 'short', day: 'numeric' })}: ${d.total.toLocaleString('en-US')}${unit}${partialLast && i === data.length - 1 ? ' so far' : ''}`}</title>
+      </rect>
+      <text x={i * slot + slot / 2} y={H - 2} text-anchor="middle" class="axis">{fmtDay(d.day, { weekday: 'narrow' })}</text>
+    </g>
+  ))}
+  {data[top].total > 0 && (
+    <text x={top * slot + slot / 2} y={Math.max(9, base - Math.max(3, (data[top].total / max) * (base - 14)) - 4)} text-anchor="middle" class="value">{compact(data[top].total)}</text>
+  )}
+</svg>

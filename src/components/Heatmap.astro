@@ -1,0 +1,37 @@
+---
+// GitHub-style contribution calendar: one purple ramp, more is lighter on the dark surface.
+import { fmtDay } from '../stats';
+const { weeks, level, label } = Astro.props;
+const C = 11, G = 3, LEFT = 26, TOP = 16;
+const width = LEFT + weeks.length * (C + G);
+const height = TOP + 7 * (C + G);
+const months: { x: number; text: string }[] = [];
+weeks.forEach((w: any[], i: number) => {
+  const first = w.find(Boolean);
+  if (!first) return;
+  const d = new Date(`${first[0]}T00:00:00Z`);
+  if (d.getUTCDate() <= 7 && i > 0) months.push({ x: LEFT + i * (C + G), text: d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }) });
+});
+---
+<figure class="heatmap">
+  <div class="scroll">
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label}>
+    {months.map((m) => <text x={m.x} y={10} class="axis">{m.text}</text>)}
+    {[['Mon', 1], ['Wed', 3], ['Fri', 5]].map(([t, r]) => <text x={0} y={TOP + (r as number) * (C + G) + 9} class="axis">{t}</text>)}
+    {weeks.map((w: any[], i: number) =>
+      w.map((cell, r) => cell && (
+        <rect x={LEFT + i * (C + G)} y={TOP + r * (C + G)} width={C} height={C} rx="2" class={`h${level(cell[1])}`}>
+          <title>{`${fmtDay(cell[0], { month: 'short', day: 'numeric', year: 'numeric' })}: ${cell[1]} contribution${cell[1] === 1 ? '' : 's'}`}</title>
+        </rect>
+      ))
+    )}
+  </svg>
+  </div>
+  <figcaption class="legend mono">
+    <span>Less</span>{[0, 1, 2, 3, 4].map((l) => <i class={`h${l}`}></i>)}<span>More</span>
+  </figcaption>
+</figure>
+<script>
+  // On narrow screens the calendar scrolls sideways; start at the most recent weeks.
+  for (const h of document.querySelectorAll<HTMLElement>('.heatmap .scroll')) h.scrollLeft = h.scrollWidth;
+</script>

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Stats from '../components/Stats.astro';
 import { profile, competitions } from '../lib';
 
 const projects = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
@@ -9,7 +10,7 @@ const featured = projects.filter((p) => p.data.featured);
 ---
 <Base>
   <section class="hero">
-    <p class="label">{profile.location}</p>
+    <p class="status"><span class="dot" aria-hidden="true"></span>Open to new-grad roles · NYC or remote</p>
     <h1>{profile.name}</h1>
     <p class="tagline">{profile.tagline}</p>
     <div class="links">
@@ -17,6 +18,7 @@ const featured = projects.filter((p) => p.data.featured);
       <a class="btn" href={profile.links.github}>GitHub</a>
       <a class="btn" href={profile.links.linkedin}>LinkedIn</a>
       <a class="btn" href={`mailto:${profile.email}`}>Email</a>
+      <a class="btn ghost" href="#numbers">By the numbers ↓</a>
     </div>
   </section>
 
@@ -25,8 +27,10 @@ const featured = projects.filter((p) => p.data.featured);
       <h2>Selected work</h2>
       <a href="/projects/" class="mono">all {projects.length} →</a>
     </div>
-    <div class="grid">{featured.map((p) => <ProjectCard project={p} />)}</div>
+    <div class="grid">{featured.map((p, i) => <ProjectCard project={p} thumb eager={i < 3} />)}</div>
   </section>
+
+  <Stats />
 
   <section>
     <div class="section-head"><h2>Competitions</h2></div>

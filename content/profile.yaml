@@ -8,6 +8,19 @@ links:
   github: https://github.com/happyc0der
   linkedin: https://www.linkedin.com/in/happyc0der/
 
+# Live stats on the homepage. Fill in a handle to turn its tile on; leave it empty to hide it.
+# Public sources are fetched by scripts/stats/fetch-public.mjs at every deploy (daily);
+# Claude, Garmin and Strava come from scripts/stats/update-local.mjs on the Mac.
+stats:
+  github: happyc0der
+  overwatch:
+    name: DankAxon
+    player_id: "d65fa281926994a3a4a12ea6dd|09da774c5ab3d84f981a4520bfd146d6"
+  codeforces: ""
+  leetcode: ""
+  twitch: ""
+  strava: false
+
 education:
   - school: New York University, Tandon School of Engineering
     degree: Master of Science (MS) in Computer Science
