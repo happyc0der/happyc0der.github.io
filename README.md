@@ -24,6 +24,7 @@ Add a collection in `src/content.config.ts`, copy `src/pages/notes/` and rename,
     npm run dev        # site at localhost:4321
     npm run resumes    # regenerate MASTER.md and the five PDFs in public/resume/ (needs Microsoft Edge), and check they parse
     npm run images     # responsive AVIF/WebP versions of public/img/ and their sizes in src/data/images.json
+    npm run og         # 1200x630 link-preview cards per project (public/img/og/), shown when a project page is shared
     npm run build      # static site into dist/
 
 Pushing to `main` deploys to GitHub Pages. The PDFs are committed, so CI does not need to build them.

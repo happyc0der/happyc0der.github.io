@@ -16,7 +16,7 @@ const d = project.data;
 const { Content } = await render(project);
 const demoLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Page' : 'Live site') : null;
 ---
-<Base title={d.title} description={d.blurb}>
+<Base title={d.title} description={d.blurb} image={`/img/og/${project.id}.jpg`}>
   <article class="project">
     <header class="project-head">
       <a class="back" href="/projects/">← All projects</a>
