@@ -1,15 +1,17 @@
 ---
+import Picture from './Picture.astro';
 import { tagNames, badge } from '../lib';
 const { project, thumb = false, eager = false } = Astro.props;
 const d = project.data;
 const b = badge(d);
-// Cards use the 800 px thumbnail from scripts/make-thumbs.sh; the full image stays on the project page.
-const thumbSrc = d.image ? d.image.replace(/^\/img\/(.+)\.(png|jpe?g)$/, '/img/thumb/$1.jpg') : null;
+// Cards show the 16:9 top slice from scripts/make-images.mjs; the full image stays on the project page.
+// Three columns of about 20rem on desktop, two on tablets, one on phones.
+const sizes = '(min-width: 64rem) 21rem, (min-width: 40rem) 46vw, 100vw';
 ---
 <a class:list={['card', { 'has-thumb': thumb }]} href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
   {thumb && (
     d.image
-      ? <div class="thumb" style={`view-transition-name: shot-${project.id}`}><img src={thumbSrc} alt="" loading={eager ? "eager" : "lazy"} decoding="async" width="800" height="450" /></div>
+      ? <div class="thumb" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} thumb sizes={sizes} eager={eager} /></div>
       : <div class="thumb text"><span>{d.stats[0] ?? d.title}</span></div>
   )}
   <div class="top">

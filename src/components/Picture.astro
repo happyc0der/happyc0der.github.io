@@ -1,0 +1,27 @@
+---
+// AVIF and WebP sources made by scripts/make-images.mjs, with a JPEG (thumbs) or the original (pages) as fallback.
+// width/height reserve the space before the image loads, so nothing below it jumps.
+import images from '../data/images.json';
+const { src, thumb = false, alt = '', sizes, eager = false, priority = false } = Astro.props;
+const meta = (images as Record<string, { width: number; height: number; opt: number[] }>)[src];
+if (!meta) throw new Error(`${src} has no responsive versions yet: run npm run images`);
+const base = src.replace(/^\/img\/(.+)\.[^.]+$/, '$1');
+const dir = thumb ? 'thumb' : 'opt';
+const widths = thumb ? [400, 800] : meta.opt;
+const set = (ext: string) => widths.map((w) => `/img/${dir}/${base}-${w}.${ext} ${w}w`).join(', ');
+---
+<picture>
+  <source type="image/avif" srcset={set('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={set('webp')} sizes={sizes} />
+  <img
+    src={thumb ? `/img/thumb/${base}-800.jpg` : src}
+    srcset={thumb ? set('jpg') : undefined}
+    sizes={thumb ? sizes : undefined}
+    alt={alt}
+    width={thumb ? 800 : meta.width}
+    height={thumb ? 450 : meta.height}
+    loading={eager || priority ? 'eager' : 'lazy'}
+    decoding="async"
+    fetchpriority={priority ? 'high' : undefined}
+  />
+</picture>
