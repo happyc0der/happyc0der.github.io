@@ -1,22 +1,27 @@
 ---
 import Heatmap from './Heatmap.astro';
 import WeekBars from './WeekBars.astro';
-import { claudeStats, githubStats, garminStats, publicStats, stravaStats, compact, fmtDay, nyDay } from '../stats';
+import HourBars from './HourBars.astro';
+import {
+  claudeStats, claudeBreakdown, githubStats, languageStats, commitStats, kaggleStats, garminStats, gtnhStats,
+  publicStats, stravaStats, spotifyStats, garminRaw, compact, fmtDay, nyDay,
+} from '../stats';
 
-const gh = githubStats();
-const cl = claudeStats();
-const ga = garminStats();
+const gh = githubStats(), langs = languageStats(), commits = commitStats(), kaggle = kaggleStats();
+const cl = claudeStats(), cb = claudeBreakdown(), gt = gtnhStats();
+const ga = garminStats(), st = stravaStats(), sp = spotifyStats();
 const pub = publicStats();
-const ow = pub.overwatch;
-const cf = pub.codeforces;
-const lc = pub.leetcode;
-const tw = pub.twitch;
-const st = stravaStats();
+const { overwatch: ow, codeforces: cf, leetcode: lc, twitch: tw, lichess: li, chesscom: cc, steam: sm, pypi, connectiq, uptime } = pub;
+const graw = garminRaw();
+const rec = graw.records || {}, body = graw.body;
+
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const hm = (h: number | null) => (h == null ? '—' : `${Math.floor(h)}h ${String(Math.round((h % 1) * 60)).padStart(2, '0')}m`);
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
+const pct = (x: number) => `${Math.round(x * 100)}%`;
 const updated = [gh?.updated, cl?.updated, ga?.updated].filter(Boolean).sort().pop();
-// Overwatch stretches across the row while it is the only tile left on it.
-const owWide = !tw && !cf && !lc && !st;
+const shipped = [pypi?.packages?.length, connectiq?.apps?.length, uptime?.sites?.length].some(Boolean);
+const play = [ow, tw, sm, li, cc, sp].some(Boolean);
 ---
 {(gh || cl || ga || ow) && (
 <section class="stats" id="numbers">
@@ -25,18 +30,70 @@ const owWide = !tw && !cf && !lc && !st;
     {updated && <span class="mono muted">updated {fmtDay(nyDay(updated))}</span>}
   </div>
 
+  {/* ---------------- Code ---------------- */}
+  <h3 class="group">Code</h3>
   {gh && (
     <div class="tile wide">
       <div class="tile-head">
         <p class="label">GitHub</p>
         <a class="mono" href={`https://github.com/${gh.login}`}>@{gh.login} →</a>
       </div>
-      <p class="stat"><strong>{gh.totalYear.toLocaleString('en-US')}</strong> contributions in the last year</p>
+      <div class="head-row">
+        <p class="stat"><strong>{gh.totalYear.toLocaleString('en-US')}</strong> contributions in the last year</p>
+        {langs && (
+          <dl class="kv inline">
+            <div><dt>Public repos</dt><dd>{langs.repos}</dd></div>
+            <div><dt>Merged PRs</dt><dd>{langs.prs}</dd></div>
+            <div><dt>Stars</dt><dd>{langs.stars}</dd></div>
+          </dl>
+        )}
+      </div>
       <p class="sub">{gh.last7} in the last 7 days · {gh.streak}-day streak</p>
       <Heatmap weeks={gh.weeks} level={gh.level} label={`GitHub contribution calendar: ${gh.totalYear} contributions in the last year, ${gh.last7} in the last 7 days.`} />
     </div>
   )}
+  <div class="tiles">
+    {langs && (
+      <div class="tile">
+        <p class="label">Languages</p>
+        <p class="sub">Share of code across {langs.repos} public repos</p>
+        <ul class="shares">{langs.rows.map((r) => <li><span class="name">{r.label}</span><span class="track"><i style={`width:${Math.max(3, (r.share / langs.rows[0].share) * 100)}%`}></i></span><span class="mono">{pct(r.share)}</span></li>)}</ul>
+      </div>
+    )}
+    {commits && (
+      <div class="tile">
+        <p class="label">When I commit</p>
+        <p class="stat"><strong>{commits.peakLabel}</strong> busiest hour</p>
+        <HourBars hours={commits.hours} peak={commits.peak} hourLabel={commits.hourLabel} label={`My ${commits.total} commits in the last year by hour of day, New York time; busiest at ${commits.peakLabel}.`} />
+        <p class="sub">{commits.total.toLocaleString('en-US')} commits in a year, New York time · {pct(commits.nightShare)} between 10pm and 5am · busiest day {commits.busiestDay}</p>
+      </div>
+    )}
+    {kaggle && (kaggle.finished.length > 0 || kaggle.active.length > 0) && (
+      <div class="tile">
+        <p class="label">Kaggle</p>
+        {kaggle.finished.length > 0 && <p class="stat"><strong>Top {kaggle.finished[0].pct}%</strong> best final finish</p>}
+        <ul class="split">
+          {kaggle.finished.map((f: any) => <li><span>{f.name}</span><span class="mono">{f.rank.toLocaleString('en-US')} / {f.teams.toLocaleString('en-US')}</span></li>)}
+          {kaggle.active.map((a: any) => <li><span>{a.name}</span><span class="mono muted">ends {fmtDay(a.ends)}</span></li>)}
+        </ul>
+        <p class="sub muted">Final ranks only; the two still running show their end date instead.</p>
+      </div>
+    )}
+    {(cf || lc) && (
+      <div class="tile">
+        <p class="label">Competitive programming</p>
+        <dl class="kv">
+          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && `max ${cf.max_rating}`}</span></dd></div>}
+          {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
+          {lc?.hard != null && <div><dt>Hard solved</dt><dd>{lc.hard}</dd></div>}
+          {cf?.contests != null && <div><dt>CF contests</dt><dd>{cf.contests}</dd></div>}
+        </dl>
+      </div>
+    )}
+  </div>
 
+  {/* ---------------- AI ---------------- */}
+  {(cl || cb || gt) && <h3 class="group">AI</h3>}
   <div class="tiles">
     {cl && (
       <div class="tile">
@@ -46,7 +103,56 @@ const owWide = !tw && !cf && !lc && !st;
         <p class="sub"><strong>{compact(cl.allTotal)}</strong> tokens since {fmtDay(cl.since, { month: 'short', year: 'numeric' })}, across {cl.machines} machines. Most are cached context re-read each turn; the model wrote {compact(cl.allOutput)}.</p>
       </div>
     )}
+    {cb && (
+      <div class="tile">
+        <p class="label">Where the tokens went</p>
+        <ul class="shares">{cb.projects.map((r) => <li class:list={{ other: r.label === 'Other work' }}><span class="name">{r.label}</span><span class="track"><i style={`width:${Math.max(3, (r.share / Math.max(...cb.projects.map((x) => x.share))) * 100)}%`}></i></span><span class="mono">{pct(r.share)}</span></li>)}</ul>
+        <p class="sub">By model: {cb.models.map((m) => `${m.label} ${pct(m.share)}`).join(' · ')}</p>
+      </div>
+    )}
+    {gt && (
+      <div class="tile">
+        <p class="label">gtnh-agent · Minecraft</p>
+        <p class="stat"><strong>{gt.quests}</strong> quests completed by the agent</p>
+        <dl class="kv">
+          <div><dt>Verified actions</dt><dd>{gt.actions_ok?.toLocaleString('en-US')}</dd></div>
+          <div><dt>Blocked by safety</dt><dd>{gt.actions_rejected?.toLocaleString('en-US')}</dd></div>
+        </dl>
+        <p class="sub muted">GregTech: New Horizons on a private server · last ran {gt.last && fmtDay(nyDay(gt.last))}</p>
+      </div>
+    )}
+  </div>
 
+  {/* ---------------- Shipped ---------------- */}
+  {shipped && <h3 class="group">Shipped</h3>}
+  <div class="tiles">
+    {pypi?.packages?.map((p: any) => (
+      <div class="tile">
+        <p class="label">PyPI · {p.name}</p>
+        <p class="stat"><strong>{p.last_month.toLocaleString('en-US')}</strong> downloads last month</p>
+        <p class="sub">{p.total.toLocaleString('en-US')} all time, mirrors excluded · <a href={`https://pypi.org/project/${p.name}/`}>pypi.org →</a></p>
+      </div>
+    ))}
+    {connectiq?.apps?.map((a: any) => (
+      <div class="tile">
+        <p class="label">Garmin Connect IQ · {a.name}</p>
+        <p class="stat"><strong>Live</strong> on the Connect IQ store</p>
+        <p class="sub">Published {a.released && fmtDay(a.released, { month: 'short', day: 'numeric', year: 'numeric' })} · v{a.version}{a.downloads >= 10 && ` · ${a.downloads.toLocaleString('en-US')} downloads`}{a.reviews > 0 && ` · ${a.rating}★`} · <a href={`https://apps.garmin.com/apps/${a.id}`}>store →</a></p>
+      </div>
+    ))}
+    {uptime?.sites?.map((s: any) => (
+      <div class="tile">
+        <p class="label">{s.name} · uptime</p>
+        <p class="stat"><strong>{s.last.ok ? 'Up' : 'Down'}</strong> {s.last.ok ? `${s.last.ms.toLocaleString('en-US')} ms response` : `status ${s.last.status || 'no answer'}`}</p>
+        <div class="ticks" aria-label={`${s.up} of the last ${s.checks} daily checks succeeded`}>{s.history.map((c: any) => <i class={c.ok ? 'ok' : 'bad'} title={`${fmtDay(nyDay(c.at))}: ${c.ok ? `up, ${c.ms} ms` : `down (${c.status || 'no answer'})`}`}></i>)}</div>
+        <p class="sub">{s.up} of the last {s.checks} checks up · <a href={s.url}>{s.url.replace('https://', '')} →</a></p>
+      </div>
+    ))}
+  </div>
+
+  {/* ---------------- Health ---------------- */}
+  {ga && <h3 class="group">Health</h3>}
+  <div class="tiles">
     {ga && (
       <div class="tile">
         <p class="label">Garmin · last night</p>
@@ -60,17 +166,39 @@ const owWide = !tw && !cf && !lc && !st;
         <p class="sub">Steps, last 7 days · average {compact(ga.avgSteps, 1)} a day · {hm(ga.avgSleepH)} sleep a night</p>
       </div>
     )}
-
     {ga && ga.activities > 0 && (
       <div class="tile">
         <p class="label">Training · {ga.year}</p>
         <p class="stat"><strong>{ga.activities}</strong> workouts, {Math.round(ga.hours)} hours</p>
         {ga.swimKm > 0 && <p class="sub"><strong>{ga.swimKm.toFixed(0)} km</strong> swum this year</p>}
-        <ul class="split">{ga.byType.slice(0, 5).map((t: any) => <li><span>{t.type}</span><span class="mono">{t.n}</span></li>)}</ul>
+        <ul class="split">{ga.byType.slice(0, 4).map((t: any) => <li><span>{t.type}</span><span class="mono">{t.n}</span></li>)}</ul>
         {ga.lastActivity && <p class="sub muted">Last logged {fmtDay(ga.lastActivity)}</p>}
       </div>
     )}
-
+    {(rec.longest_pool_swim_m || rec.pool_1500m_s || rec.farthest_ride_m) && (
+      <div class="tile">
+        <p class="label">Personal records</p>
+        <dl class="kv">
+          {rec.longest_pool_swim_m && <div><dt>Longest swim</dt><dd>{(rec.longest_pool_swim_m.value / 1000).toFixed(1)} <span class="muted">km</span></dd></div>}
+          {rec.pool_1500m_s && <div><dt>Swim 1500</dt><dd>{mmss(rec.pool_1500m_s.value)} <span class="muted">min</span></dd></div>}
+          {rec.pool_400m_s && <div><dt>Swim 400</dt><dd>{mmss(rec.pool_400m_s.value)} <span class="muted">min</span></dd></div>}
+          {rec.farthest_ride_m && <div><dt>Longest ride</dt><dd>{(rec.farthest_ride_m.value / 1000).toFixed(1)} <span class="muted">km</span></dd></div>}
+        </dl>
+        <p class="sub muted">Pool distances in metres, from Garmin; times that look like watch glitches are left out</p>
+      </div>
+    )}
+    {body && (
+      <div class="tile">
+        <p class="label">Body composition</p>
+        <dl class="kv">
+          {body.weight_kg && <div><dt>Weight</dt><dd>{body.weight_kg} <span class="muted">kg{body.change_30d_kg != null && ` · ${body.change_30d_kg > 0 ? '+' : ''}${body.change_30d_kg} in 30 d`}</span></dd></div>}
+          {body.body_fat_pct && <div><dt>Body fat</dt><dd>{body.body_fat_pct}<span class="muted">%</span></dd></div>}
+          {body.muscle_mass_kg && <div><dt>Muscle mass</dt><dd>{body.muscle_mass_kg} <span class="muted">kg</span></dd></div>}
+          {body.body_water_pct && <div><dt>Body water</dt><dd>{body.body_water_pct}<span class="muted">%</span></dd></div>}
+        </dl>
+        <p class="sub muted">Hume Pod, last weigh-in {body.date && fmtDay(body.date)}</p>
+      </div>
+    )}
     {st && (st.ytd_run || st.ytd_ride) && (
       <div class="tile">
         <p class="label">Strava · this year</p>
@@ -80,9 +208,13 @@ const owWide = !tw && !cf && !lc && !st;
         </dl>
       </div>
     )}
+  </div>
 
+  {/* ---------------- Play ---------------- */}
+  {play && <h3 class="group">Play</h3>}
+  <div class="tiles">
     {ow && (
-      <div class:list={['tile', { 'span-all': owWide }]}>
+      <div class="tile">
         <p class="label">Overwatch 2</p>
         {ow.ranks?.length > 0 && <p class="stat"><strong>{cap(ow.ranks[0].division)} {ow.ranks[0].tier}</strong> {ow.ranks[0].role === 'open' ? 'open queue' : ow.ranks[0].role}</p>}
         <dl class="kv">
@@ -94,7 +226,6 @@ const owWide = !tw && !cf && !lc && !st;
         <p class="sub muted">{ow.name}{ow.season && ` · season ${ow.season}`}</p>
       </div>
     )}
-
     {tw && (
       <div class="tile">
         <p class="label">Twitch {tw.live && <span class="live">live</span>}</p>
@@ -102,15 +233,29 @@ const owWide = !tw && !cf && !lc && !st;
         <p class="sub">{tw.live && tw.game ? `Streaming ${tw.game} now · ` : ''}<a href={`https://twitch.tv/${tw.login}`}>twitch.tv/{tw.login} →</a></p>
       </div>
     )}
-
-    {(cf || lc) && (
+    {sm && (
       <div class="tile">
-        <p class="label">Competitive programming</p>
+        <p class="label">Steam</p>
+        <p class="stat"><strong>{sm.hours.toLocaleString('en-US')}</strong> hours across {sm.games} games</p>
+        <ul class="split">{sm.top.slice(0, 4).map((g: any) => <li><span>{g.name}</span><span class="mono">{g.hours} h</span></li>)}</ul>
+      </div>
+    )}
+    {(li || cc) && (
+      <div class="tile">
+        <p class="label">Chess</p>
         <dl class="kv">
-          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && `max ${cf.max_rating}`}</span></dd></div>}
-          {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
-          {lc?.hard != null && <div><dt>Hard</dt><dd>{lc.hard}</dd></div>}
+          {li?.rapid && <div><dt>Lichess rapid</dt><dd>{li.rapid.rating}</dd></div>}
+          {li?.blitz && <div><dt>Lichess blitz</dt><dd>{li.blitz.rating}</dd></div>}
+          {cc?.rapid && <div><dt>Chess.com rapid</dt><dd>{cc.rapid.rating}</dd></div>}
+          {cc?.blitz && <div><dt>Chess.com blitz</dt><dd>{cc.blitz.rating}</dd></div>}
         </dl>
+      </div>
+    )}
+    {sp && sp.artists?.length > 0 && (
+      <div class="tile">
+        <p class="label">Spotify · last 4 weeks</p>
+        <ul class="split">{sp.artists.slice(0, 5).map((a: any, i: number) => <li><span>{a.name}</span><span class="mono muted">#{i + 1}</span></li>)}</ul>
+        {sp.tracks?.[0] && <p class="sub">Top track: {sp.tracks[0].name} · {sp.tracks[0].artist}</p>}
       </div>
     )}
   </div>

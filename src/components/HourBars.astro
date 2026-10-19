@@ -1,0 +1,22 @@
+---
+// 24 hourly columns (New York time), one series; the peak hour is labelled, every bar has a hover title.
+const { hours, peak, hourLabel, label } = Astro.props;
+const W = 288, H = 70, base = H - 14, slot = W / 24, BAR = 8;
+const max = Math.max(1, ...hours);
+const path = (i: number, v: number) => {
+  const h = v <= 0 ? 0 : Math.max(2, (v / max) * (base - 14));
+  const x = i * slot + (slot - BAR) / 2, y = base - h, r = Math.min(3, h);
+  return h === 0 ? '' : `M${x},${base} V${y + r} Q${x},${y} ${x + r},${y} H${x + BAR - r} Q${x + BAR},${y} ${x + BAR},${y + r} V${base} Z`;
+};
+---
+<svg class="weekbars" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
+  <line x1="0" x2={W} y1={base + 0.5} y2={base + 0.5} class="baseline" />
+  {hours.map((v: number, i: number) => (
+    <g>
+      <path d={path(i, v)} class={i === peak ? 'bar' : 'bar soft'} />
+      <rect x={i * slot} y="0" width={slot} height={base} fill="transparent"><title>{`${hourLabel(i)}: ${v} commits`}</title></rect>
+    </g>
+  ))}
+  {[0, 6, 12, 18].map((h) => <text x={h === 0 ? 0 : h * slot + slot / 2} y={H - 2} text-anchor={h === 0 ? 'start' : 'middle'} class="axis">{hourLabel(h)}</text>)}
+  <text x={peak * slot + slot / 2} y={Math.max(9, base - (hours[peak] / max) * (base - 14) - 4)} text-anchor="middle" class="value">{hourLabel(peak)}</text>
+</svg>

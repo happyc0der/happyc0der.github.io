@@ -89,3 +89,88 @@ export function garminStats() {
 
 export const publicStats = () => read('public.json') || {};
 export const stravaStats = () => read('strava.json');
+
+// ---- More tiles -------------------------------------------------------------------------------
+
+const projectTitles = (() => {
+  const titles: Record<string, string> = { portfolio: 'This site' };
+  for (const f of fs.readdirSync('./content/projects')) {
+    if (!f.endsWith('.md')) continue;
+    const m = fs.readFileSync(`./content/projects/${f}`, 'utf8').match(/\ntitle: (.*)/);
+    if (m) titles[f.slice(0, -3)] = m[1].replace(/^"|"$/g, '');
+  }
+  return titles;
+})();
+
+const shares = (entries: [string, number][], top = 5, otherLabel = 'Other') => {
+  const total = entries.reduce((s, [, v]) => s + v, 0) || 1;
+  const sorted = entries.sort((a, b) => b[1] - a[1]);
+  const head = sorted.slice(0, top), rest = sorted.slice(top).reduce((s, [, v]) => s + v, 0);
+  const rows = head.map(([label, v]) => ({ label, value: v, share: v / total }));
+  if (rest > 0) rows.push({ label: otherLabel, value: rest, share: rest / total });
+  return rows;
+};
+
+export function claudeBreakdown() {
+  const c = read('claude.json');
+  if (!c?.machines) return null;
+  const byProject: Record<string, number> = {}, byModel: Record<string, number> = {};
+  for (const m of Object.values<any>(c.machines)) {
+    for (const [dir, v] of Object.entries<number>(m.projects || {})) {
+      const slug = c.labels?.[dir];
+      const label = slug ? projectTitles[slug] ?? slug : 'Other work';
+      byProject[label] = (byProject[label] || 0) + v;
+    }
+    for (const [model, v] of Object.entries<number>(m.models || {})) {
+      const name = model.replace(/^claude-/, '').replace(/-(\d+)-(\d+)$/, ' $1.$2').replace(/-(\d+)$/, ' $1').replace(/^\w/, (x) => x.toUpperCase());
+      byModel[name] = (byModel[name] || 0) + v;
+    }
+  }
+  if (!Object.keys(byProject).length) return null;
+  const projects = shares(Object.entries(byProject).filter(([k]) => k !== 'Other work'), 5, 'Other work');
+  const other = byProject['Other work'] || 0;
+  if (other) { const o = projects.find((p) => p.label === 'Other work'); if (o) o.value += other; else projects.push({ label: 'Other work', value: other, share: 0 }); }
+  const total = projects.reduce((s, p) => s + p.value, 0) || 1;
+  projects.forEach((p) => (p.share = p.value / total));
+  return { projects, models: shares(Object.entries(byModel), 4) };
+}
+
+export function languageStats() {
+  const g = read('public.json')?.github;
+  if (!g?.languages) return null;
+  // Notebooks and markup inflate byte counts without being much code; keep them out of the headline split.
+  const skip = new Set(['Jupyter Notebook', 'HTML', 'CSS', 'TeX', 'Makefile', 'CMake', 'Dockerfile', 'Batchfile', 'PowerShell']);
+  const rows = shares(Object.entries<number>(g.languages).filter(([l]) => !skip.has(l)), 6);
+  return { rows, repos: g.public_repos, stars: g.stars, prs: g.merged_prs };
+}
+
+export function commitStats() {
+  const c = read('commits.json');
+  if (!c?.total) return null;
+  const peak = c.hours.indexOf(Math.max(...c.hours));
+  const night = [22, 23, 0, 1, 2, 3, 4].reduce((s: number, h: number) => s + c.hours[h], 0);
+  const hourLabel = (h: number) => (h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`);
+  const wdNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const busiestDay = wdNames[c.weekdays.indexOf(Math.max(...c.weekdays))];
+  return { ...c, peak, peakLabel: hourLabel(peak), nightShare: night / c.total, busiestDay, hourLabel };
+}
+
+const kaggleNames: Record<string, string> = {
+  'biohub-cell-tracking-during-development': 'Biohub Cell Tracking',
+  'playground-series-s6e9': 'Playground S6E9',
+  'gemma-4-developer-agent': 'Gemma 4 Developer Agent',
+  '2026-ieee-big-data-traffic-flow-bench': 'TrafficFlowBench',
+};
+export function kaggleStats() {
+  const k = read('kaggle.json');
+  if (!k) return null;
+  const name = (s: string) => kaggleNames[s] ?? s.replace(/-/g, ' ').replace(/^\w/, (x) => x.toUpperCase());
+  return {
+    finished: (k.finished || []).map((f: any) => ({ ...f, name: name(f.slug), pct: Math.ceil((f.rank / f.teams) * 100) })).sort((a: any, b: any) => a.pct - b.pct),
+    active: (k.active || []).map((a: any) => ({ ...a, name: name(a.slug) })),
+  };
+}
+
+export const gtnhStats = () => read('gtnh.json');
+export const spotifyStats = () => read('spotify.json');
+export const garminRaw = () => read('garmin.json') || {};
