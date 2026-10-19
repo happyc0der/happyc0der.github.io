@@ -85,7 +85,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
       <div class="tile">
         <p class="label">Competitive programming</p>
         <dl class="kv">
-          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && `max ${cf.max_rating}`}</span></dd></div>}
+          {cf && <div><dt>Codeforces</dt><dd>{cf.rating ?? 'unrated'} <span class="muted">{cf.max_rating && cf.max_rating !== cf.rating && `max ${cf.max_rating}`}</span></dd></div>}
           {lc && <div><dt>LeetCode</dt><dd>{lc.solved} <span class="muted">solved{lc.contest_rating ? ` · ${lc.contest_rating}` : ''}</span></dd></div>}
           {lc?.hard != null && <div><dt>Hard solved</dt><dd>{lc.hard}</dd></div>}
           {cf?.contests != null && <div><dt>CF contests</dt><dd>{cf.contests}</dd></div>}

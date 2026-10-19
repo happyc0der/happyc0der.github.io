@@ -23,9 +23,9 @@ stats:
   uptime:
     - name: TideFit
       url: https://tide-fit.vercel.app
-  codeforces: ""
-  leetcode: ""
-  twitch: ""
+  codeforces: Keshav_Rajput
+  leetcode: ancapMonke
+  twitch: keshavroxz
   steam: ""          # 64-bit Steam ID; also needs the STEAM_API_KEY secret
   strava: false      # turned on by ~/.config/portfolio-stats/strava.json on the Mac
   # Emulators on the MSI are counted by scripts/stats/emulators.ps1. Others are added here by hand

@@ -15,6 +15,8 @@ const resumes = read('resumes.yaml');
 const css = fs.readFileSync(path.join(root, 'resume/resume.css'), 'utf8');
 const outDir = path.join(root, 'resume/out');
 const publicDir = path.join(root, 'public/resume');
+// He keeps the current PDFs on his Desktop too (2026-10-19); resumes are only built on this Mac.
+const desktopDir = path.join(os.homedir(), 'Desktop');
 fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(publicDir, { recursive: true });
 const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
@@ -204,6 +206,7 @@ for (const [key, cfg] of Object.entries(resumes)) {
   }
   fs.writeFileSync(path.join(outDir, `${cfg.file}.txt`), r.text);
   fs.copyFileSync(pdf, path.join(publicDir, `${cfg.file}.pdf`));
+  if (fs.existsSync(desktopDir)) fs.copyFileSync(pdf, path.join(desktopDir, `${cfg.file}.pdf`));
   // First-page preview for the resume page.
   execFileSync('gs', ['-q', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m', '-r72', '-dFirstPage=1', '-dLastPage=1', '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', `-sOutputFile=${path.join(publicDir, `${cfg.file}.png`)}`, pdf]);
   console.log(`${key.padEnd(6)} ${r.pages} page, ${r.words} words${note} ${r.problems.length ? 'PROBLEMS: ' + r.problems.join('; ') : 'ok'}`);
