@@ -60,6 +60,14 @@ def records() -> dict:
     return out
 
 
+def activity_day(r) -> str | None:
+    """Local calendar day of an activity. start_time_local is a plain 'YYYY-MM-DDTHH:MM:SS' string
+    since garmin-connect-api 0.2 (a datetime before it); start_time is the UTC instant."""
+    if r.start_time_local:
+        return str(r.start_time_local)[:10]
+    return r.start_time.date().isoformat() if r.start_time else None
+
+
 def body() -> dict | None:
     """Latest weigh-in with body composition, plus the weight change over about 30 days."""
     today = date.today()
@@ -102,7 +110,7 @@ def main() -> None:
         rows = activities.list_activities(start_date=since, end_date=today, limit=500)
         for r in rows:
             out["activities"].append({
-                "date": (r.start_time_local or r.start_time).date().isoformat() if (r.start_time_local or r.start_time) else None,
+                "date": activity_day(r),
                 "type": r.activity_type.type_key if r.activity_type else None,
                 "duration_s": r.duration_s,
                 "distance_m": r.distance_m,
