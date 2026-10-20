@@ -163,11 +163,11 @@
      "output": 2083999
     },
     "2026-10-20": {
-     "total": 199160294,
-     "output": 458509
+     "total": 208983263,
+     "output": 472095
     }
    },
-   "updated": "2026-10-20T12:19:55.162Z",
+   "updated": "2026-10-20T12:24:51.822Z",
    "projects": {
     "/Users/happyc0der/Projects/modi-flappy": 180531816,
     "/Users/happyc0der/Projects/Insane Workout Logger": 114667,
@@ -193,7 +193,7 @@
     "/private/tmp/claude-501/-Users-happyc0der-AndroidStudioProjects-ForgeLog/2403f477-eae1-4c65-8d8a-6ba773b529c1/scratchpad/room": 1004749,
     "/private/tmp/claude-501/-Users-happyc0der-AndroidStudioProjects-ForgeLog/2403f477-eae1-4c65-8d8a-6ba773b529c1/scratchpad/dex": 2204492,
     "/Users/happyc0der/Desktop": 209384345,
-    "/Users/happyc0der/Desktop/TOFIN/portfolio": 682469859,
+    "/Users/happyc0der/Desktop/TOFIN/portfolio": 684344628,
     "/Users/happyc0der/Desktop/TOFIN/portfolio/resume/out": 47590310,
     "/Users/happyc0der/Desktop/TOFIN": 1259687,
     "/Users/happyc0der/Desktop/TOFIN/portfolio/content": 137720,
@@ -204,7 +204,7 @@
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol": 533976923,
     "/Users/happyc0der/Desktop/TOFIN/Basic RL": 432133948,
     "/Users/happyc0der/Desktop/TOFIN/Contest": 183948906,
-    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth": 3968300807,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth": 3976249007,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build/_deps/liboqs-src": 14522837,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/tests/fuzz": 813405,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build/tests/fuzz": 3323718,
@@ -365,7 +365,7 @@
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2525638977,
-    "claude-opus-5-5": 7991427285,
+    "claude-opus-5-5": 8001250254,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 192916763,
     "claude-haiku-4-5": 5480915,
@@ -481,11 +481,11 @@
      "output": 37007
     },
     "2026-10-20": {
-     "total": 213894823,
-     "output": 346358
+     "total": 220521763,
+     "output": 357707
     }
    },
-   "updated": "2026-10-20T12:20:02.828Z",
+   "updated": "2026-10-20T12:25:00.011Z",
    "projects": {
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-24-0c8352": 4271583694,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-27-0f753e": 3393894,
@@ -535,17 +535,17 @@
     "C:\\Users\\KESHAV\\Projects\\tfwr-speedrun\\tools": 1589518,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-08-ac1797": 843691,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-20-800da3": 30869319,
-    "C:\\Users\\KESHAV\\Projects\\NinjaWord": 159324429
+    "C:\\Users\\KESHAV\\Projects\\NinjaWord": 165951369
    },
    "models": {
-    "claude-opus-5-5": 12510832652,
+    "claude-opus-5-5": 12517459592,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 167880483,
     "claude-fable-5-1": 1815647686
    }
   }
  },
- "updated": "2026-10-20T12:20:03.415Z",
+ "updated": "2026-10-20T12:25:00.517Z",
  "labels": {
   "/Users/happyc0der/Projects/modi-flappy": null,
   "/Users/happyc0der/Projects/Insane Workout Logger": null,
