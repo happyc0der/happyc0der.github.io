@@ -1,5 +1,52 @@
 {
- "updated": "2026-10-20T12:21:09.088Z",
- "artists": [],
- "tracks": []
+ "updated": "2026-10-20T10:16:22.993Z",
+ "artists": [
+  {
+   "name": "PinkPantheress",
+   "url": "https://open.spotify.com/artist/78rUTD7y6Cy67W1RVzYs7t"
+  },
+  {
+   "name": "Mohit Chauhan",
+   "url": "https://open.spotify.com/artist/5GnnSrwNCGyfAU4zuIytiS"
+  },
+  {
+   "name": "GRAZER",
+   "url": "https://open.spotify.com/artist/66npZ0iLHcWmV2DAC8oYRF"
+  },
+  {
+   "name": "Bring Me The Horizon",
+   "url": "https://open.spotify.com/artist/1Ffb6ejR6Fe5IamqA5oRUF"
+  },
+  {
+   "name": "COOL HEAT",
+   "url": "https://open.spotify.com/artist/3HZXI7lDa69dWCj8jbBpjG"
+  }
+ ],
+ "tracks": [
+  {
+   "name": "Tuyo (Narcos Theme) [Extended Version] - A Netflix Original Series Soundtrack",
+   "artist": "Rodrigo Amarante",
+   "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
+  },
+  {
+   "name": "aruarian dance",
+   "artist": "Nujabes",
+   "url": "https://open.spotify.com/track/4sUTagdmyuyAxd7RvbygpQ"
+  },
+  {
+   "name": "Sleepwalking",
+   "artist": "Bring Me The Horizon",
+   "url": "https://open.spotify.com/track/0gchQwxmBWj5no8NJ8b2yH"
+  },
+  {
+   "name": "Jaane Kyun",
+   "artist": "Vishal-Shekhar",
+   "url": "https://open.spotify.com/track/1wBuTYRugaQTGMl0BH08yX"
+  },
+  {
+   "name": "disparity",
+   "artist": "la lune",
+   "url": "https://open.spotify.com/track/3Yx3lsGtP3HrhFLxjaiPrl"
+  }
+ ]
 }
