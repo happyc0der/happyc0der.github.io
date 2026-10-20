@@ -144,7 +144,9 @@ if (fs.existsSync(STRAVA_CONF)) {
     if (tok.refresh_token && tok.refresh_token !== conf.refresh_token) { conf.refresh_token = tok.refresh_token; fs.writeFileSync(STRAVA_CONF, JSON.stringify(conf, null, 1), { mode: 0o600 }); }
     const h = { authorization: `Bearer ${tok.access_token}` };
     const me = await (await fetch('https://www.strava.com/api/v3/athlete', { headers: h })).json();
+    if (!me.id) throw new Error(`athlete: ${me.message || 'no id'}`);
     const s = await (await fetch(`https://www.strava.com/api/v3/athletes/${me.id}/stats`, { headers: h })).json();
+    if (!s.all_run_totals) throw new Error(`stats: ${s.message || 'no totals'}`); // an error body, not totals: keep the previous file
     const pick = (t) => t && { count: t.count, distance_km: Math.round(t.distance / 100) / 10, moving_h: Math.round(t.moving_time / 360) / 10, elevation_m: Math.round(t.elevation_gain) };
     writeJson('content/stats/strava.json', { updated: new Date().toISOString(), ytd_run: pick(s.ytd_run_totals), ytd_ride: pick(s.ytd_ride_totals), all_run: pick(s.all_run_totals), all_ride: pick(s.all_ride_totals) });
     log('strava ok');
@@ -222,15 +224,22 @@ if (fs.existsSync(SPOTIFY_CONF)) {
     const tok = await (await fetch('https://accounts.spotify.com/api/token', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded', authorization: 'Basic ' + Buffer.from(`${conf.client_id}:${conf.client_secret}`).toString('base64') }, body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: conf.refresh_token }) })).json();
     if (!tok.access_token) throw new Error('token refresh failed');
     if (tok.refresh_token && tok.refresh_token !== conf.refresh_token) { conf.refresh_token = tok.refresh_token; fs.writeFileSync(SPOTIFY_CONF, JSON.stringify(conf, null, 1), { mode: 0o600 }); }
-    const get = async (u) => (await fetch(`https://api.spotify.com/v1/${u}`, { headers: { authorization: `Bearer ${tok.access_token}` } })).json();
+    // An outage answers 503 with an error body; treat anything but a list as a failure so the previous lists stay.
+    const get = async (u) => {
+      const r = await fetch(`https://api.spotify.com/v1/${u}`, { headers: { authorization: `Bearer ${tok.access_token}` } });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !Array.isArray(j.items)) throw new Error(`${u.split('?')[0]}: HTTP ${r.status} ${j.error?.message || ''}`.trim());
+      return j;
+    };
     const [artists, tracks] = await Promise.all([get('me/top/artists?time_range=short_term&limit=5'), get('me/top/tracks?time_range=short_term&limit=5')]);
+    if (!artists.items.length && !tracks.items.length) throw new Error('both top lists empty');
     writeJson('content/stats/spotify.json', {
       updated: new Date().toISOString(),
       artists: (artists.items || []).map((a) => ({ name: a.name, url: a.external_urls?.spotify })),
       tracks: (tracks.items || []).map((t) => ({ name: t.name, artist: t.artists?.[0]?.name, url: t.external_urls?.spotify })),
     });
     log('spotify ok');
-  } catch (e) { log('spotify skipped:', e.message); }
+  } catch (e) { log('spotify kept previous value:', e.message); }
 }
 
 // 9. Public stats, so the committed fallback is fresh.
