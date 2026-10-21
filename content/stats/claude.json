@@ -163,11 +163,15 @@
      "output": 2083999
     },
     "2026-10-20": {
-     "total": 208983263,
-     "output": 472095
+     "total": 824563293,
+     "output": 1595023
+    },
+    "2026-10-21": {
+     "total": 101192370,
+     "output": 132757
     }
    },
-   "updated": "2026-10-20T12:24:51.822Z",
+   "updated": "2026-10-21T10:15:10.433Z",
    "projects": {
     "/Users/happyc0der/Projects/modi-flappy": 180531816,
     "/Users/happyc0der/Projects/Insane Workout Logger": 114667,
@@ -192,19 +196,19 @@
     "/private/tmp/claude-501/-Users-happyc0der-AndroidStudioProjects-ForgeLog/2403f477-eae1-4c65-8d8a-6ba773b529c1/scratchpad/rm": 352398,
     "/private/tmp/claude-501/-Users-happyc0der-AndroidStudioProjects-ForgeLog/2403f477-eae1-4c65-8d8a-6ba773b529c1/scratchpad/room": 1004749,
     "/private/tmp/claude-501/-Users-happyc0der-AndroidStudioProjects-ForgeLog/2403f477-eae1-4c65-8d8a-6ba773b529c1/scratchpad/dex": 2204492,
-    "/Users/happyc0der/Desktop": 209384345,
-    "/Users/happyc0der/Desktop/TOFIN/portfolio": 684344628,
+    "/Users/happyc0der/Desktop": 229002903,
+    "/Users/happyc0der/Desktop/TOFIN/portfolio": 692339967,
     "/Users/happyc0der/Desktop/TOFIN/portfolio/resume/out": 47590310,
     "/Users/happyc0der/Desktop/TOFIN": 1259687,
     "/Users/happyc0der/Desktop/TOFIN/portfolio/content": 137720,
     "/Users/happyc0der/Desktop/TOFIN/portfolio/content/projects": 271537,
-    "/Users/happyc0der/Desktop/city-vibe-coding": 2342760612,
+    "/Users/happyc0der/Desktop/city-vibe-coding": 2524623452,
     "/Users/happyc0der/Desktop/city-vibe-coding/submissions": 2865875,
     "/Users/happyc0der/Desktop/city-vibe-coding/submissions/cvector_b9ca68dcff48": 5129210,
-    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol": 533976923,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol": 542389016,
     "/Users/happyc0der/Desktop/TOFIN/Basic RL": 432133948,
     "/Users/happyc0der/Desktop/TOFIN/Contest": 183948906,
-    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth": 3976249007,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth": 4342809155,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build/_deps/liboqs-src": 14522837,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/tests/fuzz": 813405,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build/tests/fuzz": 3323718,
@@ -217,7 +221,7 @@
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-gcc16": 660580,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/tools/mutations": 3399752,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-wt": 4397444,
-    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-bringup": 15620671,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-bringup": 24650344,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-v417": 8973113,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-v418": 2963280,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth-v419": 2316688,
@@ -255,8 +259,8 @@
     "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-22-89a573": 277741,
     "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-22-a8224f": 441754,
     "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-22-ced81b": 60664,
-    "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-24-b08358": 84226151,
-    "/Users/happyc0der/Projects/gemma-swe-agent": 676397092,
+    "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-24-b08358": 87514379,
+    "/Users/happyc0der/Projects/gemma-swe-agent": 688172876,
     "/Users/happyc0der/Projects/gemma-swe-agent/data/competition": 12589696,
     "/Users/happyc0der/Projects/gemma-swe-agent/harness": 20753936,
     "/Users/happyc0der/Projects/gemma-swe-agent/harness/results/gold-all": 1371050,
@@ -340,12 +344,12 @@
     "/Users/happyc0der/Projects/localagent/output/examples_from_msi": 1006771,
     "/Users/happyc0der/Projects/modi-flappy/_old": 230190,
     "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-23-da307c": 2761888,
-    "/Users/happyc0der/Projects/trading-agent": 429918863,
+    "/Users/happyc0der/Projects/trading-agent": 452761427,
     "/Users/happyc0der/Projects/trading-agent/src/tradingagent": 2532117,
     "/Users/happyc0der/Projects/trading-agent/vendor/Kronos": 438003,
     "/Users/happyc0der/Projects/trading-agent/config/models": 199344,
     "/Users/happyc0der/Projects/trading-agent/vendor/Kronos/finetune_csv": 837664,
-    "/Users/happyc0der/Projects/trafficflowbench": 394525738,
+    "/Users/happyc0der/Projects/trafficflowbench": 472326255,
     "/Users/happyc0der/Projects/trafficflowbench/src": 871203,
     "/Users/happyc0der/Projects/trafficflowbench/report": 13728632,
     "/Users/happyc0der/Library/Application Support/Claude/scratch-workspaces/303ccd93-cd6b-4918-8caf-8804b3bc53cb/7ada7619-30af-424d-8410-9184f14b960e/scratch-2026-09-21-62d379": 1079636,
@@ -360,12 +364,15 @@
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-wasm-p": 131146,
     "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/jit-probe-2026-10-20": 805320,
     "/Users/happyc0der/Projects/tally": 25462446,
-    "/Users/happyc0der/Projects/tally/internal/github/testdata": 456537
+    "/Users/happyc0der/Projects/tally/internal/github/testdata": 456537,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-p/tests": 3413264,
+    "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-asan-p/tests": 896062,
+    "/Users/happyc0der/Projects/gemma-swe-agent/data/public_nb/gemma-4-agent-budget-fit-single-agent": 3277330
    },
    "models": {
     "claude-opus-5": 9182914644,
-    "claude-fable-5-1": 2525638977,
-    "claude-opus-5-5": 8001250254,
+    "claude-fable-5-1": 2554877562,
+    "claude-opus-5-5": 8688784069,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 192916763,
     "claude-haiku-4-5": 5480915,
@@ -481,13 +488,17 @@
      "output": 37007
     },
     "2026-10-20": {
-     "total": 220521763,
-     "output": 357707
+     "total": 1176465394,
+     "output": 1469236
+    },
+    "2026-10-21": {
+     "total": 282453657,
+     "output": 212925
     }
    },
-   "updated": "2026-10-20T12:25:00.011Z",
+   "updated": "2026-10-21T10:15:27.541Z",
    "projects": {
-    "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-24-0c8352": 4271583694,
+    "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-24-0c8352": 4365963245,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-27-0f753e": 3393894,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-03-d13eec": 837957554,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-05-71314d": 1689308,
@@ -495,8 +506,8 @@
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-11-f4a4fe": 224638392,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-12-713502": 7821227,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-16-793a5b": 11009976,
-    "C:\\Users\\KESHAV\\Projects": 98076,
-    "C:\\Users\\KESHAV\\Projects\\slopify": 9038567,
+    "C:\\Users\\KESHAV\\Projects": 16274082,
+    "C:\\Users\\KESHAV\\Projects\\slopify": 215809988,
     "C:\\Users\\KESHAV\\Projects\\slopify\\jobs\\octopus-real": 322064,
     "C:\\Users\\KESHAV\\Projects\\gtnh-agent": 5065393358,
     "C:\\Users\\KESHAV\\Projects\\gtnh-agent\\.claude\\worktrees\\agent-a06f0a28f865bab37": 58033448,
@@ -535,17 +546,19 @@
     "C:\\Users\\KESHAV\\Projects\\tfwr-speedrun\\tools": 1589518,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-08-ac1797": 843691,
     "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-20-800da3": 30869319,
-    "C:\\Users\\KESHAV\\Projects\\NinjaWord": 165951369
+    "C:\\Users\\KESHAV\\Projects\\NinjaWord": 1048845803,
+    "C:\\Users\\KESHAV\\Projects\\slopify\\jobs\\loop\\20261020-203051-gaming-trending": 1180188,
+    "C:\\Users\\KESHAV\\Projects\\machine-maniac-site": 36995688
    },
    "models": {
-    "claude-opus-5-5": 12517459592,
+    "claude-opus-5-5": 13755856880,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 167880483,
     "claude-fable-5-1": 1815647686
    }
   }
  },
- "updated": "2026-10-20T12:25:00.517Z",
+ "updated": "2026-10-21T10:15:28.358Z",
  "labels": {
   "/Users/happyc0der/Projects/modi-flappy": null,
   "/Users/happyc0der/Projects/Insane Workout Logger": null,
@@ -739,6 +752,9 @@
   "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/jit-probe-2026-10-20": null,
   "/Users/happyc0der/Projects/tally": null,
   "/Users/happyc0der/Projects/tally/internal/github/testdata": null,
+  "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-p/tests": "mldsa-auth",
+  "/Users/happyc0der/Desktop/TOFIN/PQ Authentication protocol/mldsa-auth/build-asan-p/tests": "mldsa-auth",
+  "/Users/happyc0der/Projects/gemma-swe-agent/data/public_nb/gemma-4-agent-budget-fit-single-agent": "gemma-swe-agent",
   "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-24-0c8352": null,
   "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-09-27-0f753e": null,
   "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-03-d13eec": null,
@@ -787,6 +803,8 @@
   "C:\\Users\\KESHAV\\Projects\\tfwr-speedrun\\tools": null,
   "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-08-ac1797": null,
   "C:\\Users\\KESHAV\\AppData\\Roaming\\Claude\\scratch-workspaces\\303ccd93-cd6b-4918-8caf-8804b3bc53cb\\7ada7619-30af-424d-8410-9184f14b960e\\scratch-2026-10-20-800da3": null,
-  "C:\\Users\\KESHAV\\Projects\\NinjaWord": null
+  "C:\\Users\\KESHAV\\Projects\\NinjaWord": null,
+  "C:\\Users\\KESHAV\\Projects\\slopify\\jobs\\loop\\20261020-203051-gaming-trending": null,
+  "C:\\Users\\KESHAV\\Projects\\machine-maniac-site": null
  }
 }
