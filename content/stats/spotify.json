@@ -1,9 +1,13 @@
 {
- "updated": "2026-10-20T10:16:22.993Z",
+ "updated": "2026-10-21T10:16:29.006Z",
  "artists": [
   {
    "name": "PinkPantheress",
    "url": "https://open.spotify.com/artist/78rUTD7y6Cy67W1RVzYs7t"
+  },
+  {
+   "name": "Blue Imagined",
+   "url": "https://open.spotify.com/artist/6tQZ5A1EKJnSlcyj5iZqZZ"
   },
   {
    "name": "Mohit Chauhan",
@@ -16,10 +20,6 @@
   {
    "name": "Bring Me The Horizon",
    "url": "https://open.spotify.com/artist/1Ffb6ejR6Fe5IamqA5oRUF"
-  },
-  {
-   "name": "COOL HEAT",
-   "url": "https://open.spotify.com/artist/3HZXI7lDa69dWCj8jbBpjG"
   }
  ],
  "tracks": [
@@ -29,14 +29,14 @@
    "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
   },
   {
-   "name": "aruarian dance",
-   "artist": "Nujabes",
-   "url": "https://open.spotify.com/track/4sUTagdmyuyAxd7RvbygpQ"
-  },
-  {
    "name": "Sleepwalking",
    "artist": "Bring Me The Horizon",
    "url": "https://open.spotify.com/track/0gchQwxmBWj5no8NJ8b2yH"
+  },
+  {
+   "name": "aruarian dance",
+   "artist": "Nujabes",
+   "url": "https://open.spotify.com/track/4sUTagdmyuyAxd7RvbygpQ"
   },
   {
    "name": "Jaane Kyun",
@@ -44,9 +44,9 @@
    "url": "https://open.spotify.com/track/1wBuTYRugaQTGMl0BH08yX"
   },
   {
-   "name": "disparity",
-   "artist": "la lune",
-   "url": "https://open.spotify.com/track/3Yx3lsGtP3HrhFLxjaiPrl"
+   "name": "Devil Town",
+   "artist": "Cavetown",
+   "url": "https://open.spotify.com/track/0vf2eBw2inhl8y61cYQMv2"
   }
  ]
 }
