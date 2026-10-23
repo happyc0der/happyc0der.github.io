@@ -9,6 +9,7 @@ featured: true
 demo_embed: /demos/lfp2vec-audit/
 demo_label: "Interactive charts of the repo's saved result files (results/spectra, results/postprocess, results/calibration, results/finetune_v2) at commit 4a0bdef; nothing is trained or re-run in your browser."
 demo_kind: "Interactive charts of saved result files"
+demo_poster: /img/demo/lfp2vec-audit.jpg
 demo_height: 780
 stack: [Python, PyTorch, Hugging Face transformers, wav2vec2, scikit-learn, SciPy, pytest, GitHub Actions]
 tags: [ml, data]
