@@ -1,0 +1,494 @@
+{
+ "id": "a4qt-mpr5",
+ "rows": 1030,
+ "n_columns": 20,
+ "columns": [
+  {
+   "name": "Borough",
+   "type": "categorical",
+   "semantic": "borough",
+   "null_frac": 0.0,
+   "distinct_approx": 5,
+   "unique_frac": 0.0049,
+   "len_min": 1,
+   "len_max": 1,
+   "len_avg": 1.0,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "B",
+     "count": 292
+    },
+    {
+     "value": "Q",
+     "count": 261
+    },
+    {
+     "value": "M",
+     "count": 208
+    },
+    {
+     "value": "X",
+     "count": 206
+    },
+    {
+     "value": "R",
+     "count": 63
+    }
+   ]
+  },
+  {
+   "name": "ClosureType",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 3,
+   "unique_frac": 0.0029,
+   "len_min": 12,
+   "len_max": 17,
+   "len_avg": 16.4369,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Completely Locked",
+     "count": 790
+    },
+    {
+     "value": "Partially Locked",
+     "count": 155
+    },
+    {
+     "value": "Not Lockable",
+     "count": 85
+    }
+   ]
+  },
+  {
+   "name": "EditDate",
+   "type": "datetime",
+   "semantic": "date",
+   "null_frac": 0.0,
+   "distinct_approx": 775,
+   "unique_frac": 0.7524,
+   "min": "2020-06-04T16:16:17",
+   "max": "2020-07-17T13:31:58",
+   "flags": []
+  },
+  {
+   "name": "GISpropNum",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 868,
+   "unique_frac": 0.8427,
+   "len_min": 4,
+   "len_max": 7,
+   "len_avg": 4.1146,
+   "flags": []
+  },
+  {
+   "name": "OMPpropID",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 1016,
+   "unique_frac": 0.9864,
+   "len_min": 4,
+   "len_max": 9,
+   "len_avg": 5.0097,
+   "flags": []
+  },
+  {
+   "name": "Red Sign Installed",
+   "type": "boolean",
+   "semantic": null,
+   "null_frac": 0.9816,
+   "distinct_approx": 1,
+   "unique_frac": 0.0526,
+   "len_min": 3,
+   "len_max": 3,
+   "len_avg": 3.0,
+   "flags": [
+    "mostly missing (98% null)",
+    "constant value"
+   ],
+   "top_values": [
+    {
+     "value": "Yes",
+     "count": 19
+    }
+   ]
+  },
+  {
+   "name": "Status",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0845,
+   "distinct_approx": 2,
+   "unique_frac": 0.0021,
+   "len_min": 6,
+   "len_max": 8,
+   "len_avg": 6.0042,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Active",
+     "count": 941
+    },
+    {
+     "value": "Archived",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "name": "accessibility",
+   "type": "boolean",
+   "semantic": null,
+   "null_frac": 0.0845,
+   "distinct_approx": 2,
+   "unique_frac": 0.0021,
+   "len_min": 2,
+   "len_max": 3,
+   "len_avg": 2.7741,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Yes",
+     "count": 730
+    },
+    {
+     "value": "No",
+     "count": 213
+    }
+   ]
+  },
+  {
+   "name": "accessibilityLevel",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0845,
+   "distinct_approx": 5,
+   "unique_frac": 0.0053,
+   "len_min": 14,
+   "len_max": 92,
+   "len_avg": 67.7466,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Level 4: Accessible Playgrounds with Transfer Platforms and Ground Level Play Features",
+     "count": 486
+    },
+    {
+     "value": "Not Applicable",
+     "count": 215
+    },
+    {
+     "value": "Level 2: Accessible Playgrounds with Ramped Play Equipment and Universally Accessible Swings",
+     "count": 134
+    },
+    {
+     "value": "Level 3: Accessible Playgrounds with Universally Accessible Swings",
+     "count": 95
+    },
+    {
+     "value": "Level 1: Playgrounds for All Children",
+     "count": 13
+    }
+   ]
+  },
+  {
+   "name": "location",
+   "type": "text",
+   "semantic": "geometry",
+   "null_frac": 0.0476,
+   "distinct_approx": 956,
+   "unique_frac": 0.9745,
+   "len_min": 7,
+   "len_max": 76,
+   "len_avg": 37.9409,
+   "flags": []
+  },
+  {
+   "name": "name",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 968,
+   "unique_frac": 0.9398,
+   "len_min": 8,
+   "len_max": 53,
+   "len_avg": 20.2534,
+   "flags": []
+  },
+  {
+   "name": "rules",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0845,
+   "distinct_approx": 3,
+   "unique_frac": 0.0032,
+   "len_min": 7,
+   "len_max": 36,
+   "len_avg": 17.5769,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Adults Allowed",
+     "count": 530
+    },
+    {
+     "value": "Adults not allowed in some locations",
+     "count": 216
+    },
+    {
+     "value": "Unknown",
+     "count": 197
+    }
+   ]
+  },
+  {
+   "name": "system",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0835,
+   "distinct_approx": 940,
+   "unique_frac": 0.9958,
+   "len_min": 7,
+   "len_max": 16,
+   "len_avg": 13.0879,
+   "flags": []
+  },
+  {
+   "name": "Approx Date Closed",
+   "type": "datetime",
+   "semantic": "date",
+   "null_frac": 0.0,
+   "distinct_approx": 1,
+   "unique_frac": 0.001,
+   "min": "2020-03-31T00:00:00",
+   "max": "2020-03-31T00:00:00",
+   "flags": [
+    "constant value"
+   ]
+  },
+  {
+   "name": "Approx Date Reopened",
+   "type": "datetime",
+   "semantic": "date",
+   "null_frac": 0.0417,
+   "distinct_approx": 9,
+   "unique_frac": 0.0091,
+   "min": "2020-06-19T00:00:00",
+   "max": "2020-07-06T00:00:00",
+   "flags": []
+  },
+  {
+   "name": "Community Board",
+   "type": "integer",
+   "semantic": "geo_district",
+   "null_frac": 0.0,
+   "distinct_approx": 68,
+   "unique_frac": 0.066,
+   "min": 101.0,
+   "max": 595.0,
+   "mean": 286.9981,
+   "std": 120.8185,
+   "p25": 203.0,
+   "median": 305.0,
+   "p75": 405.0,
+   "flags": []
+  },
+  {
+   "name": "District",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 75,
+   "unique_frac": 0.0728,
+   "len_min": 4,
+   "len_max": 5,
+   "len_avg": 4.0282,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "B-01",
+     "count": 35
+    },
+    {
+     "value": "M-03",
+     "count": 31
+    },
+    {
+     "value": "Q-07",
+     "count": 31
+    },
+    {
+     "value": "B-03",
+     "count": 30
+    },
+    {
+     "value": "Q-12",
+     "count": 27
+    }
+   ]
+  },
+  {
+   "name": "Latitude",
+   "type": "float",
+   "semantic": "latitude",
+   "null_frac": 0.0,
+   "distinct_approx": 1038,
+   "unique_frac": 1.0078,
+   "min": 40.4993,
+   "max": 40.9021,
+   "mean": 40.7311,
+   "std": 0.0867,
+   "p25": 40.6722,
+   "median": 40.7276,
+   "p75": 40.8065,
+   "flags": []
+  },
+  {
+   "name": "Longitude",
+   "type": "float",
+   "semantic": "longitude",
+   "null_frac": 0.0,
+   "distinct_approx": 1019,
+   "unique_frac": 0.9893,
+   "min": -74.2448,
+   "max": -73.7096,
+   "mean": -73.9216,
+   "std": 0.0862,
+   "p25": -73.968,
+   "median": -73.924,
+   "p75": -73.8744,
+   "flags": []
+  },
+  {
+   "name": "Point",
+   "type": "text",
+   "semantic": "geometry",
+   "null_frac": 0.0,
+   "distinct_approx": 1012,
+   "unique_frac": 0.9825,
+   "len_min": 37,
+   "len_max": 45,
+   "len_avg": 43.9981,
+   "flags": []
+  }
+ ],
+ "sample_rows": [
+  {
+   "Borough": "B",
+   "ClosureType": "Completely Locked",
+   "EditDate": "06/22/2020 03:01:03 PM",
+   "GISpropNum": "B385",
+   "OMPpropID": "B385",
+   "Red Sign Installed": "Yes",
+   "Status": null,
+   "accessibility": null,
+   "accessibilityLevel": null,
+   "location": null,
+   "name": "Transmitter",
+   "rules": null,
+   "system": null,
+   "Approx Date Closed": "03/31/2020",
+   "Approx Date Reopened": "06/21/2020",
+   "Community Board": "301",
+   "District": "B-01",
+   "Latitude": "40.729862213134766",
+   "Longitude": "-73.96075439453125",
+   "Point": "POINT (-73.96075439453125 40.729862213134766)"
+  },
+  {
+   "Borough": "M",
+   "ClosureType": "Completely Locked",
+   "EditDate": "06/23/2020 09:14:23 AM",
+   "GISpropNum": "M283",
+   "OMPpropID": "M283-01",
+   "Red Sign Installed": null,
+   "Status": null,
+   "accessibility": null,
+   "accessibilityLevel": null,
+   "location": null,
+   "name": "Nelson Rockefeller Park Playground North",
+   "rules": null,
+   "system": null,
+   "Approx Date Closed": "03/31/2020",
+   "Approx Date Reopened": "06/22/2020",
+   "Community Board": "101",
+   "District": "M-01",
+   "Latitude": "40.71808624267578",
+   "Longitude": "-74.01555633544922",
+   "Point": "POINT (-74.01555633544922 40.71808624267578)"
+  },
+  {
+   "Borough": "X",
+   "ClosureType": "Completely Locked",
+   "EditDate": "06/22/2020 10:26:30 AM",
+   "GISpropNum": "X291",
+   "OMPpropID": "X291",
+   "Red Sign Installed": "Yes",
+   "Status": null,
+   "accessibility": null,
+   "accessibilityLevel": null,
+   "location": "E. 181 St. bet. Walton Ave. and Jerome A",
+   "name": "Walton Playground",
+   "rules": null,
+   "system": null,
+   "Approx Date Closed": "03/31/2020",
+   "Approx Date Reopened": "06/21/2020",
+   "Community Board": "205",
+   "District": "X-05",
+   "Latitude": "40.855308532714844",
+   "Longitude": "-73.90518188476562",
+   "Point": "POINT (-73.90518188476562 40.855308532714844)"
+  },
+  {
+   "Borough": "X",
+   "ClosureType": "Completely Locked",
+   "EditDate": "06/22/2020 10:39:31 AM",
+   "GISpropNum": "X019",
+   "OMPpropID": "X019-01",
+   "Red Sign Installed": null,
+   "Status": null,
+   "accessibility": null,
+   "accessibilityLevel": null,
+   "location": null,
+   "name": "Ewen Playground",
+   "rules": null,
+   "system": null,
+   "Approx Date Closed": "03/31/2020",
+   "Approx Date Reopened": "06/21/2020",
+   "Community Board": "208",
+   "District": "X-08",
+   "Latitude": "40.88312911987305",
+   "Longitude": "-73.90985870361328",
+   "Point": "POINT (-73.90985870361328 40.88312911987305)"
+  },
+  {
+   "Borough": "B",
+   "ClosureType": "Completely Locked",
+   "EditDate": "06/22/2020 01:55:05 PM",
+   "GISpropNum": "B169",
+   "OMPpropID": "B169",
+   "Red Sign Installed": "Yes",
+   "Status": null,
+   "accessibility": null,
+   "accessibilityLevel": null,
+   "location": null,
+   "name": "Beach at B 6 St",
+   "rules": null,
+   "system": null,
+   "Approx Date Closed": "03/31/2020",
+   "Approx Date Reopened": "06/22/2020",
+   "Community Board": "313",
+   "District": "B-13",
+   "Latitude": "40.57489776611328",
+   "Longitude": "-73.96096801757812",
+   "Point": "POINT (-73.96096801757812 40.57489776611328)"
+  }
+ ],
+ "profile_seconds": 3.248
+}

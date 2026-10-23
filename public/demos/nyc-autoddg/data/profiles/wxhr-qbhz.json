@@ -1,0 +1,701 @@
+{
+ "id": "wxhr-qbhz",
+ "rows": 3871,
+ "n_columns": 25,
+ "columns": [
+  {
+   "name": "System",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0098,
+   "distinct_approx": 3866,
+   "unique_frac": 1.0086,
+   "len_min": 10,
+   "len_max": 14,
+   "len_avg": 11.0877,
+   "flags": []
+  },
+  {
+   "name": "DF Activated",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0003,
+   "distinct_approx": 4,
+   "unique_frac": 0.001,
+   "len_min": 6,
+   "len_max": 17,
+   "len_avg": 9.3238,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Activated",
+     "count": 3523
+    },
+    {
+     "value": "UnderConstruction",
+     "count": 130
+    },
+    {
+     "value": "Broken",
+     "count": 121
+    },
+    {
+     "value": "NotYetActivated",
+     "count": 96
+    }
+   ]
+  },
+  {
+   "name": "FountainType",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0003,
+   "distinct_approx": 38,
+   "unique_frac": 0.0098,
+   "len_min": 1,
+   "len_max": 34,
+   "len_avg": 5.707,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "A",
+     "count": 990
+    },
+    {
+     "value": "C",
+     "count": 629
+    },
+    {
+     "value": "E",
+     "count": 388
+    },
+    {
+     "value": "D",
+     "count": 379
+    },
+    {
+     "value": "Indoor Drinking Fountain",
+     "count": 294
+    }
+   ]
+  },
+  {
+   "name": "FountainCount",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0096,
+   "distinct_approx": 3,
+   "unique_frac": 0.0008,
+   "min": 1.0,
+   "max": 3.0,
+   "mean": 1.1534,
+   "std": 0.4417,
+   "p25": 1.0,
+   "median": 1.0,
+   "p75": 1.0,
+   "flags": []
+  },
+  {
+   "name": "Painted",
+   "type": "boolean",
+   "semantic": null,
+   "null_frac": 0.2591,
+   "distinct_approx": 2,
+   "unique_frac": 0.0007,
+   "len_min": 4,
+   "len_max": 5,
+   "len_avg": 4.5844,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "false",
+     "count": 1676
+    },
+    {
+     "value": "true",
+     "count": 1192
+    }
+   ]
+  },
+  {
+   "name": "Filter Installed",
+   "type": "boolean",
+   "semantic": null,
+   "null_frac": 0.0057,
+   "distinct_approx": 2,
+   "unique_frac": 0.0005,
+   "len_min": 4,
+   "len_max": 5,
+   "len_avg": 4.908,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "false",
+     "count": 3495
+    },
+    {
+     "value": "true",
+     "count": 354
+    }
+   ]
+  },
+  {
+   "name": "Position",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0708,
+   "distinct_approx": 130,
+   "unique_frac": 0.0361,
+   "len_min": 6,
+   "len_max": 80,
+   "len_avg": 17.156,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Out in Open",
+     "count": 624
+    },
+    {
+     "value": "Indoor",
+     "count": 538
+    },
+    {
+     "value": "In Playground",
+     "count": 476
+    },
+    {
+     "value": "Near Ballfield",
+     "count": 398
+    },
+    {
+     "value": "Under Tree",
+     "count": 232
+    }
+   ]
+  },
+  {
+   "name": "Outdoor",
+   "type": "boolean",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 2,
+   "unique_frac": 0.0005,
+   "len_min": 4,
+   "len_max": 5,
+   "len_avg": 4.1405,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "true",
+     "count": 3327
+    },
+    {
+     "value": "false",
+     "count": 544
+    }
+   ]
+  },
+  {
+   "name": "GISPropNum",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0098,
+   "distinct_approx": 987,
+   "unique_frac": 0.2575,
+   "len_min": 4,
+   "len_max": 7,
+   "len_avg": 4.0884,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "M010",
+     "count": 179
+    },
+    {
+     "value": "Q099",
+     "count": 126
+    },
+    {
+     "value": "B073",
+     "count": 75
+    },
+    {
+     "value": "Q015",
+     "count": 62
+    },
+    {
+     "value": "B169",
+     "count": 52
+    }
+   ]
+  },
+  {
+   "name": "PropertyName",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0139,
+   "distinct_approx": 956,
+   "unique_frac": 0.2505,
+   "len_min": 4,
+   "len_max": 53,
+   "len_avg": 18.7744,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "Central Park",
+     "count": 179
+    },
+    {
+     "value": "Flushing Meadows Corona Park",
+     "count": 129
+    },
+    {
+     "value": "Prospect Park",
+     "count": 75
+    },
+    {
+     "value": "Forest Park",
+     "count": 62
+    },
+    {
+     "value": "Coney Island Beach & Boardwalk",
+     "count": 52
+    }
+   ]
+  },
+  {
+   "name": "OMPPropID",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0098,
+   "distinct_approx": 1458,
+   "unique_frac": 0.3804,
+   "len_min": 4,
+   "len_max": 12,
+   "len_avg": 6.001,
+   "flags": []
+  },
+  {
+   "name": "SubPropertyName",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.5893,
+   "distinct_approx": 550,
+   "unique_frac": 0.3459,
+   "len_min": 8,
+   "len_max": 50,
+   "len_avg": 21.5931,
+   "flags": [
+    "mostly missing (59% null)"
+   ],
+   "top_values": [
+    {
+     "value": "The Bandshell",
+     "count": 18
+    },
+    {
+     "value": "Manhattan Beach Zone 1",
+     "count": 16
+    },
+    {
+     "value": "Midland Beach Zone 5",
+     "count": 15
+    },
+    {
+     "value": "Cunningham Park Zone 3",
+     "count": 14
+    },
+    {
+     "value": "Great Lawn And Cleopatra's Needle",
+     "count": 14
+    }
+   ]
+  },
+  {
+   "name": "ParkDistrict",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0005,
+   "distinct_approx": 77,
+   "unique_frac": 0.0199,
+   "len_min": 4,
+   "len_max": 5,
+   "len_avg": 4.0406,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "M-13",
+     "count": 179
+    },
+    {
+     "value": "M-03",
+     "count": 132
+    },
+    {
+     "value": "Q-15",
+     "count": 124
+    },
+    {
+     "value": "Q-14",
+     "count": 122
+    },
+    {
+     "value": "R-01",
+     "count": 104
+    }
+   ]
+  },
+  {
+   "name": "Borough",
+   "type": "categorical",
+   "semantic": "borough",
+   "null_frac": 0.0,
+   "distinct_approx": 6,
+   "unique_frac": 0.0015,
+   "len_min": 1,
+   "len_max": 1,
+   "len_avg": 1.0,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "B",
+     "count": 1123
+    },
+    {
+     "value": "Q",
+     "count": 1009
+    },
+    {
+     "value": "M",
+     "count": 892
+    },
+    {
+     "value": "X",
+     "count": 591
+    },
+    {
+     "value": "R",
+     "count": 254
+    }
+   ]
+  },
+  {
+   "name": "AMPSID",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0106,
+   "distinct_approx": 3889,
+   "unique_frac": 1.0154,
+   "min": 100037393.0,
+   "max": 100043780.0,
+   "mean": 100039877.2723,
+   "std": 1943.8222,
+   "p25": 100038375.0,
+   "median": 100039371.0,
+   "p75": 100040375.0,
+   "flags": []
+  },
+  {
+   "name": "AMPSClass",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 1,
+   "unique_frac": 0.0003,
+   "len_min": 8,
+   "len_max": 8,
+   "len_avg": 8.0,
+   "flags": [
+    "constant value"
+   ],
+   "top_values": [
+    {
+     "value": "DRINKFTN",
+     "count": 3871
+    }
+   ]
+  },
+  {
+   "name": "AMPSStatus",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0106,
+   "distinct_approx": 2,
+   "unique_frac": 0.0005,
+   "len_min": 1,
+   "len_max": 1,
+   "len_avg": 1.0,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "I",
+     "count": 3829
+    },
+    {
+     "value": "D",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "AMPSParentID",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0106,
+   "distinct_approx": 1665,
+   "unique_frac": 0.4347,
+   "len_min": 4,
+   "len_max": 20,
+   "len_avg": 7.1324,
+   "flags": []
+  },
+  {
+   "name": "AMPSName",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0106,
+   "distinct_approx": 2527,
+   "unique_frac": 0.6598,
+   "len_min": 6,
+   "len_max": 80,
+   "len_avg": 35.4875,
+   "flags": []
+  },
+  {
+   "name": "CommunityBoard",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0103,
+   "distinct_approx": 69,
+   "unique_frac": 0.018,
+   "min": 101.0,
+   "max": 595.0,
+   "mean": 292.4067,
+   "std": 126.9281,
+   "p25": 202.0,
+   "median": 307.0,
+   "p75": 406.0,
+   "flags": []
+  },
+  {
+   "name": "CouncilDistrict",
+   "type": "integer",
+   "semantic": "geo_district",
+   "null_frac": 0.0103,
+   "distinct_approx": 49,
+   "unique_frac": 0.0128,
+   "min": 1.0,
+   "max": 51.0,
+   "mean": 24.9029,
+   "std": 15.2201,
+   "p25": 11.0,
+   "median": 24.0,
+   "p75": 38.0,
+   "flags": []
+  },
+  {
+   "name": "Precinct",
+   "type": "integer",
+   "semantic": "geo_district",
+   "null_frac": 0.0111,
+   "distinct_approx": 77,
+   "unique_frac": 0.0201,
+   "min": 1.0,
+   "max": 123.0,
+   "mean": 68.4757,
+   "std": 35.774,
+   "p25": 41.0,
+   "median": 70.0,
+   "p75": 104.0,
+   "flags": []
+  },
+  {
+   "name": "ZIPCode",
+   "type": "integer",
+   "semantic": "zip_code",
+   "null_frac": 0.0124,
+   "distinct_approx": 172,
+   "unique_frac": 0.045,
+   "min": 83.0,
+   "max": 11694.0,
+   "mean": 10343.3445,
+   "std": 2337.2254,
+   "p25": 10303.0,
+   "median": 11203.0,
+   "p75": 11236.0,
+   "flags": [
+    "values outside NYC range (min 83.0, max 11694.0)"
+   ]
+  },
+  {
+   "name": "x",
+   "type": "float",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 3636,
+   "unique_frac": 0.9393,
+   "min": 913457.5924,
+   "max": 1064740.6477,
+   "mean": 1005084.7435,
+   "std": 24350.3133,
+   "p25": 991153.6,
+   "median": 1002973.2745,
+   "p75": 1020108.1858,
+   "flags": []
+  },
+  {
+   "name": "y",
+   "type": "float",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 3566,
+   "unique_frac": 0.9212,
+   "min": 122373.6067,
+   "max": 270012.7356,
+   "mean": 202793.4563,
+   "std": 31622.6504,
+   "p25": 180975.9442,
+   "median": 202240.5162,
+   "p75": 227196.0394,
+   "flags": []
+  }
+ ],
+ "sample_rows": [
+  {
+   "System": "B001-DF0207",
+   "DF Activated": "Activated",
+   "FountainType": "A",
+   "FountainCount": "1",
+   "Painted": "true",
+   "Filter Installed": "false",
+   "Position": "Under Tree, In Playground",
+   "Outdoor": "true",
+   "GISPropNum": "B001",
+   "PropertyName": "American Playground",
+   "OMPPropID": "B001",
+   "SubPropertyName": null,
+   "ParkDistrict": "B-01",
+   "Borough": "B",
+   "AMPSID": "100037676",
+   "AMPSClass": "DRINKFTN",
+   "AMPSStatus": "D",
+   "AMPSParentID": "B001",
+   "AMPSName": "A-American Playground",
+   "CommunityBoard": "301",
+   "CouncilDistrict": "33",
+   "Precinct": "94",
+   "ZIPCode": "11222",
+   "x": "995853.631964474",
+   "y": "204780.745671972"
+  },
+  {
+   "System": "B002-DF0731",
+   "DF Activated": "Broken",
+   "FountainType": "E",
+   "FountainCount": "1",
+   "Painted": "true",
+   "Filter Installed": "false",
+   "Position": "Out in Open",
+   "Outdoor": "true",
+   "GISPropNum": "B002",
+   "PropertyName": "Amersfort Park",
+   "OMPPropID": "B002",
+   "SubPropertyName": null,
+   "ParkDistrict": "B-18",
+   "Borough": "B",
+   "AMPSID": "100039159",
+   "AMPSClass": "DRINKFTN",
+   "AMPSStatus": "I",
+   "AMPSParentID": "B002",
+   "AMPSName": "E-Amersfort Park",
+   "CommunityBoard": "318",
+   "CouncilDistrict": "45",
+   "Precinct": "63",
+   "ZIPCode": "11210",
+   "x": "1001205.71968546",
+   "y": "168004.324802398"
+  },
+  {
+   "System": "B002-DF0732",
+   "DF Activated": "Broken",
+   "FountainType": "E",
+   "FountainCount": "1",
+   "Painted": "true",
+   "Filter Installed": "false",
+   "Position": "Under Tree, Out in Open",
+   "Outdoor": "true",
+   "GISPropNum": "B002",
+   "PropertyName": "Amersfort Park",
+   "OMPPropID": "B002",
+   "SubPropertyName": null,
+   "ParkDistrict": "B-18",
+   "Borough": "B",
+   "AMPSID": "100039177",
+   "AMPSClass": "DRINKFTN",
+   "AMPSStatus": "I",
+   "AMPSParentID": "B002",
+   "AMPSName": "E-Amersfort Park",
+   "CommunityBoard": "318",
+   "CouncilDistrict": "45",
+   "Precinct": "63",
+   "ZIPCode": "11210",
+   "x": "1001167.86936746",
+   "y": "168468.868820816"
+  },
+  {
+   "System": "B007-DF0754",
+   "DF Activated": "UnderConstruction",
+   "FountainType": "CS Metal",
+   "FountainCount": "1",
+   "Painted": "false",
+   "Filter Installed": "false",
+   "Position": "In Shade",
+   "Outdoor": "true",
+   "GISPropNum": "B007",
+   "PropertyName": "Bensonhurst Park",
+   "OMPPropID": "B007",
+   "SubPropertyName": null,
+   "ParkDistrict": "B-11",
+   "Borough": "B",
+   "AMPSID": "100039198",
+   "AMPSClass": "DRINKFTN",
+   "AMPSStatus": "I",
+   "AMPSParentID": "B007",
+   "AMPSName": "CS Metal-Bensonhurst Park",
+   "CommunityBoard": "311",
+   "CouncilDistrict": "43",
+   "Precinct": "62",
+   "ZIPCode": "11214",
+   "x": "984267.19581981",
+   "y": "157078.860104814"
+  },
+  {
+   "System": "B007-DF0756",
+   "DF Activated": "UnderConstruction",
+   "FountainType": "A",
+   "FountainCount": "1",
+   "Painted": "true",
+   "Filter Installed": "true",
+   "Position": "Out in Open, In Playground",
+   "Outdoor": "true",
+   "GISPropNum": "B007",
+   "PropertyName": "Bensonhurst Park",
+   "OMPPropID": "B007-01",
+   "SubPropertyName": "Bensonhurst Park Playground",
+   "ParkDistrict": "B-11",
+   "Borough": "B",
+   "AMPSID": "100039249",
+   "AMPSClass": "DRINKFTN",
+   "AMPSStatus": "I",
+   "AMPSParentID": "B007-01",
+   "AMPSName": "A-Bensonhurst Park-Bensonhurst Park Playground",
+   "CommunityBoard": "311",
+   "CouncilDistrict": "43",
+   "Precinct": "62",
+   "ZIPCode": "11214",
+   "x": "984301.209531307",
+   "y": "156806.697591394"
+  }
+ ],
+ "profile_seconds": 3.888
+}

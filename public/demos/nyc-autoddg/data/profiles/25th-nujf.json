@@ -1,0 +1,166 @@
+{
+ "id": "25th-nujf",
+ "rows": 29685,
+ "n_columns": 6,
+ "columns": [
+  {
+   "name": "Year of Birth",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 11,
+   "unique_frac": 0.0004,
+   "min": 2011.0,
+   "max": 2021.0,
+   "mean": 2014.9739,
+   "std": 3.1068,
+   "p25": 2012.0,
+   "median": 2014.0,
+   "p75": 2018.0,
+   "flags": []
+  },
+  {
+   "name": "Gender",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 2,
+   "unique_frac": 0.0001,
+   "len_min": 4,
+   "len_max": 6,
+   "len_avg": 5.0157,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "FEMALE",
+     "count": 15076
+    },
+    {
+     "value": "MALE",
+     "count": 14609
+    }
+   ]
+  },
+  {
+   "name": "Ethnicity",
+   "type": "categorical",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 7,
+   "unique_frac": 0.0002,
+   "len_min": 8,
+   "len_max": 26,
+   "len_avg": 15.8891,
+   "flags": [],
+   "top_values": [
+    {
+     "value": "WHITE NON HISPANIC",
+     "count": 9327
+    },
+    {
+     "value": "HISPANIC",
+     "count": 8615
+    },
+    {
+     "value": "BLACK NON HISPANIC",
+     "count": 4571
+    },
+    {
+     "value": "ASIAN AND PACIFIC ISLANDER",
+     "count": 4348
+    },
+    {
+     "value": "WHITE NON HISP",
+     "count": 1402
+    }
+   ]
+  },
+  {
+   "name": "Child's First Name",
+   "type": "text",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 3347,
+   "unique_frac": 0.1128,
+   "len_min": 2,
+   "len_max": 14,
+   "len_avg": 5.7837,
+   "flags": []
+  },
+  {
+   "name": "Count",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 295,
+   "unique_frac": 0.0099,
+   "min": 10.0,
+   "max": 446.0,
+   "mean": 33.3628,
+   "std": 38.3354,
+   "p25": 13.0,
+   "median": 20.0,
+   "p75": 35.0,
+   "flags": []
+  },
+  {
+   "name": "Rank",
+   "type": "integer",
+   "semantic": null,
+   "null_frac": 0.0,
+   "distinct_approx": 100,
+   "unique_frac": 0.0034,
+   "min": 1.0,
+   "max": 102.0,
+   "mean": 55.839,
+   "std": 25.4463,
+   "p25": 36.0,
+   "median": 57.0,
+   "p75": 77.0,
+   "flags": []
+  }
+ ],
+ "sample_rows": [
+  {
+   "Year of Birth": "2021",
+   "Gender": "FEMALE",
+   "Ethnicity": "ASIAN AND PACIFIC ISLANDER",
+   "Child's First Name": "Chloe",
+   "Count": "71",
+   "Rank": "1"
+  },
+  {
+   "Year of Birth": "2021",
+   "Gender": "FEMALE",
+   "Ethnicity": "ASIAN AND PACIFIC ISLANDER",
+   "Child's First Name": "Olivia",
+   "Count": "71",
+   "Rank": "1"
+  },
+  {
+   "Year of Birth": "2021",
+   "Gender": "FEMALE",
+   "Ethnicity": "ASIAN AND PACIFIC ISLANDER",
+   "Child's First Name": "Emma",
+   "Count": "66",
+   "Rank": "2"
+  },
+  {
+   "Year of Birth": "2021",
+   "Gender": "FEMALE",
+   "Ethnicity": "ASIAN AND PACIFIC ISLANDER",
+   "Child's First Name": "Mia",
+   "Count": "59",
+   "Rank": "3"
+  },
+  {
+   "Year of Birth": "2021",
+   "Gender": "FEMALE",
+   "Ethnicity": "ASIAN AND PACIFIC ISLANDER",
+   "Child's First Name": "Ava",
+   "Count": "53",
+   "Rank": "4"
+  }
+ ],
+ "profile_seconds": 6.048
+}
