@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pad allocation, live</title>
+<meta name="description" content="The repo's chunk-reserve one-time-pad allocation protocol running unmodified in Pyodide: be the network, compare protocols, rerun the CI checks.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div>
+      <p class="label">Live demo · one-time-pad allocation</p>
+      <h1>You are the network.</h1>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Demo views" id="tabs" hidden>
+      <button role="tab" id="tab-play" aria-controls="panel-play" aria-selected="true">Play</button>
+      <button role="tab" id="tab-compare" aria-controls="panel-compare" aria-selected="false" tabindex="-1">Compare</button>
+      <button role="tab" id="tab-ci" aria-controls="panel-ci" aria-selected="false" tabindex="-1">CI</button>
+    </div>
+  </header>
+
+  <section class="poster" id="poster" aria-labelledby="poster-title">
+    <div class="strip" id="posterStrip" aria-hidden="true"></div>
+    <button class="btn primary" id="start" type="button" hidden>Start Python</button>
+    <p class="lede" id="poster-title">Five parties share a pool of one-time pads, and no pad may ever be used twice. You send their messages and choose which undelivered one the network hands over next. The repo's own protocol code picks every pad, and each one is checked against every pad used before it.</p>
+    <p class="size">Downloads Pyodide 0.29.5 from cdn.jsdelivr.net, about 5.3 MB compressed, once; your browser caches it. The test job in the CI tab adds pytest, about 1.6 MB more.</p>
+    <div class="progress" id="bar" hidden><i></i></div>
+    <p class="status" id="status" role="status"></p>
+    <noscript><p class="status">This demo needs JavaScript: the repo's Python runs in your browser through Pyodide.</p></noscript>
+  </section>
+
+  <section id="app" hidden>
+    <!-- ============================ Play ============================ -->
+    <div role="tabpanel" id="panel-play" aria-labelledby="tab-play">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Protocol" id="proto">
+          <button type="button" data-act data-v="chunk-reserve" aria-pressed="true">chunk-reserve</button>
+          <button type="button" data-act data-v="static-partition" aria-pressed="false">static partition</button>
+          <button type="button" data-act data-v="grant" aria-pressed="false">grant</button>
+          <button type="button" data-act data-v="broken" aria-pressed="false">AlwaysPadOne</button>
+        </div>
+        <label>n <select id="n" data-act><option>40</option><option selected>60</option><option>61</option><option>80</option><option>100</option></select></label>
+        <label>d <select id="d" data-act><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+        <button class="btn small" type="button" id="reset" data-act>Reset</button>
+      </div>
+      <p class="proto-note" id="protoNote"></p>
+      <div class="alarm-box" id="alarm" role="alert" hidden></div>
+      <div class="strip" id="strip" role="img" aria-label="Pad strip"></div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="k-cur"></i>current chunk (private) or slice</span>
+        <span><i class="k-res"></i>reserve chunk (public, in every ledger)</span>
+        <span><i class="k-fly"></i>sent, in flight</span>
+        <span><i class="k-done"></i>delivered</span>
+        <span><i class="k-waste"></i>never used, once the run is over</span>
+      </div>
+
+      <div class="cols">
+        <div class="col">
+          <div class="panel o1">
+            <p class="label" id="partiesLabel">Parties: click one to send a message</p>
+            <div class="parties" id="parties"></div>
+          </div>
+          <div class="panel o2">
+            <p class="label" id="flightLabel">In flight</p>
+            <div class="flight" id="flight"></div>
+            <div class="row">
+              <span class="label">Deliver</span>
+              <button class="btn small" type="button" data-act data-policy="fifo">oldest</button>
+              <button class="btn small" type="button" data-act data-policy="lifo">newest</button>
+              <button class="btn small" type="button" data-act data-policy="adversarial">adversarial</button>
+              <button class="btn small" type="button" data-act data-policy="random">random</button>
+              <button class="btn small" type="button" data-act id="endRun">End run, count waste</button>
+            </div>
+            <p class="keys">Keys: <kbd>0</kbd>–<kbd>4</kbd> send · <kbd>F</kbd> <kbd>L</kbd> <kbd>A</kbd> deliver oldest, newest, adversarial · <kbd>S</kbd> one auto step · <kbd>P</kbd> play or pause</p>
+          </div>
+          <div class="panel o5">
+            <p class="label">Or let the loop from simulation.run drive (changing these restarts)</p>
+            <div class="bar">
+              <label>schedule <select id="schedule" data-act></select></label>
+              <label>delivery <select id="delivery" data-act></select></label>
+              <label>pressure <select id="pressure" data-act><option selected>eager</option><option>lazy</option></select></label>
+              <label>seed <input type="number" id="seed" data-act min="0" max="999" value="0"></label>
+            </div>
+            <div class="row">
+              <button class="btn small" type="button" data-act id="step">Step</button>
+              <button class="btn small primary" type="button" data-act id="play" aria-pressed="false">Play</button>
+              <button class="btn small" type="button" data-act id="finish">Run to end</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="stats o3" id="stats"></div>
+          <div class="panel check o4" id="check" hidden></div>
+          <div class="panel o6">
+            <p class="label">Events, newest first</p>
+            <ol class="log" id="log" aria-live="polite"></ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ Compare ============================ -->
+    <div role="tabpanel" id="panel-compare" aria-labelledby="tab-compare" hidden>
+      <p class="proto-note">One call to <b>simulation.run</b> for each protocol in eval_protocol.PROTOCOLS, with the settings below, run in your browser. The default is the schedule that strands the most pads: every party but one sends once and goes quiet.</p>
+      <form class="bar" id="cmpForm">
+        <label>schedule <select name="schedule" data-act></select></label>
+        <label>delivery <select name="delivery" data-act></select></label>
+        <label>pressure <select name="pressure" data-act><option selected>eager</option><option>lazy</option></select></label>
+        <label>seed <input type="number" name="seed" data-act min="0" max="999" value="0"></label>
+        <label>m <select name="m" data-act><option selected>5</option><option>9</option></select></label>
+        <label>d <select name="d" data-act><option>1</option><option>2</option><option selected>5</option><option>10</option><option>20</option></select></label>
+        <label>n <select name="n" data-act><option>500</option><option selected>5000</option><option>20000</option></select></label>
+        <button class="btn primary" type="submit" data-act>Run</button>
+        <div class="seg" role="group" aria-label="Bar scale" id="scale">
+          <button type="button" data-v="linear" aria-pressed="true">linear</button>
+          <button type="button" data-v="log" aria-pressed="false">log</button>
+        </div>
+      </form>
+      <div id="cmpOut"></div>
+      <p class="note">A committed summary.csv cell is the worst of 12 such runs (eval_protocol.measure: random and adversarial delivery, eager and lazy pressure, seeds 0 to 2). Its value is shown under each bar for n = 5,000.</p>
+    </div>
+
+    <!-- ============================ CI ============================ -->
+    <div role="tabpanel" id="panel-ci" aria-labelledby="tab-ci" hidden>
+      <p class="proto-note">The steps of the repo's <b>.github/workflows/tests.yml</b> that can run in a browser, on Pyodide's CPython. Not run here: <code>ruff check</code> and <code>ruff format --check</code>, because ruff has no Pyodide build.</p>
+      <div class="jobs">
+        <article class="panel job" id="job-tests">
+          <p class="label">test job</p>
+          <code class="cmd">python -m pytest -q</code>
+          <p>The repo's test_protocol.py, all of it. pytest 8.3.5 comes from the Pyodide distribution (the repo pins 8.4.2).</p>
+          <div class="row"><button class="btn primary small" type="button" data-act data-job="tests">Run the tests</button><button class="btn small" type="button" data-keep data-stop hidden>Stop</button></div>
+          <p class="verdict" aria-live="polite"></p>
+          <pre class="out"></pre>
+        </article>
+        <article class="panel job" id="job-main">
+          <p class="label">test job</p>
+          <code class="cmd">python main.py --m 5</code>
+          <p>The repo's walk-through: a hand-driven trace of the reserve map, then all three protocols when one party does the talking.</p>
+          <div class="row"><button class="btn primary small" type="button" data-act data-job="main">Run main.py</button></div>
+          <p class="verdict" aria-live="polite"></p>
+          <pre class="out"></pre>
+        </article>
+        <article class="panel job" id="job-eval">
+          <p class="label">lint job</p>
+          <code class="cmd">python eval_protocol.py --out /tmp/summary.csv
+diff summary.csv /tmp/summary.csv</code>
+          <p>Regenerates the evaluation grid and compares it with the summary.csv committed at 662f578.</p>
+          <div class="row">
+            <button class="btn primary small" type="button" data-act data-job="slice">m = 5, d = 5 slice (18 rows)</button>
+            <button class="btn small" type="button" data-act data-job="full">All 180 rows (1 to 3 min)</button>
+            <button class="btn small" type="button" data-keep data-stop hidden>Stop</button>
+          </div>
+          <div class="progress" hidden><i></i></div>
+          <p class="status"></p>
+          <p class="verdict" aria-live="polite"></p>
+          <div class="rows"></div>
+          <pre class="out"></pre>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="demo-foot">
+    <span>Runs: the repo's protocol.py, simulation.py, eval_protocol.py, main.py and test_protocol.py, unmodified, on Pyodide 0.29.5 in a Web Worker, driven by this demo's <a href="py/glue.py">glue.py</a>. Source: <a href="https://github.com/happyc0der/cryptography-project-1/tree/662f57872a5fb1b218796362710e281244b4a0c0" target="_blank" rel="noopener">happyc0der/cryptography-project-1 at 662f578</a></span>
+    <span>Credit: NYU CS6903/4783 Project 1 with Aaron Wu and Shuhua. The October 2025 version is the team's static-partition baseline. The chunk-reserve protocol, the proofs, the adversarial simulator, the tests, CI and the report are from my September 2026 rewrite.</span>
+    <span>The static-partition baseline in protocol.py is the 2026 re-implementation, not the team's October 2025 code.</span>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

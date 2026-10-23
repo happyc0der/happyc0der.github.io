@@ -1,0 +1,3 @@
+# summary.csv is committed upstream with CRLF line endings (csv.DictWriter default).
+# The CI tab compares it byte for byte, so git must never normalise it.
+summary.csv -text
