@@ -35,7 +35,7 @@ A different git version may produce different zip bytes with the same contents; 
 |---|---|
 | `ephys-mcp-v0.5.1.zip` | The repo's `src/ephys_mcp`, five test files and `LICENSE` at the tag (62 KB) |
 | `index.html` | Page, styles and poster |
-| `app.js` | Builds each tool's form from the signature the server reports, sends calls, shows results, call log, analyze_session replay, self-check |
+| `app.js` | Builds each tool's form from the signature the server reports, sends calls, shows results, call log, analyze_session replay, self-check, Stop |
 | `charts.js` | SVG figures drawn from the arrays the plot tools pass to `plots.py` |
 | `worker.js` | Loads Pyodide 0.29.5 (version and URL from `../_shared/pyodide.js`), NumPy, SciPy, unpacks the zip, runs calls |
 | `py/bridge.py` | Demo glue: imports `ephys_mcp.server`, describes the registered tools, calls them, returns JSON and timing |
@@ -66,6 +66,18 @@ files (wasm, stdlib, wheels) therefore share the browser cache with the other Py
    selectable and returns the server's own NotImplementedError message.
 4. **Slider caps**: the page limits the synthetic source to 4–96 units and 30–600 s so calls stay
    quick; the server accepts 1–1024 units and 1–3600 s.
+5. **One page default that differs from the server's**: `evaluate_cross_session` is pre-filled
+   with `bin_s=0.05` (fit_decoder's default bin) instead of the server's 0.02, and the call line
+   shows it. At 0.02 with 32 units the ridge design matrix has 801 columns (25 history bins x 32
+   units + 1), and Pyodide's NumPy has no optimised BLAS, so the call takes minutes (see timings).
+   The visitor can type 0.02 back in.
+6. **Stop**: after a call has run for a second, a Stop button appears. Python cannot be
+   interrupted inside a NumPy call, and Pyodide's interrupt buffer needs a cross-origin-isolated
+   page (GitHub Pages sends no COOP/COEP headers), so Stop terminates the worker and starts a new
+   one from the browser cache (about 2.5 s in desktop Edge). Open sessions and fitted decoders are
+   lost, and the page says so. The self-check has its own Stop, shown only while the tests run.
+
+So 20 of the 24 tools can be called: the four in item 3 are listed with the reason they are off.
 
 ## Self-check
 
@@ -84,10 +96,32 @@ The "Run the tests" button loads pytest 8.3.5 from the Pyodide distribution (abo
   2.8 MB, SciPy 16.3 MB, loader and lock file 0.26 MB); 30.4 MB decoded. Nothing loads before Start.
 - Self-check adds 1.6 MB (pytest and its dependencies).
 
+## Timings (desktop headless Edge on an Apple-silicon Mac, 2026-10-23)
+
+Default synthetic sessions (32 units, 120 s; the test session has noise 2.0). "Native" is the same
+tag on 64-bit CPython with NumPy 2.4.6 and SciPy 1.18.0, one BLAS thread.
+
+| Call | Browser | Native |
+|---|---|---|
+| `fit_decoder` kalman (default), bin 0.05 | 0.19 s | 0.07 s |
+| `fit_decoder` ridge, bin 0.05 | 3.8 s | 0.04 s |
+| `evaluate_cross_session` ridge, bin 0.02 (server default) | 178 s (235 s in a run through the page's UI) | 0.79 s |
+| `evaluate_cross_session` ridge, bin 0.05 (page default) | 8.7 s | 0.07 s |
+| `evaluate_cross_session` kalman, bin 0.02 | 0.95 s | 0.43 s |
+| `fit_latent_factors` gpfa, defaults (29 EM iterations of at most 60) | 18.5 s | 2.1 s |
+| `fit_latent_factors` pca, defaults | 0.04 s | 0.02 s |
+
+`evaluate_cross_session` only cross-validates inside the training session (`_select` in
+`processing/decode.py`, run once for the 80/20 same-session check and once for the full fit); the
+test sessions are scored with the fitted model unchanged.
+
 With default parameters (32 units, 120 s, seed 0) the analyze_session replay gives, in this
 browser: Kalman held-out R² 0.809, ridge 0.866, GPFA top-2 shared variance 0.906 and top-2 to
 velocity R² 0.931. The page shows live numbers only; it does not quote the README's figures, which
-come from other datasets or parameters.
+come from other datasets or parameters. The README does not give the settings behind its simulator figures
+(GPFA-to-velocity R² 0.95, PCA 0.68). The repo's own test session (24 units, 240 s, seed 4,
+`group_by="direction"`) gives GPFA 0.95 but PCA 0.65, in the browser and natively, so it is not
+that run either. The project page states the README figures and the demo default (0.93, 0.62).
 
 ## Test locally
 

@@ -43,7 +43,9 @@
   @media (min-width: 760px) {
     .app { height: 100vh; min-height: 0; }
     .console { flex: 1; min-height: 0; grid-template-columns: 212px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
-    .pane { overflow: auto; overscroll-behavior: contain; }
+    /* No overscroll containment: a wheel at a pane's end, or over a pane with nothing to scroll,
+       passes on to the page that embeds the demo. */
+    .pane { overflow: auto; }
     .tools-nav { display: block; }
     .tool-pick { display: none; }
     .work { display: flex; flex-direction: column; gap: 12px; }
@@ -92,6 +94,13 @@
   .checks { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 12.5px var(--mono); }
   .checks label { display: inline-flex; gap: 6px; align-items: center; color: var(--text-2); }
   .actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .btn.stop { border-color: rgba(244, 63, 94, 0.55); color: #fda4af; }
+  .btn.stop:hover { border-color: #fda4af; color: #ffe4e6; }
+  .busy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .panel .busy-row .runline { margin: 0; font-size: 11.5px; color: var(--muted); }
+  .busy-row .runline:empty { display: none; }
+  .actions > .hint { flex-basis: 100%; font: 12px/1.45 var(--sans); color: var(--muted); }
+  .field .narrow { max-width: 190px; }
   .callline { font: 12px/1.45 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
   .callline b { color: var(--text-2); font-weight: 500; }
 
@@ -164,7 +173,7 @@
 
   <section class="poster" id="poster" aria-labelledby="poster-title">
     <h2 id="poster-title">Call the server's analysis tools the way an LLM would, on a simulated motor cortex</h2>
-    <p>The page loads Python with NumPy and SciPy, unpacks the repo's v0.5.1 package and calls its 24 MCP tool functions directly. The data comes from the server's synthetic source: cosine-tuned Poisson units with known spikes and cursor velocity. No language model is involved. You press the buttons, and every number is computed here.</p>
+    <p>The page loads Python with NumPy and SciPy, unpacks the repo's v0.5.1 package and calls its tool functions directly. 20 of its 24 MCP tools run here; spike sorting, DANDI file listing and the two live-stream tools are listed but switched off, and search_datasets only returns its built-in offline list. The data comes from the server's synthetic source: cosine-tuned Poisson units with known spikes and cursor velocity. No language model is involved. You press the buttons, and every number is computed here.</p>
     <ol class="chain" aria-label="A typical call sequence">
       <li>list_sources</li><li>open_session</li><li>detect_spikes</li><li>fit_decoder</li><li>get_psth</li><li>fit_latent_factors</li>
     </ol>
@@ -189,7 +198,7 @@
   </main>
 
   <footer class="demo-foot" id="foot">
-    <span>Runs: ephys-mcp v0.5.1's <code>src/ephys_mcp</code>, unmodified, in Pyodide 0.29.5 (Python 3.13, NumPy, SciPy) on its simulated source. Demo glue stands in for the MCP SDK, httpx and the matplotlib plot module (figures are SVG drawn from the arrays the plot tools pass) and adds one NumPy shim for 32-bit WebAssembly. Network, hardware and spike-sorting tools are off.</span>
+    <span>Runs: ephys-mcp v0.5.1's <code>src/ephys_mcp</code>, unmodified, in Pyodide 0.29.5 (Python 3.13, NumPy, SciPy) on its simulated source. Demo glue stands in for the MCP SDK, httpx and the matplotlib plot module (figures are SVG drawn from the arrays the plot tools pass) and adds one NumPy shim for 32-bit WebAssembly. 20 of the 24 tools can be called: spike sorting, DANDI file listing and the live-stream tools are off, and search_datasets is limited to its offline list.</span>
     <span>Source: <a href="https://github.com/happyc0der/ephys-mcp/tree/7275320b07c7ded15a1c7873bc0061181b1cc8c3" target="_blank" rel="noopener">happyc0der/ephys-mcp @ 7275320</a> (tag v0.5.1), CC0-1.0. Research software, not a medical device.</span>
   </footer>
   <p class="sr" id="announce" aria-live="polite"></p>
