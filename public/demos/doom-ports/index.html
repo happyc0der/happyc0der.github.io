@@ -12,8 +12,7 @@
   body { padding: 14px 16px; }
   .demo { max-width: 1400px; margin: 0 auto; }
   .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; margin-bottom: 10px; }
-  .head h1 { margin: 0; font: 700 17px/1.2 var(--sans); letter-spacing: -0.01em; }
-  .head p { margin: 0; color: var(--text-2); font-size: 13.5px; }
+  .head p:not(.label) { margin: 0; color: var(--text-2); font-size: 13.5px; }
 
   .stage { display: flex; gap: 20px; align-items: flex-start; }
   /* 4:3 screen as large as the frame allows; the header and footer need ~150 px of height */
@@ -30,7 +29,6 @@
   .cover { position: absolute; inset: 0; min-height: 0; border: 0; border-radius: 0; padding: 12px; }
   .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: 0.4; }
   .cover .ui { position: relative; display: grid; justify-items: center; gap: 9px; padding: 14px 18px; border-radius: var(--radius); background: rgba(11, 10, 16, 0.8); }
-  .cover .btn { font-size: 15px; padding: 12px 22px; }
 
   .veil {
     position: absolute; left: 50%; transform: translateX(-50%); bottom: 12%;
@@ -52,13 +50,13 @@
   .keys { list-style: none; margin: 0; padding: 0; max-width: 460px; font-size: 12.5px; }
   .keys li { display: grid; grid-template-columns: minmax(0, 82px) minmax(0, 150px) minmax(0, 1fr); gap: 8px; align-items: center; padding: 4px 0; border-top: 1px solid var(--line); color: var(--text-2); }
   .keys li.th { border-top: 0; padding-top: 0; }
-  .keys li.th span { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .keys .calc { color: var(--muted); font: 11.5px/1.4 var(--mono); }
+  .keys li.th span { font: 500 11px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .keys .calc { color: var(--muted); font: 12px/1.4 var(--mono); }
   @container (max-width: 400px) {
     .keys li { grid-template-columns: minmax(0, 70px) minmax(0, 1fr); }
     .keys .calc, .keys li.th span:last-child { display: none; }
   }
-  kbd { font: 11.5px/1 var(--mono); color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; white-space: nowrap; }
+  kbd { font: 12px/1 var(--mono); color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; white-space: nowrap; }
 
   .model { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
   .model code { font: 12px/1.5 var(--mono); color: var(--accent-hi); overflow-wrap: anywhere; }
@@ -88,8 +86,7 @@
   @media (max-width: 900px) {
     body { padding: 10px 16px; }
     .head { margin-bottom: 8px; }
-    .head h1 { font-size: 16px; }
-    .head p { font-size: 12.5px; line-height: 1.4; }
+    .head p:not(.label) { font-size: 12.5px; line-height: 1.4; }
     .stage { flex-direction: column; gap: 10px; }
     .screen { width: min(100%, calc((100vh - 320px) * 4 / 3)); min-width: 0; align-self: center; }
     .side { flex: none; width: 100%; gap: 10px; }
@@ -105,7 +102,8 @@
 </head>
 <body>
 <main class="demo">
-  <header class="head">
+  <header class="head demo-top">
+    <p class="label">doom-ports · live demo</p>
     <h1>DOOMCE</h1>
     <p>An original raycaster for the TI-84 Plus CE: the calculator program's own C, compiled to WebAssembly.</p>
   </header>
@@ -116,7 +114,7 @@
       <div class="poster cover" id="poster">
         <img src="assets/poster.png" width="640" height="480" alt="">
         <div class="ui">
-          <button class="btn primary" id="start" type="button">&#9654; Start DOOMCE</button>
+          <button class="btn primary big" id="start" type="button">&#9654; Start DOOMCE</button>
           <span class="size">about 70 KB of WebAssembly</span>
           <div class="progress" id="progress" hidden><i></i></div>
           <span class="status" id="status" role="status"></span>

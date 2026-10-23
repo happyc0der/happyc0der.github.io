@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="app" id="app" data-view="list">
-  <header class="top">
+  <header class="top demo-top">
     <div class="brand">
       <p class="label">Ledger · verification layer, live</p>
       <h1>Every claim checked in code</h1>
@@ -31,7 +31,7 @@
         <p class="lede">This runs the repo's verifier, consistency checks and scorer in Python in your browser, over the claim ledgers
           Claude Sonnet 5.5 returned in the recorded run of 2026-10-17. Browse any deal, see a receipt for every claim,
           then try to fool it: invent a quote, cite the rep as the buyer, or change a number, and watch what the checks do.</p>
-        <button class="btn primary" id="run" type="button">Run the checks</button>
+        <button class="btn primary big" id="run" type="button">Run the checks</button>
         <div class="progress" id="progress" hidden><i></i></div>
         <p class="status" id="status" role="status" aria-live="polite"></p>
         <p class="size" id="size">Downloads about 13 MB on first run: Python 3.13 and pandas from jsDelivr (cached by your browser after that), plus about 0.3 MB of data and code from this site. No model is called.</p>

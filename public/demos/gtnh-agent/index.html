@@ -12,10 +12,12 @@
 </head>
 <body>
 <main id="root">
-  <!-- Poster: nothing heavy downloads until the visitor presses Start. -->
-  <section class="poster" id="poster" aria-labelledby="poster-title">
+  <header class="demo-top">
     <p class="label">gtnh-agent · live demo</p>
     <h1 id="poster-title">One safety-checked agent cycle, in your browser</h1>
+  </header>
+  <!-- Poster: nothing heavy downloads until the visitor presses Start. -->
+  <section class="poster" id="poster" aria-labelledby="poster-title">
     <p class="lede">The repo's own TypeScript agent loop runs here against its mock Minecraft world: observe, check the state, decide, validate, execute, verify, log to SQLite. No model and no server: the rule-based router decides and the mock planner serves its fixture plans.</p>
     <ol class="mini-pipe" aria-label="The stages of one cycle">
       <li>Observe</li><li>Trust</li><li>Decide</li><li>Plan</li><li>Propose</li><li>Validate</li><li>Execute</li><li>Verify</li><li>Log</li>

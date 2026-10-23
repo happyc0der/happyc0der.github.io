@@ -1,10 +1,13 @@
 ---
 import '../styles/global.css';
-// Latin-only font files, so a page downloads exactly four (and preloads the two the hero paints first).
-import interTight from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
-import serifItalic from '@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url';
-import inter from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import mono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+// Latin-only font files, so a page downloads exactly four (and preloads the two the hero paints first). They are
+// Fontsource's files copied to public/fonts/ at fixed paths, so the live demos under /demos/ (whose
+// _shared/demo.css points at the same files) reuse the copy the site already cached. After a Fontsource update,
+// copy the four files from node_modules/@fontsource*/**/files/ again.
+const interTight = '/fonts/inter-tight-latin-wght-normal.woff2';
+const serifItalic = '/fonts/instrument-serif-latin-400-italic.woff2';
+const inter = '/fonts/inter-latin-wght-normal.woff2';
+const mono = '/fonts/jetbrains-mono-latin-wght-normal.woff2';
 import Icon from '../components/Icon.astro';
 import { profile, hasNotes, initials } from '../lib';
 
