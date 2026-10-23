@@ -72,7 +72,8 @@ form.addEventListener('submit', (event) => {
 
 // ---------------------------------------------------------------- environment checks
 
-const narrow = () => window.innerWidth < 700;
+// "About 700": a 700-pixel iframe with a border is 698 inside, and gets the full lab.
+const narrow = () => window.innerWidth < 680;
 function updateNarrow() {
   if (running) return;
   $('narrow').hidden = !narrow();
