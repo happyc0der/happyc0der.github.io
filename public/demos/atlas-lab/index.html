@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas lab demo</title>
+<meta name="description" content="Atlas's own lab application (C++23 simulation, cell renderer and Dear ImGui overlay) compiled with Emscripten and drawn through a WebGPU backend for its render hardware interface.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  [hidden] { display: none !important; }
+  body { padding: 14px 16px 12px; }
+  h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  h1 em { font-style: normal; color: var(--accent-hi); }
+  p { margin: 0; }
+  button, input, select { font-family: inherit; }
+  .wrap { max-width: 1400px; margin: 0 auto; }
+
+  .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 16px; margin-bottom: 10px; }
+  .opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font: 12px/1.4 var(--mono); color: var(--muted); }
+  .opts label { display: inline-flex; align-items: center; gap: 6px; }
+  .opts select, .opts input[type="number"] { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 5px 7px; font: 12px var(--mono); }
+  .opts input[type="number"] { width: 6.5em; }
+  .opts input[type="checkbox"] { accent-color: var(--accent); }
+  .btn.small { padding: 7px 12px; font-size: 12px; }
+
+  /* The stage: the canvas is laid out at its final size from the start, because SDL reads the
+     canvas's CSS size when the lab creates its window. The poster sits on top until Start. */
+  .stage { position: relative; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #0d0d12; }
+  /* As tall as the frame allows: the lab lays its panels out for a 1280x720 window, so every
+     row of height given to the page around it is a row the Log panel loses. --chrome is the
+     header's height, measured by app.js. */
+  #canvas { display: block; width: 100%; height: clamp(420px, calc(100vh - var(--chrome, 96px)), 1100px); outline: none; cursor: default; }
+  .stage:fullscreen { border: 0; border-radius: 0; }
+  .stage:fullscreen #canvas { height: 100vh; }
+  .stage .poster { position: absolute; inset: 0; min-height: 0; border: 0; border-radius: 0; align-content: center; }
+  .poster .lede { max-width: 620px; color: var(--text-2); margin: 0 auto; }
+  .poster .cmd { font: 12px/1.5 var(--mono); color: var(--muted); max-width: 640px; margin: 0 auto; overflow-wrap: anywhere; }
+  .poster .cmd b { color: var(--accent-hi); font-weight: 500; }
+  .poster .narrow { max-width: 460px; margin: 0 auto; color: var(--text); font-size: 14px; border: 1px solid var(--accent-deep); background: rgba(139, 92, 246, 0.10); border-radius: var(--radius); padding: 12px 14px; }
+  .poster .narrow .btn { margin-top: 8px; }
+  .poster.is-narrow .lede, .poster.is-narrow .cmd { display: none; }
+  .poster .problem { max-width: 520px; margin: 0 auto; color: var(--text-2); font-size: 14px; }
+  .poster .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; margin-top: 8px; }
+  .keys { font: 11.5px/1.6 var(--mono); color: var(--muted); }
+  .keys kbd { font: inherit; color: var(--text-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--surface); }
+  .bar .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .check { margin-top: 10px; }
+  .check[hidden] { display: none; }
+  .check table { width: 100%; border-collapse: collapse; font: 12px/1.5 var(--mono); }
+  .check th { text-align: left; font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  .check td { padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  .check td.args { color: var(--text-2); }
+  .check td:last-child { white-space: nowrap; }
+  .check .ok { color: var(--good); }
+  .check .bad { color: var(--danger); font-weight: 600; }
+  .check .note { margin-top: 6px; font: 11.5px/1.5 var(--mono); color: var(--muted); }
+  .check-wrap { overflow-x: auto; }
+
+  .demo-foot a { color: var(--accent); }
+  .demo-foot code { font-size: inherit; }
+  .demo-foot .what { flex-basis: 100%; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top" id="top">
+    <div>
+      <p class="label">Atlas · the lab application, compiled for the web</p>
+      <h1>Atlas’s Strategy Lab, <em>its own window in your browser</em></h1>
+    </div>
+    <form class="opts" id="opts" aria-label="Command-line options for the lab">
+      <label>grid <select name="grid">
+        <option value="256">256²</option><option value="512">512²</option>
+        <option value="1024" selected>1024²</option><option value="2048">2048²</option>
+      </select></label>
+      <label>seed <input name="seed" type="number" min="0" step="1" value="1"></label>
+      <label>commands/tick <select name="cpt">
+        <option value="0" selected>0</option><option value="100">100</option><option value="1000">1000</option>
+      </select></label>
+      <label><input name="paused" type="checkbox"> paused</label>
+      <button class="btn small" id="apply" type="submit" hidden>Restart with these</button>
+    </form>
+  </header>
+
+  <section class="stage" id="stage">
+    <canvas id="canvas" tabindex="0" aria-label="The Atlas lab's window: the cell map and its Dear ImGui panels"></canvas>
+    <div class="poster" id="poster">
+      <p class="lede">The lab from <code>apps/lab</code>, the engine's million-cell truth test, running as itself: its own frame loop, its own cell renderer through Atlas's render interface, and its own Dear ImGui panels. Start runs it with the command line below.</p>
+      <p class="cmd" id="cmdline"></p>
+      <div class="row" id="start-row">
+        <button class="btn primary big" id="start" type="button">Start</button>
+      </div>
+      <p class="cmd"><b>right-drag</b> pan · <b>wheel</b> zoom · <b>click</b> recolour a cell · <b>Space</b> pause · <b>.</b> step · <b>M</b> map mode · <b>Esc</b> quit</p>
+      <p class="size" id="size">2.3 MB of WebAssembly (0.9 MB compressed) · needs WebGPU · one thread</p>
+      <p class="narrow" id="narrow" hidden>The full lab needs a window at least 700 pixels wide: its panels are laid out for a desktop. On this screen, the <a href="../atlas-engine/" target="_top">Atlas engine demo</a> runs the same simulation with a page built for touch. <button class="btn small" id="start-anyway" type="button">Start anyway</button></p>
+      <p class="problem" id="problem" hidden></p>
+      <div class="progress" id="progress" hidden><i id="progress-bar"></i></div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="bar">
+    <p class="keys"><kbd>right-drag</kbd> pan · <kbd>wheel</kbd> zoom · <kbd>click</kbd> recolour a cell · <kbd>Space</kbd> pause · <kbd>.</kbd> step · <kbd>1</kbd>–<kbd>4</kbd> speed · <kbd>U</kbd> unbounded · <kbd>M</kbd> map mode · <kbd>R</kbd> reset view · <kbd>F5</kbd>/<kbd>F9</kbd> save/load · <kbd>Esc</kbd> quit. Panels move by their title bars and fold by their arrows; the lab places them for a 1280×720 window. Touch: tap recolours, two fingers pan and pinch.</p>
+    <div class="row">
+      <button class="btn small" id="check" type="button">Check hashes against native</button>
+      <button class="btn small" id="fullscreen" type="button">Fullscreen</button>
+    </div>
+  </div>
+
+  <section class="check" id="check-out" hidden aria-live="polite">
+    <div class="check-wrap"><table>
+      <thead><tr><th>atlas_lab, run here headless</th><th>native (recorded)</th><th>this browser</th><th></th></tr></thead>
+      <tbody id="check-rows"></tbody>
+    </table></div>
+    <p class="note" id="check-note"></p>
+  </section>
+
+  <footer class="demo-foot">
+    <span class="what"><strong>What runs:</strong> Atlas’s <code>apps/lab</code> (<code>main.cpp</code> unchanged) and every engine module it links, from <a href="https://github.com/happyc0der/atlas-engine/tree/0232309e5b92174992e33b898d0409fccab1aba6" target="_blank" rel="noopener">atlas-engine 0232309</a>, compiled with Emscripten 6.0.9: the kernel and the lab world, SDL3 windowing and input, the cell renderer and id-pass picking, the Dear ImGui overlay, audio and the in-process lockstep loopback.</span>
+    <span class="what"><strong>Replaced for the web:</strong> the SDL_GPU backend of <code>engine/rhi</code> is a WebGPU backend written for this demo; the HLSL shaders are translated by glslang (as Atlas cooks them) and Tint to WGSL; the overlay draws with ImGui’s WebGPU renderer instead of its SDL_GPU one; ENet and WAMR are null stand-ins, so <code>--listen</code>, <code>--connect</code> and <code>--mod</code> fail cleanly; one thread (<code>--workers 0</code>), because GitHub Pages cannot enable SharedArrayBuffer. Times in the overlay are browser timings, from a <code>performance.now()</code> rounded to 100 µs steps in Chrome and Edge and more coarsely elsewhere.</span>
+    <a href="BUILD.md">How it is built</a>
+    <a href="BUILD.md#what-changed-for-the-web">What changed, and the source (GPL-3.0)</a>
+    <a href="../atlas-engine/" target="_top">Atlas engine demo</a>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
