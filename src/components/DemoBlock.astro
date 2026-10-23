@@ -1,21 +1,18 @@
 ---
-// A project's live demo (public/demos/<slug>/). Nothing loads until asked: the poster is a link to the demo
-// page, and with JS (src/scripts/site.ts) a click swaps it for an iframe here, with fullscreen beside it.
-// The label under it is the project file's own sentence about what exactly runs.
-import Picture from './Picture.astro';
+// A project's live demo (public/demos/<slug>/), loaded straight into an iframe as it nears the screen. The demo's
+// own page is a light poster with its own Start button and download size, so nothing heavy runs until asked.
+// With JS (src/scripts/site.ts) a Fullscreen button appears once the frame has loaded. The label under it is the
+// project file's own sentence about what exactly runs.
 import Icon from './Icon.astro';
 const { project } = Astro.props;
 const d = project.data;
 const height = d.demo_height ?? 640;
 ---
 <div class="demo">
-  <div class="demo-frame" data-demo={d.demo_embed} data-demo-title={`${d.title}: live demo`} style={`--demo-h: ${height}px`}>
-    <a class="demo-poster" href={d.demo_embed} data-cursor="Demo" data-demo-run>
-      {d.image ? <Picture src={d.image} thumb sizes="(min-width: 64rem) 60rem, 100vw" /> : <span class="wcard-panel"><span>{d.stats[0] ?? d.title}</span></span>}
-      <span class="wcard-wash" aria-hidden="true"></span>
-      <span class="demo-run"><span class="dcard-play" aria-hidden="true"><Icon name="play" /></span><strong>Run demo</strong><span class="mono">Loads here, in your browser</span></span>
-    </a>
+  <div class="demo-frame" data-demo style={`--demo-h: ${height}px`}>
+    <iframe src={d.demo_embed} title={`${d.title}: live demo`} loading="lazy" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
   </div>
+  <noscript><p class="demo-nojs mono">The demo needs JavaScript to run. <a href={d.demo_embed}>Open the demo page</a></p></noscript>
   <div class="demo-tools">
     <button class="btn" type="button" data-demo-full hidden><Icon name="expand" /> Fullscreen</button>
     <a class="btn" href={d.demo_embed} target="_blank" rel="noopener">Open in a new tab <Icon name="out" /></a>

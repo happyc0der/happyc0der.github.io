@@ -27,9 +27,9 @@ const list = Object.values(resumes) as any[];
         <li class="rcard" data-reveal style={`--hue: ${hue(i)}`}>
           <a class="rcard-preview" href={`/resume/${r.file}.pdf`} data-cursor="PDF" aria-label={`Open the ${r.label} resume (PDF)`}>
             <img src={`/resume/${r.file}.png`} alt="" loading="lazy" decoding="async" width="612" height="792" />
-            <span class="rcard-num" aria-hidden="true">{pad(i + 1)}</span>
           </a>
           <div class="rcard-body">
+            <p class="rcard-num mono" aria-hidden="true">{pad(i + 1)} / {pad(list.length)}</p>
             <h2>{r.label}</h2>
             <p class="muted">{r.headline}</p>
             <div class="links">

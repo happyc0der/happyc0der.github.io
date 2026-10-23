@@ -5,7 +5,7 @@ import Picture from '../../components/Picture.astro';
 import Icon from '../../components/Icon.astro';
 import DemoBlock from '../../components/DemoBlock.astro';
 import images from '../../data/images.json';
-import { tagNames, hue, pad, firstParagraph } from '../../lib';
+import { tagNames, hue, pad, splitParagraph } from '../../lib';
 
 export async function getStaticPaths() {
   const all = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
@@ -18,7 +18,10 @@ export async function getStaticPaths() {
 const { project, index, total, prev, next } = Astro.props;
 const d = project.data;
 const { Content } = await render(project);
-const overview = firstParagraph(project.body);
+// The first paragraph's first two sentences are the scrub Overview; the rest of it opens the story, whose own
+// copy of that paragraph is hidden (.skip-first), so nothing is shown twice and nothing is lost.
+const first = splitParagraph(project.body, 2);
+const overview = first?.head;
 const liveLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Project page' : 'Live site') : null;
 // Tall images (phone screens, a comic page) sit in a phone frame; everything else in a browser frame.
 const meta = d.image ? (images as Record<string, { width: number; height: number }>)[d.image] : null;
@@ -42,6 +45,7 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
           ? <div class="pmeta-wide"><dt>Credit</dt><dd>{d.credit}</dd></div>
           : d.team && <div><dt>Team</dt><dd>Team of {d.team}</dd></div>}
         <div><dt>Stack</dt><dd>{d.stack.join(', ')}</dd></div>
+        <div><dt>Area</dt><dd class="tags">{d.tags.map((t: string) => <a class="tag" href={`/projects/#${t}`} data-label="Projects">{tagNames[t]}</a>)}</dd></div>
         <div><dt>Links</dt><dd class="plinks">
           {d.repo && <a href={d.repo}>Source <Icon name="out" /></a>}
           {d.demo && <a href={d.demo}>{liveLabel} <Icon name="out" /></a>}
@@ -64,6 +68,16 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
       </div>
     )}
 
+    {d.demo_embed && (
+      <section class="wrap pdemo" id="demo" aria-labelledby="demo-title">
+        <div class="pdemo-head">
+          <h2 class="label" id="demo-title">Live demo</h2>
+          {d.demo_kind && <p class="mono muted">{d.demo_kind}</p>}
+        </div>
+        <DemoBlock project={project} />
+      </section>
+    )}
+
     <div class="wrap pbody">
       {overview && (
         <section class="psec">
@@ -79,14 +93,9 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
       )}
       <section class="psec">
         <h2 class="label">Highlights</h2>
-        <ol class="phigh">{d.bullets.map((b: string, i: number) => <li data-reveal><span class="mono">{pad(i + 1)}</span><p>{b}</p></li>)}</ol>
+        <ol class="phigh">{d.bullets.map((b: string, i: number) => <li data-reveal data-light><span class="mono">{pad(i + 1)}</span><p>{b}</p></li>)}</ol>
       </section>
-      {d.demo_embed ? (
-        <section class="psec" id="demo">
-          <h2 class="label">Live demo</h2>
-          <DemoBlock project={project} />
-        </section>
-      ) : d.demo && (
+      {!d.demo_embed && d.demo && (
         <section class="psec">
           <h2 class="label">Try it</h2>
           <div><a class="btn-big" href={d.demo} data-magnetic data-cursor="Open">{liveLabel} <Icon name="out" /></a></div>
@@ -94,11 +103,10 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
       )}
       <section class="psec">
         <h2 class="label">The story</h2>
-        <div class:list={['prose', { 'skip-first': overview }]}><Content /></div>
-      </section>
-      <section class="psec">
-        <h2 class="label">Area</h2>
-        <div class="tags">{d.tags.map((t: string) => <a class="tag" href={`/projects/#${t}`} data-label="Projects">{tagNames[t]}</a>)}</div>
+        <div class:list={['prose', { 'skip-first': overview }]}>
+          {first?.rest && <p class="prose-rest" set:html={first.rest} />}
+          <Content />
+        </div>
       </section>
     </div>
 

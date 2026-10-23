@@ -16,6 +16,11 @@
 .motion.arrived .frame[data-reveal-intro] { opacity: 1; animation: none; }
 .motion .tile:not(.is-in), .motion .stats .group:not(.is-in) { opacity: 0; }
 .motion :is(.tile, .stats .group).is-in { animation: rise 1s var(--ease-expo) both var(--d, 0ms); }
+/* Phones: a shorter, smaller rise, so a fast scroll never outruns it. */
+@keyframes rise-sm { from { opacity: 0; transform: translateY(14px); } }
+@media (max-width: 40rem) {
+  .motion :is([data-reveal], [data-reveal-intro]).is-in, .motion :is(.tile, .stats .group).is-in { animation-name: rise-sm; animation-duration: 0.6s; }
+}
 
 /* Charts draw in once their tile is revealed; --i is each mark's position in its chart. */
 @keyframes grow-y { from { transform: scaleY(0); } }
