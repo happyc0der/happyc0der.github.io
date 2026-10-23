@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EEG dementia results</title>
+<meta name="description" content="Interactive charts of the saved out-of-fold subject predictions and result tables of the EEG dementia re-evaluation, with the 2025 team model's training log replayed.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  :root {
+    --ad: #d55181; --cn: #9085e9; --ftd: #c98500;
+    --grid: #262233; --axis: #3a3449;
+  }
+  [hidden] { display: none !important; }
+  body { font-size: 14px; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 14px 16px 16px; }
+  h1 { font: 650 clamp(16px, 1.7vw, 20px)/1.3 var(--sans); letter-spacing: -0.02em; margin: 4px 0 12px; max-width: 64em; }
+  h1 em { font-style: normal; color: var(--accent-hi); }
+  p { margin: 0; }
+  .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
+  .tab {
+    text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--text-2);
+    padding: 8px 10px; font: 500 13px/1.25 var(--sans); cursor: pointer; min-height: 40px; display: flex; align-items: center; gap: 8px;
+  }
+  .tab .n { font: 500 10.5px/1.3 var(--mono); letter-spacing: 0.08em; color: var(--muted); }
+  .tab:hover { border-color: var(--accent); }
+  .tab[aria-selected="true"] { border-color: var(--accent); background: var(--surface-2); color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
+  .lede { color: var(--text-2); max-width: 118ch; margin-bottom: 12px; line-height: 1.5; }
+  .lede b { color: var(--text); font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+  .grid2.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-width: 0; }
+  .card-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin-bottom: 6px; }
+  .tag { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+  .tag.team { color: var(--accent-hi); border-color: #4b3f74; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 10px; }
+  .chart { position: relative; width: 100%; }
+  .chart svg { display: block; width: 100%; overflow: visible; }
+  svg text { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); }
+  svg .val { fill: var(--text); font-size: 11.5px; }
+  svg .strong { fill: var(--text); }
+  svg .halo { stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; paint-order: stroke; }
+  .cap { font: 11.5px/1.5 var(--mono); color: var(--muted); margin-top: 8px; }
+  .cap a { color: var(--accent); }
+  .readout { font: 12px/1.4 var(--mono); color: var(--text-2); min-height: 1.4em; }
+  #tern-readout { min-height: 2.8em; margin-top: 2px; }
+  .tip {
+    position: absolute; pointer-events: none; z-index: 3; background: #0f0d16; border: 1px solid var(--axis); border-radius: 8px;
+    padding: 7px 9px; font: 11.5px/1.45 var(--mono); color: var(--text-2); max-width: 240px; box-shadow: 0 6px 24px rgba(0,0,0,.45);
+  }
+  .tip b { color: var(--text); font-weight: 600; }
+  .tip .k { display: inline-block; width: 12px; height: 2px; vertical-align: middle; margin-right: 6px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 11.5px/1.4 var(--mono); color: var(--text-2); }
+  .legend svg { vertical-align: -2px; margin-right: 5px; }
+  select {
+    background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+    font: 500 13px/1.2 var(--sans); max-width: 100%; min-height: 38px;
+  }
+  select:hover { border-color: var(--accent); }
+  .seg button { min-height: 34px; }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"]:hover { color: #140f24; }
+  .rep { display: inline-flex; align-items: center; gap: 6px; }
+  .rep .btn { padding: 7px 11px; min-height: 34px; }
+  .rep output { font: 500 12px/1 var(--mono); color: var(--text-2); min-width: 9.5ch; text-align: center; }
+  /* Confusion matrix */
+  .cm { display: grid; grid-template-columns: auto repeat(3, minmax(0, 1fr)) auto; gap: 3px; align-items: stretch; }
+  .cm .h { font: 500 10.5px/1.3 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: end; justify-content: center; padding: 2px 0 4px; text-align: center; }
+  .cm .rh { font: 500 11.5px/1.3 var(--mono); color: var(--text-2); display: flex; align-items: center; gap: 6px; padding-right: 6px; white-space: nowrap; }
+  .cm .rh small { color: var(--muted); font-size: 10.5px; }
+  .cm .rec { font: 500 12px/1.3 var(--mono); color: var(--text); display: flex; align-items: center; justify-content: flex-end; padding-left: 8px; }
+  .cell {
+    border: 1px solid transparent; border-radius: 6px; padding: 8px 4px; min-height: 52px; cursor: pointer; color: var(--text);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 600 16px/1 var(--sans);
+  }
+  .cell small { font: 500 10.5px/1 var(--mono); opacity: .85; }
+  .cell.dark { color: #140f24; }
+  .cell:hover { border-color: var(--text-2); }
+  .cell[aria-pressed="true"] { border-color: var(--text); box-shadow: 0 0 0 1px var(--text); }
+  .cell.diag { outline: 1px dashed rgba(231, 229, 238, .28); outline-offset: -4px; }
+  .stat { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-top: 12px; }
+  .stat .big { font: 650 30px/1 var(--sans); letter-spacing: -0.03em; }
+  .stat .lbl { font: 11.5px/1.4 var(--mono); color: var(--muted); }
+  .check { font: 11.5px/1.5 var(--mono); color: var(--text-2); margin-top: 6px; }
+  .check .ok { color: var(--accent-hi); }
+  .check .bad { color: var(--danger); }
+  .desc { font: 11.5px/1.5 var(--mono); color: var(--muted); margin-top: 8px; overflow-wrap: anywhere; }
+  .hint { font: 11px/1.4 var(--mono); color: var(--muted); }
+  /* Forest plot */
+  .forest { display: grid; }
+  .frow {
+    display: grid; grid-template-columns: minmax(0, 15.5rem) minmax(0, 1fr) 7.4rem; align-items: center; gap: 0 10px;
+    background: none; border: 0; border-radius: 6px; color: var(--text-2); text-align: left; padding: 0 6px; height: 23px;
+    font: 500 12.5px/1.2 var(--sans); cursor: pointer; width: 100%;
+  }
+  .frow:hover { background: var(--surface-2); color: var(--text); }
+  .frow[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: inset 2px 0 0 var(--accent); }
+  .frow .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .frow .nm i { font-style: normal; font: 500 9.5px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+  .frow .v { font: 11px/1 var(--mono); color: var(--text-2); text-align: right; white-space: nowrap; }
+  .frow svg, .fhead svg, .faxis svg { display: block; width: 100%; height: 100%; }
+  .fhead { display: grid; grid-template-columns: minmax(0, 15.5rem) minmax(0, 1fr) 7.4rem; gap: 0 10px; padding: 0 6px; height: 24px; align-items: end; }
+  .fhead span { grid-column: 1 / -1; font: 500 10.5px/1.6 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--accent-hi); white-space: nowrap; }
+  .faxis { display: grid; grid-template-columns: minmax(0, 15.5rem) minmax(0, 1fr) 7.4rem; gap: 0 10px; padding: 0 6px; height: 24px; }
+  .forest.compact .frow, .forest.compact .fhead, .forest.compact .faxis { grid-template-columns: minmax(0, 14.5rem) minmax(0, 1fr); }
+  .forest.compact .frow .v, .forest.compact .sp { display: none; }
+  .fdetail { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); min-height: 4.4em; font: 12px/1.55 var(--mono); color: var(--text-2); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: start; }
+  .fdetail > div { grid-column: 1; }
+  .fdetail > .btn { grid-column: 2; grid-row: 1 / span 4; align-self: center; margin-top: 0; }
+  .fdetail b { color: var(--text); font-weight: 600; }
+  .fdetail .btn { margin-top: 6px; }
+  .note { font: 11.5px/1.5 var(--mono); color: var(--muted); }
+  .demo-foot { line-height: 1.5; font-size: 11px; gap: 4px 16px; margin-top: 12px; }
+  .demo-foot .credit { flex-basis: 100%; color: var(--text-2); }
+  .demo-foot .credit b { color: var(--accent-hi); font-weight: 500; }
+  .loading { padding: 40px 0; text-align: center; }
+  @media (max-width: 860px) {
+    .grid2, .grid2.even { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 12px 12px 14px; }
+    .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .frow, .fhead, .faxis { grid-template-columns: minmax(0, 9.6rem) minmax(0, 1fr); }
+    .fdetail { grid-template-columns: minmax(0, 1fr); }
+    .fdetail > .btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
+    .frow { height: auto; min-height: 34px; padding: 3px 6px; }
+    .frow .nm { white-space: normal; line-height: 1.2; font-size: 12px; overflow: visible; }
+    .frow .v, .fhead .sp, .faxis .sp { display: none; }
+    .cell { min-height: 46px; font-size: 15px; }
+    .stat .big { font-size: 26px; }
+    .seg button { padding: 7px 9px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="label">EEG dementia re-evaluation · results explorer</p>
+  <h1>The 2025 model reached 99% validation accuracy on folds that leaked subjects. Split over subjects, the best models reach <em>about 60%</em>.</h1>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="t-leak" aria-controls="p-leak" aria-selected="true"><span class="n">01</span>The leak</button>
+    <button class="tab" role="tab" id="t-subj" aria-controls="p-subj" aria-selected="false" tabindex="-1"><span class="n">02</span>Every subject</button>
+    <button class="tab" role="tab" id="t-models" aria-controls="p-models" aria-selected="false" tabindex="-1"><span class="n">03</span>All models</button>
+    <button class="tab" role="tab" id="t-chance" aria-controls="p-chance" aria-selected="false" tabindex="-1"><span class="n">04</span>Versus chance</button>
+  </div>
+
+  <p id="boot" class="status loading">Loading the exported results…</p>
+  <noscript><p class="status">This page draws its charts with JavaScript. The same numbers are in the repository's results/ folder, linked below.</p></noscript>
+
+  <section id="p-leak" role="tabpanel" aria-labelledby="t-leak" hidden>
+    <p class="lede">In 2025 the team's graph transformer was selected by 5-fold cross-validation over <b>15-second chunks</b>, so chunks of one recording sat in both training and validation. Validation accuracy climbed to 99%. The re-evaluation splits every fold over <b>subjects</b>.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-h">
+          <span class="label">Validation accuracy per epoch, 5 chunk-level folds</span>
+          <span class="tag team">2025 team run</span>
+        </div>
+        <div class="row" style="margin-bottom:4px">
+          <button class="btn primary" id="replay" type="button">Replay the training log</button>
+          <span class="readout" id="leak-readout" aria-live="polite"></span>
+        </div>
+        <div class="chart" id="leak-chart"></div>
+        <p class="cap">Log: the Spring 2025 team model's own training run, parsed line by line from <a href="https://github.com/happyc0der/eeg-dementia-graph-transformer/blob/4e0d1506155e5ceb3643750b5ea4e70408e02093/legacy/results/spatial_spectral_dim128_20250405/training_log.txt" target="_blank" rel="noopener">legacy/…/training_log.txt</a>. That model's code is mostly Subhrajit Dey's. Every other number on this page comes from Keshav's 2026 re-evaluation.</p>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="label">Three ways to score it</span></div>
+        <div class="chart" id="leak-bars"></div>
+        <p class="cap">The bars use the metric each source reports: chunk accuracy for the 2025 runs, subject-level balanced accuracy for the re-evaluation (whisker: 95% bootstrap CI over subjects). The re-evaluation did not re-run the graph transformer; its bar is the best pre-specified model, a soft vote of three feature models.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="p-subj" role="tabpanel" aria-labelledby="t-subj" hidden>
+    <p class="lede">Each dot is one subject's saved out-of-fold P(AD), P(CN), P(FTD), from a model that never saw that subject; its corner region is the predicted class.</p>
+    <div class="row">
+      <label class="hint" for="model-sel">Model</label>
+      <select id="model-sel"></select>
+      <span class="rep" role="group" aria-label="Cross-validation repeat">
+        <button class="btn" type="button" id="rep-all" aria-pressed="true">All 10</button>
+        <button class="btn" type="button" id="rep-prev" aria-label="Previous repeat">‹</button>
+        <output id="rep-out" aria-live="polite">all repeats</output>
+        <button class="btn" type="button" id="rep-next" aria-label="Next repeat">›</button>
+      </span>
+    </div>
+    <div class="grid2 even">
+      <div class="card">
+        <div class="card-h">
+          <span class="legend" id="tern-legend"></span>
+        </div>
+        <div class="chart" id="tern"></div>
+        <p class="readout" id="tern-readout" aria-live="polite"></p>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="label" id="cm-title">Confusion matrix</span><span class="hint">tap a cell to pick out its subjects</span></div>
+        <div class="cm" id="cm"></div>
+        <div class="stat"><span class="big" id="ba"></span><span class="lbl" id="ba-lbl"></span></div>
+        <p class="check" id="ba-check"></p>
+        <p class="check" id="ftd-line"></p>
+        <p class="desc" id="model-desc"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="p-models" role="tabpanel" aria-labelledby="t-models" hidden>
+    <p class="lede">Subject-level balanced accuracy, mean of 10 repeats of nested 5-fold CV, with 95% bootstrap CIs over subjects. The deep models were pre-registered; chance is 33.3%.</p>
+    <div class="row">
+      <span class="seg" role="group" aria-label="Which models">
+        <button type="button" id="f-head" aria-pressed="true">README table (17)</button>
+        <button type="button" id="f-all" aria-pressed="false">All 32</button>
+      </span>
+      <span class="hint">pick a row for its details</span>
+    </div>
+    <div class="card">
+      <div class="forest" id="forest"></div>
+      <div class="fdetail" id="fdetail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="p-chance" role="tabpanel" aria-labelledby="t-chance" hidden>
+    <p class="lede">A permutation test shuffles the diagnoses across subjects and reruns the <b>whole nested pipeline</b>, inner model selection included. The grey bars are what the pipeline scores when there is nothing to learn.</p>
+    <div class="row">
+      <span class="seg" role="group" aria-label="Pipeline" id="perm-seg"></span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-h"><span class="label" id="perm-title">Null distribution</span></div>
+        <div class="chart" id="perm-chart"></div>
+      </div>
+      <div class="card">
+        <div class="stat" style="margin-top:0"><span class="big" id="perm-p"></span><span class="lbl">permutation p-value</span></div>
+        <p class="check" id="perm-text"></p>
+        <p class="note" style="margin-top:10px">The observed value is the mean of the 10 repeats, while each permutation runs one 5-fold CV, whose null is wider, so these p-values are conservative (as the repository's README notes).</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="demo-foot">
+    <span>Runs here: JavaScript and SVG over <a href="data.json">data.json</a>, exported from the repository's committed results by <a href="build/export_data.py">build/export_data.py</a>. Confusion matrices and balanced accuracies are recomputed in your browser from the saved out-of-fold predictions; no model is trained or run.</span>
+    <span>Source: <a href="https://github.com/happyc0der/eeg-dementia-graph-transformer/tree/4e0d1506155e5ceb3643750b5ea4e70408e02093" target="_blank" rel="noopener">happyc0der/eeg-dementia-graph-transformer @ 4e0d150</a> · <a href="BUILD.md">how this demo is built</a> · Licence: code public domain (Unlicense); data OpenNeuro ds004504 (CC0), not included.</span>
+    <span class="credit"><b>Credit.</b> The Spring 2025 project was a team of four in NYU's Neuroinformatics course: Subhrajit Dey (subro608 on GitHub), who wrote most of the original graph-transformer model and training code, Sirish Visweswar, terka2610 and me. It is kept unchanged in the repository's legacy folder. The 2026 re-evaluation is mine: the subject-level evaluation harness, the 16 feature pipelines, the foundation-model and CNN comparisons, the statistics and the tests.</span>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
