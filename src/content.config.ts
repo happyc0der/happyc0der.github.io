@@ -14,6 +14,8 @@ const projects = defineCollection({
     demo_label: z.string().optional(),     // one sentence saying exactly what runs (shown under the demo)
     demo_height: z.number().optional(),    // iframe height in px, default 640
     demo_kind: z.string().optional(),      // six words or fewer from demo_label, for the home page's demo rows
+    demo_also: z.string().optional(),      // a second, smaller demo of the same project, linked under the first
+    demo_also_label: z.string().optional(),
     demo_poster: z.string().optional(),    // a screenshot of the running demo, /img/demo/<slug>.jpg (npm run images)
     image: z.string().optional(),
     image_url: z.string().optional(),      // the address the screenshot shows, when it is a live site; the frame bar prints it

@@ -19,6 +19,7 @@ const height = d.demo_height ?? 640;
   <div class="demo-tools">
     <button class="btn" type="button" data-demo-full hidden><Icon name="expand" /> Fullscreen</button>
     <a class="btn" href={d.demo_embed} target="_blank" rel="noopener">Open in a new tab <Icon name="out" /></a>
+    {d.demo_also && <a class="btn" href={d.demo_also} target="_blank" rel="noopener">{d.demo_also_label ?? 'Another demo'} <Icon name="out" /></a>}
   </div>
   {d.demo_label && <p class="demo-label mono">{d.demo_label}</p>}
 </div>
