@@ -97,8 +97,10 @@ ${activities}
 // Headless Edge writes the PDF but does not always exit, so wait for the file and then stop it.
 async function printPdf(html, pdf) {
   fs.rmSync(pdf, { force: true });
+  // A fresh Edge profile otherwise signs itself into the Mac's Microsoft account through the Keychain and syncs
+  // extensions; these flags keep each headless run signed out, with no extensions.
   const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'resume-edge-'));
-  const child = spawn(EDGE, ['--headless=new', '--disable-gpu', '--no-first-run', `--user-data-dir=${profileDir}`, '--no-pdf-header-footer', `--print-to-pdf=${pdf}`, `file://${html}`], { stdio: 'ignore' });
+  const child = spawn(EDGE, ['--headless=new', '--disable-gpu', '--no-first-run', '--use-mock-keychain', '--password-store=basic', '--disable-sync', '--disable-extensions', '--disable-background-networking', '--disable-component-update', '--no-service-autorun', `--user-data-dir=${profileDir}`, '--no-pdf-header-footer', `--print-to-pdf=${pdf}`, `file://${html}`], { stdio: 'ignore' });
   let size = -1;
   for (let i = 0; i < 120; i++) {
     await new Promise((r) => setTimeout(r, 500));
