@@ -88,6 +88,26 @@ for (const box of document.querySelectorAll<HTMLElement>('[data-demo]')) {
   full.addEventListener('click', () => box.requestFullscreen?.());
 }
 
+// ---- Live demos on touch screens: a swipe that starts on a demo would scroll the demo's own page for several
+// swipes before the page moves, so the frame stays locked until tapped and locks again on Done or off screen ----
+if (matchMedia('(pointer: coarse)').matches) {
+  for (const box of document.querySelectorAll<HTMLElement>('[data-demo]')) {
+    const gate = box.querySelector<HTMLButtonElement>('[data-demo-gate]');
+    const done = box.querySelector<HTMLButtonElement>('[data-demo-done]');
+    if (!gate || !done) continue;
+    const lock = (locked: boolean) => {
+      box.classList.toggle('is-locked', locked);
+      gate.hidden = !locked;
+      done.hidden = locked;
+    };
+    lock(true);
+    gate.addEventListener('click', () => { lock(false); box.querySelector('iframe')?.focus(); });
+    done.addEventListener('click', () => lock(true));
+    box.addEventListener('fullscreenchange', () => { if (document.fullscreenElement === box) lock(false); });
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting) lock(true); }).observe(box);
+  }
+}
+
 // ---- Swipe row on phones: keep the "01 / 09" counter in step with the card in view ----
 const viewport = document.querySelector<HTMLElement>('[data-work-track]');
 const counter = document.querySelector<HTMLElement>('[data-work-index]');

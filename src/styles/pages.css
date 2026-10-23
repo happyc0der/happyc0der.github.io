@@ -108,6 +108,11 @@ html:not(.js) .plist-bar { display: none; }   /* the filters need JS; without it
 .demo-frame { position: relative; overflow: hidden; border: 1px solid var(--line-2); border-radius: var(--radius-lg); background: var(--bg); box-shadow: var(--shadow-deep); }
 .demo-frame iframe { display: block; width: 100%; height: var(--demo-h, 640px); border: 0; background: var(--bg); }
 @media (max-width: 48rem), (pointer: coarse) { .demo-frame iframe { height: min(var(--demo-h, 640px), 75svh); } }
+/* Touch screens: until the visitor taps the gate, the frame ignores touches so swipes over it move the page. */
+.demo-frame.is-locked iframe { pointer-events: none; }
+.demo-gate { position: absolute; inset: 0; display: grid; place-items: end center; padding: 0 0 var(--space-6); border: 0; background: linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--bg) 78%, transparent)); color: var(--text); cursor: pointer; }
+.demo-gate span { padding: var(--space-3) var(--space-6); border-radius: var(--radius-pill); background: var(--accent); color: var(--bg); font: var(--fw-semibold) var(--fs-sm)/1 var(--sans); box-shadow: var(--shadow-lift); }
+.demo-done { position: absolute; top: var(--space-3); right: var(--space-3); background: color-mix(in srgb, var(--bg) 85%, transparent); }
 .demo-frame:fullscreen { border: 0; border-radius: 0; }
 .demo-frame:fullscreen iframe { height: 100%; }
 .demo-tools { display: flex; flex-wrap: wrap; gap: var(--space-3); }
