@@ -4,6 +4,7 @@ blurb: "Security audit, Next 14 to 16 upgrade and production launch of a roommat
 repo: https://github.com/UtkarshMitta/tide-fit
 demo: https://tide-fit.vercel.app
 image: /img/tidefit.png
+image_url: tide-fit.vercel.app
 year: 2026
 order: 5
 featured: true
