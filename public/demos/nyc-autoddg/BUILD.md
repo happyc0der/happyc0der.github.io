@@ -68,17 +68,20 @@ VIRTUAL_ENV=/tmp/autoddg-venv uv pip install pandas==3.0.5 numpy==2.5.3 pyarrow=
 Result on 2026-10-23, identical under pandas 3.0.5 (the repo's lock) and 2.3.3 (Pyodide's):
 
 ```
-25th-nujf: demo == repo pipeline: True; vs committed Spark profile: 66 identical, 5 Spark estimates, 0 differ, of 71
-wxhr-qbhz: demo == repo pipeline: True; vs committed Spark profile: 244 identical, 29 Spark estimates, 0 differ, of 273
-a4qt-mpr5: demo == repo pipeline: True; vs committed Spark profile: 178 identical, 22 Spark estimates, 0 differ, of 200
+25th-nujf: demo == repo pipeline: True; vs committed Spark profile: 65 identical, 6 Spark estimates, 0 differ, of 71
+wxhr-qbhz: demo == repo pipeline: True; vs committed Spark profile: 237 identical, 36 Spark estimates, 0 differ, of 273
+a4qt-mpr5: demo == repo pipeline: True; vs committed Spark profile: 172 identical, 28 Spark estimates, 0 differ, of 200
 ```
 
-The "Spark estimates" are `distinct_approx` and `unique_frac` (Spark's
-`approx_count_distinct` with 2% error against pandas' exact `nunique()`) and a few quartiles
-(`percentile_approx` against pandas' interpolated `quantile`). The same browser code was also
-run in headless Edge on a synthetic CSV with duplicate headers, a BOM, CRLF line ends,
-quoted newlines, `N/A`/`NULL`/`None` values and US and ISO dates; its JSON was identical to
-the repo pipeline's under both pandas versions.
+"Identical" means exactly equal after both sides' 4-decimal rounding. The "Spark
+estimates" are the fields that are not, all of them `distinct_approx` and `unique_frac`
+(Spark's `approx_count_distinct` with 2% error against pandas' exact `nunique()`) or
+quartiles (`percentile_approx` against pandas' interpolated `quantile`). Every field both
+sides compute exactly is equal.
+
+The same browser code was also run in headless Edge on a synthetic CSV with duplicate
+headers, a BOM, CRLF line ends, quoted newlines, `N/A`/`NULL`/`None` values and US and ISO
+dates; its JSON was identical to the repo pipeline's under both pandas versions.
 
 ## Data terms
 

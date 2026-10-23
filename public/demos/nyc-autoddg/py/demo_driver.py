@@ -13,7 +13,6 @@ profiles/<id>.json, field by field.
 
 import csv
 import json
-import math
 
 import pandas as pd
 
@@ -66,11 +65,9 @@ FIELDS = ["type", "semantic", "null_frac", "distinct_approx", "unique_frac", "mi
 
 
 def _same(a, b) -> bool:
-    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
-        if math.isclose(a, b, rel_tol=0, abs_tol=0):
-            return True
-        # both sides are rounded to 4 decimals by profile._num; allow one unit of rounding
-        return abs(a - b) <= 1e-4 * max(1.0, abs(a), abs(b))
+    # Exact. Both sides were rounded to 4 decimals by profile._num and written with
+    # json.dumps, so equal values arrive as the same float (and 2 == 2.0 still counts).
+    # Anything else, even 0.0099 against 0.01, is a difference and is reported as one.
     return a == b
 
 

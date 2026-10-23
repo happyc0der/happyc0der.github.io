@@ -21,6 +21,7 @@ const num = (v) => {
 };
 const fetchJSON = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); };
 const fetchText = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.text(); };
+const fetchBytes = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`); return new Uint8Array(await r.arrayBuffer()); };
 const nextPaint = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
 const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
@@ -60,7 +61,7 @@ const SHORT = { '25th-nujf': 'Baby names', 'wxhr-qbhz': 'Drinking fountains', 'a
 let sources = [];
 let choice = { kind: 'bundled', id: '25th-nujf' };
 let userFile = null;
-let py = null, driver = null, busy = false, currentId = '';
+let py = null, driver = null, busy = false, pending = false, currentId = '';
 const written = new Set();
 const chipEls = [];
 
@@ -109,15 +110,19 @@ function onChoice() {
   } else if (choice.kind === 'file') {
     runBtn.textContent = `Run profiler on ${userFile.name}`;
   } else runBtn.textContent = 'Run profiler';
-  if (py && !busy && (choice.kind === 'bundled' || userFile)) profileChoice();
+  if (py && busy) pending = true; // a file chosen mid-run is profiled when the run ends
+  else if (py && (choice.kind === 'bundled' || userFile)) profileChoice();
 }
 
 $('file').addEventListener('change', (e) => {
   const f = e.target.files[0];
   if (!f) return;
+  e.target.value = ''; // so choosing the same file again re-runs it
   if (f.size > MAX_BYTES) {
-    $('file-name').textContent = `${f.name} is ${(f.size / 1048576).toFixed(1)} MB; the limit here is 20 MB`;
-    userFile = null; return;
+    $('file-name').textContent = `${f.name} is ${(f.size / 1048576).toFixed(1)} MB; the limit here is 20 MB, so it was not read`;
+    userFile = null;
+    onChoice(); // drops the previous file's results and resets the Run button
+    return;
   }
   userFile = f;
   $('file-name').textContent = `${f.name}, ${(f.size / 1048576).toFixed(2)} MB, read in this tab only`;
@@ -180,7 +185,7 @@ function setResStatus(t, isError = false) {
 async function profileChoice() {
   busy = true; syncChips();
   $('results').hidden = false;
-  let path, id, title, spark = null;
+  let path, id, title, spark = null, stage = 'read';
   try {
     if (choice.kind === 'file') {
       id = userFile.name.replace(/\.[^.]+$/, '') || 'upload';
@@ -193,11 +198,12 @@ async function profileChoice() {
       id = s.id; title = s.title; path = `/home/pyodide/data/${id}.csv`;
       if (!written.has(id)) {
         setResStatus(`Fetching ${id}.csv (${(s.bytes / 1e6).toFixed(1)} MB, same origin)`);
-        py.FS.writeFile(path, new Uint8Array(await (await fetch(`./data/${id}.csv`)).arrayBuffer()));
+        py.FS.writeFile(path, await fetchBytes(`./data/${id}.csv`));
         written.add(id);
       }
       spark = await fetchText(`./data/profiles/${id}.json`);
     }
+    stage = 'profile';
     setResStatus(`Profiling ${title} with profile_pandas(). The page may pause while Python works.`);
     $('results').classList.add('stale');
     await nextPaint();
@@ -208,10 +214,12 @@ async function profileChoice() {
     setResStatus(`profile_seconds: ${prof.profile_seconds} in this tab, including reading the CSV. That is pandas in WebAssembly on one thread, not a benchmark; the measured runs are under Benchmarks.`);
   } catch (err) {
     const msg = String(err.message || err).trim().split('\n').filter(Boolean).at(-1);
-    setResStatus(`The profiler raised an error: ${msg}`, true);
+    renderFailure(title || 'This file', stage);
+    setResStatus(stage === 'profile' ? `The profiler raised an error: ${msg}` : `Could not load the data: ${msg}`, true);
   } finally {
     $('results').classList.remove('stale');
     busy = false; syncChips();
+    if (pending) { pending = false; onChoice(); }
   }
 }
 
@@ -224,10 +232,28 @@ const FIELD_NOTE = {
 };
 const show = (v) => (v == null ? 'null' : typeof v === 'object' ? JSON.stringify(v) : num(v));
 
+// A failed run must not leave the previous dataset's cards on screen under another title.
+function renderFailure(title, stage) {
+  currentId = '';
+  $('res-title').textContent = title;
+  $('res-meta').textContent = 'not profiled';
+  $('views').hidden = true;
+  $('view-cards').replaceChildren(); $('view-diff').replaceChildren(); $('json').textContent = '';
+  const save = $('save-json');
+  if (save.href.startsWith('blob:')) URL.revokeObjectURL(save.href);
+  save.removeAttribute('href');
+  const badge = $('badge');
+  badge.className = 'badge bad';
+  badge.replaceChildren(el('span', 'ic', '✗'), el('span', null, stage === 'profile'
+    ? `The profiler stopped with an error, so there is no profile to show for ${title}. The error is below.`
+    : `The data for ${title} could not be loaded, so nothing was profiled. The error is below.`));
+}
+
 function renderProfile(prof, title, cmp) {
   currentId = prof.id;
   $('res-title').textContent = title;
   $('res-meta').textContent = `${int(prof.rows)} rows · ${prof.n_columns} columns · id ${prof.id}`;
+  $('views').hidden = false;
 
   const badge = $('badge');
   badge.replaceChildren();
@@ -245,7 +271,7 @@ function renderProfile(prof, title, cmp) {
     } else {
       ic.textContent = '✓';
       tx.textContent = a
-        ? `Matches the profile Spark committed to the repo: ${m} of ${cmp.length} fields identical. The other ${a} are distinct counts and quartiles, which Spark only estimates; see “vs Spark”.`
+        ? `Matches the profile Spark committed to the repo: ${m} of ${cmp.length} fields identical. The other ${a} are distinct counts, unique fractions and quartiles, which Spark only estimates; see “vs Spark”.`
         : `Matches the profile Spark committed to the repo on all ${cmp.length} fields.`;
     }
   }
@@ -546,7 +572,10 @@ function renderBench() {
       tipHead: (x) => `${int(x)} rows`, tipVal: (p) => `${sec(p.y)}${p.n > 1 ? ` (median of ${p.n})` : ''}`,
     });
     const s0 = spark[0], p0 = pandas[0], pl = pandas.at(-1), sl = spark.find((p) => p.x === pl.x);
-    cap.textContent = `On ${rowsFmt(s0.x)} rows Spark takes ${sec(s0.y)} and pandas ${sec(p0.y)}.${cross ? ` At ${rowsFmt(cross.x)} rows they meet (Spark ${sec(cross.s)}, pandas ${sec(cross.p)}).` : ''} At ${rowsFmt(pl.x)} rows Spark takes ${sec(sl.y)} and pandas ${sec(pl.y)}; the harness runs pandas no larger, since bigger tiers need more than the machine's 24 GB.`;
+    // Spark-only tiers, from the data; the memory figures are report.md §4.5 (bench.csv has no peak_mb for these rows)
+    const m1 = (n) => `${(n / 1e6).toFixed(1)}M`;
+    const sparkOnly = spark.filter((p) => p.x > pl.x).map((p) => m1(p.x));
+    cap.textContent = `On ${rowsFmt(s0.x)} rows Spark takes ${sec(s0.y)} and pandas ${sec(p0.y)}.${cross ? ` At ${rowsFmt(cross.x)} rows they meet (Spark ${sec(cross.s)}, pandas ${sec(cross.p)}).` : ''} At ${m1(pl.x)} rows Spark takes ${sec(sl.y)} and pandas ${sec(pl.y)}.${sparkOnly.length ? ` The report marks pandas "not run (memory)" for the ${sparkOnly.join(' and ')} tiers: its peak memory reached 7.2 GB at 6.9M rows, and the report extrapolates about 22 GB at 27.7M, nearly all of the machine's 24 GB.` : ''}`;
     table(tbl, ['engine', 'rows', 'runs', 'median s', 'mean load1'],
       gs.sort((a, b) => a.key.localeCompare(b.key) || +a.rows[0].rows - +b.rows[0].rows).map((g) => [g.rows[0].engine, int(g.rows[0].rows), g.n, g.median.toFixed(2), g.load.toFixed(2)]), [1, 2, 3, 4]);
   }

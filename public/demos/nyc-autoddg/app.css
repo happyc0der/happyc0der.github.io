@@ -19,12 +19,13 @@ p { margin: 0; }
 .app { min-height: 100vh; display: flex; flex-direction: column; }
 .top { padding: 14px var(--pad) 0; border-bottom: 1px solid var(--line); background: var(--bg); }
 .titlebar { display: flex; flex-direction: column; gap: 2px; }
-.scroll { flex: 1; padding: 16px var(--pad) 20px; }
+.scroll { flex: 1; padding: 16px var(--pad) 14px; }
 .demo-foot { margin: 0; padding: 10px var(--pad) 12px; background: var(--bg); }
 .demo-foot code { font-size: 11px; color: var(--muted); }
 @media (min-width: 720px) and (min-height: 520px) {
   .app { height: 100vh; min-height: 0; }
-  .scroll { overflow: auto; overscroll-behavior: contain; min-height: 0; }
+  /* overscroll-behavior stays auto: at either end of the inner scroll the wheel passes to the embedding page */
+  .scroll { overflow: auto; min-height: 0; }
 }
 .panel-tab { min-width: 0; }
 
@@ -124,7 +125,7 @@ table.diff td.m:nth-child(n+3) { overflow-wrap: anywhere; max-width: 260px; }
 .st-differs { color: var(--danger); }
 .json { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; font: 11.5px/1.5 var(--mono); color: var(--text-2); overflow: auto; max-height: 520px; white-space: pre; margin: 10px 0 0; }
 
-.source { margin-top: 16px; padding: 12px 13px; border: 1px dashed var(--line); border-radius: var(--radius); font-size: 12.5px; color: var(--text-2); display: grid; gap: 6px; }
+.source { margin-top: 14px; padding: 12px 13px; border: 1px dashed var(--line); border-radius: var(--radius); font-size: 12.5px; color: var(--text-2); display: grid; gap: 6px; }
 .source .label { margin-bottom: 2px; }
 
 /* Descriptions */
