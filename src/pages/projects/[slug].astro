@@ -2,71 +2,113 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Picture from '../../components/Picture.astro';
-import { tagNames } from '../../lib';
+import Icon from '../../components/Icon.astro';
+import DemoBlock from '../../components/DemoBlock.astro';
+import images from '../../data/images.json';
+import { tagNames, hue, pad, firstParagraph } from '../../lib';
 
 export async function getStaticPaths() {
   const all = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
   return all.map((project, i) => ({
     params: { slug: project.id },
-    props: { project, prev: all[i - 1] ?? null, next: all[i + 1] ?? null },
+    // "Next project" wraps around, so the last page still has somewhere to go.
+    props: { project, index: i, total: all.length, prev: all[i - 1] ?? null, next: all[(i + 1) % all.length] },
   }));
 }
-const { project, prev, next } = Astro.props;
+const { project, index, total, prev, next } = Astro.props;
 const d = project.data;
 const { Content } = await render(project);
-const demoLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Page' : 'Live site') : null;
+const overview = firstParagraph(project.body);
+const liveLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Project page' : 'Live site') : null;
+// Tall images (phone screens, a comic page) sit in a phone frame; everything else in a browser frame.
+const meta = d.image ? (images as Record<string, { width: number; height: number }>)[d.image] : null;
+const portrait = meta ? meta.height / meta.width > 1.2 : false;
+// The title is as big as its longest unbreakable piece allows, so "garmin-connect-api" fits a phone.
+const longest = Math.max(...d.title.split(/\s+|(?<=-)/).map((w: string) => w.length));
+const fit = (150 / Math.max(longest, 6)).toFixed(2);
 ---
 <Base title={d.title} description={d.blurb} image={`/img/og/${project.id}.jpg`}>
-  <article class="project">
-    <header class="project-head">
-      <a class="back" href="/projects/">← All projects</a>
-      <p class="label">{d.year}{d.team && ` · team of ${d.team}`}{d.status && ` · ${d.status}`}</p>
-      <h1 class="page-title">{d.title}</h1>
-      <p class="muted lead">{d.blurb}</p>
+  <article class="project" style={`--hue: ${hue(index)}`}>
+    <header class="wrap page-top phead">
+      <div class="ptop mono">
+        <a class="back" href="/projects/" data-label="Projects"><Icon name="left" /> All work</a>
+        <span>Project {pad(index + 1)} / {pad(total)}</span>
+      </div>
+      <h1 class="ptitle" data-split="chars" data-intro style={`--fit: ${fit}vw`}>{d.title}</h1>
+      <p class="pblurb" data-split data-intro>{d.blurb}</p>
+      <dl class="pmeta" data-reveal-intro>
+        <div><dt>Year</dt><dd>{d.year}{d.status && <span class="muted"> · {d.status}</span>}</dd></div>
+        {d.credit
+          ? <div class="pmeta-wide"><dt>Credit</dt><dd>{d.credit}</dd></div>
+          : d.team && <div><dt>Team</dt><dd>Team of {d.team}</dd></div>}
+        <div><dt>Stack</dt><dd>{d.stack.join(', ')}</dd></div>
+        <div><dt>Links</dt><dd class="plinks">
+          {d.repo && <a href={d.repo}>Source <Icon name="out" /></a>}
+          {d.demo && <a href={d.demo}>{liveLabel} <Icon name="out" /></a>}
+          {d.demo_embed && <a href="#demo">Live demo <Icon name="down" /></a>}
+          {!d.repo && !d.demo && !d.demo_embed && <span class="muted">No public link{d.status ? ` (${d.status})` : ''}</span>}
+        </dd></div>
+      </dl>
     </header>
 
-    <div class="project-grid">
-      <div class="project-main">
-        {d.image && <figure class="figure hero-figure" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} alt={`Screenshot or figure from ${d.title}`} priority sizes="(min-width: 64rem) 44rem, (min-width: 56rem) calc(100vw - 24rem), calc(100vw - 2rem)" /></figure>}
-        <h2 class="mini">Highlights</h2>
-        <ul class="facts">{d.bullets.map((b: string) => <li>{b}</li>)}</ul>
-        <h2 class="mini">The story</h2>
-        <div class="prose"><Content /></div>
+    {d.image && (
+      <div class="wrap">
+        <figure class:list={['frame', portrait ? 'frame-phone' : 'frame-browser']} data-reveal-intro>
+          {!portrait && <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">{d.repo ? d.repo.replace('https://', '') : d.demo ? d.demo.replace('https://', '') : d.title}</span></div>}
+          <div class="frame-shot shot" style={`view-transition-name: shot-${project.id}`}>
+            <div class="frame-parallax" data-parallax>
+              <Picture src={d.image} alt={`Screenshot or figure from ${d.title}`} priority sizes={portrait ? '(min-width: 40rem) 24rem, 80vw' : '(min-width: 90rem) 84rem, calc(100vw - 2rem)'} />
+            </div>
+          </div>
+        </figure>
       </div>
+    )}
 
-      <aside class="project-side">
-        {(d.repo || d.demo) && (
-          <div class="links">
-            {d.repo && <a class="btn primary" href={d.repo}>Source</a>}
-            {d.demo && <a class="btn" href={d.demo}>{demoLabel}</a>}
-          </div>
-        )}
-        {d.stats.length > 0 && (
-          <div class="side-block">
-            <p class="label">By the numbers</p>
-            <ul class="side-stats">{d.stats.map((s: string) => <li>{s}</li>)}</ul>
-          </div>
-        )}
-        <div class="side-block">
-          <p class="label">Area</p>
-          <div class="tags">{d.tags.map((t: string) => <a class="tag" href={`/projects/#${t}`}>{tagNames[t]}</a>)}</div>
-        </div>
-        <div class="side-block">
-          <p class="label">Stack</p>
-          <div class="tags">{d.stack.map((s: string) => <span class="tag plain">{s}</span>)}</div>
-        </div>
-        {d.credit && (
-          <div class="side-block">
-            <p class="label">Credit</p>
-            <p class="muted small-text">{d.credit}</p>
-          </div>
-        )}
-      </aside>
+    <div class="wrap pbody">
+      {overview && (
+        <section class="psec">
+          <h2 class="label">Overview</h2>
+          <p class="pover" data-scrub set:html={overview} />
+        </section>
+      )}
+      {d.stats.length > 0 && (
+        <section class="psec">
+          <h2 class="label">By the numbers</h2>
+          <ul class="pstats">{d.stats.map((s: string) => <li data-reveal>{s}</li>)}</ul>
+        </section>
+      )}
+      <section class="psec">
+        <h2 class="label">Highlights</h2>
+        <ol class="phigh">{d.bullets.map((b: string, i: number) => <li data-reveal><span class="mono">{pad(i + 1)}</span><p>{b}</p></li>)}</ol>
+      </section>
+      {d.demo_embed ? (
+        <section class="psec" id="demo">
+          <h2 class="label">Live demo</h2>
+          <DemoBlock project={project} />
+        </section>
+      ) : d.demo && (
+        <section class="psec">
+          <h2 class="label">Try it</h2>
+          <div><a class="btn-big" href={d.demo} data-magnetic data-cursor="Open">{liveLabel} <Icon name="out" /></a></div>
+        </section>
+      )}
+      <section class="psec">
+        <h2 class="label">The story</h2>
+        <div class:list={['prose', { 'skip-first': overview }]}><Content /></div>
+      </section>
+      <section class="psec">
+        <h2 class="label">Area</h2>
+        <div class="tags">{d.tags.map((t: string) => <a class="tag" href={`/projects/#${t}`} data-label="Projects">{tagNames[t]}</a>)}</div>
+      </section>
     </div>
 
-    <nav class="pager" aria-label="More projects">
-      {prev ? <a href={`/projects/${prev.id}/`} class="prev"><span class="mono muted">← previous</span><span>{prev.data.title}</span></a> : <span></span>}
-      {next ? <a href={`/projects/${next.id}/`} class="next"><span class="mono muted">next →</span><span>{next.data.title}</span></a> : <span></span>}
+    <nav class="wrap pnext" aria-label="More projects">
+      <a class="pnext-link" href={`/projects/${next.id}/`} data-label={next.data.title} data-cursor="Open">
+        <span class="mono">Next project · {pad(((index + 1) % total) + 1)}</span>
+        <strong data-split>{next.data.title}</strong>
+        <span class="round-btn" aria-hidden="true"><Icon name="right" /></span>
+      </a>
+      {prev && <a class="pprev mono" href={`/projects/${prev.id}/`} data-label={prev.data.title}><Icon name="left" /> Previous: {prev.data.title}</a>}
     </nav>
   </article>
 </Base>
