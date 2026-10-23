@@ -8,6 +8,9 @@ featured: false
 credit: Aman Kumar wrote the empirical transition-matrix tally in the original 2022 simulation.
 stack: [Python, NumPy, Matplotlib, pytest]
 tags: [quant]
+demo_embed: /demos/snakes-ladders-markov/
+demo_label: "The repo's model.py, simulation.py and test_model.py running unmodified in Pyodide with matplotlib stubbed out: every number is computed in your browser from the 101x101 transition matrix, and the board and charts are drawn in JavaScript."
+demo_height: 1170
 stats: ["39.6 turns expected", "d15 is fastest", "47 tests"]
 bullets:
   - "Modeled Snakes and Ladders as a 101-state absorbing Markov chain in NumPy and computed the exact expected game length, 39.6 turns on a six-sided die, as a row sum of the fundamental matrix (I - Q)^-1."
