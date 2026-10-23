@@ -14,6 +14,9 @@ links:
 open_to_work: true
 availability: Open to new-grad roles · NYC or remote
 roles: [post-quantum protocols, game engines, ML reproductions, data pipelines, coding agents, MCP servers, security audits, calculator ports]
+# about_lead is the About paragraph's first and last sentences, the part that fills in as you scroll; the
+# sentences between them are shown under it, read from about.
+about_lead: "I like work I can check. Each project page says what I did, what it measured, and what did not work."
 about: "I like work I can check. A post-quantum mutual-authentication protocol in C11 with fuzz targets, nightly mutation testing and a ProVerif model. A C++23 engine for strategy games with a deterministic lockstep simulation and sandboxed WebAssembly mods. One raycaster that runs on a TI-84 Plus CE calculator and a Garmin watch. A reproduction of a NeurIPS 2025 paper, with a preprocessing fix for its cross-lab failure. Each project page says what I did, what it measured, and what did not work."
 
 # Live stats on the homepage. Fill in a handle to turn its tile on; leave it empty to hide it.

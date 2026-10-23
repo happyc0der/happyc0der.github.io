@@ -4,6 +4,7 @@ blurb: A falling-block game with no asset files, and an RL agent that learns to 
 repo: https://github.com/happyc0der/blockwave
 demo_embed: /demos/blockwave/
 demo_label: "BLOCKWAVE's own engine, renderer, key handler and agent environments, unchanged Python and NumPy from the repo, running in your browser on Pyodide; the two pretrained policies run through a NumPy re-implementation of agents/nets.py with weights exported from pretrained/ and checked against PyTorch's logits on load."
+demo_kind: "Unchanged Python and NumPy on Pyodide"
 demo_height: 720
 image: /img/blockwave.png
 year: 2026

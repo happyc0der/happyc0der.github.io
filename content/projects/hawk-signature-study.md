@@ -10,6 +10,7 @@ stack: [Python, NumPy, SymPy, Flask, pytest]
 tags: [sec, swe]
 demo_embed: /demos/hawk-signature-study/
 demo_label: "The repo's hawk_crypto package (vendored hawk-py with the six fixes in PATCHES.md) and its pytest suite, unmodified, running in Pyodide in your browser; keys, signatures and timings come from your device, and Hawk is broken, so this is a teaching demo only."
+demo_kind: "hawk_crypto and pytest in Pyodide"
 demo_height: 900
 stats: ["13-page report", "6 fixes to hawk-py", "~300x faster verify"]
 bullets:

@@ -4,6 +4,7 @@ blurb: "Wait-free one-time-pad allocation for m broadcasting parties, with a pro
 repo: https://github.com/happyc0der/cryptography-project-1
 demo_embed: /demos/otp-pad-allocation/
 demo_label: "The repo's protocol.py, simulation.py, eval_protocol.py, main.py and test_protocol.py (the September 2026 chunk-reserve rewrite, commit 662f578) running unmodified in Pyodide, driven by a short glue script; every pad, count, CSV diff and test result is computed in your browser."
+demo_kind: "protocol.py running unmodified in Pyodide"
 demo_height: 880
 year: 2025
 order: 20
