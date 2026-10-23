@@ -2,7 +2,8 @@
 // A project's live demo (public/demos/<slug>/), loaded straight into an iframe as it nears the screen. The demo's
 // own page is a light poster with its own Start button and download size, so nothing heavy runs until asked.
 // With JS (src/scripts/site.ts) a Fullscreen button appears once the frame has loaded. The label under it is the
-// project file's own sentence about what exactly runs.
+// project file's own sentence about what exactly runs. On touch screens the script also locks the frame behind
+// a "Tap to use" gate, so a swipe that starts on the demo scrolls the page; "Done" hands scrolling back.
 import Icon from './Icon.astro';
 const { project } = Astro.props;
 const d = project.data;
@@ -11,6 +12,8 @@ const height = d.demo_height ?? 640;
 <div class="demo">
   <div class="demo-frame" data-demo style={`--demo-h: ${height}px`}>
     <iframe src={d.demo_embed} title={`${d.title}: live demo`} loading="lazy" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+    <button class="demo-gate" type="button" data-demo-gate hidden><span>Tap to use the demo</span></button>
+    <button class="demo-done btn" type="button" data-demo-done hidden>Done</button>
   </div>
   <noscript><p class="demo-nojs mono">The demo needs JavaScript to run. <a href={d.demo_embed}>Open the demo page</a></p></noscript>
   <div class="demo-tools">
