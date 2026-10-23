@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custodian live demo</title>
+<meta name="description" content="Custodian's MCP server, recall sweeper, matcher and MCP App running in the browser on recorded CPSC, NHTSA and openFDA responses.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  [hidden] { display: none !important; }
+  body { padding: 12px 16px; }
+  .small { font-size: 12px; }
+  code { font: 12px/1.4 var(--mono); color: var(--accent-hi); }
+  h1 { margin: 0; font-size: clamp(26px, 5vw, 40px); letter-spacing: -0.03em; line-height: 1.05; }
+  h1 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; color: var(--accent); }
+
+  /* Poster */
+  .poster { min-height: min(560px, calc(100vh - 110px)); align-content: center; }
+  .poster p { margin: 0; max-width: 58ch; color: var(--text-2); }
+  .poster ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 640px; }
+  .poster li { font: 11.5px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 6px 10px; background: rgba(11, 10, 16, 0.4); }
+
+  /* App shell */
+  #app { display: flex; flex-direction: column; gap: 10px; }
+  #app:focus { outline: none; }
+  .topbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+  .tb-left { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  #sweep-note { min-width: 0; max-width: 44ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2); flex: none; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .stage, .side { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  .seg { flex-wrap: wrap; align-self: flex-start; }
+  .seg button { padding: 8px 12px; }
+  .seg button:focus-visible { outline-offset: -2px; }
+
+  .device {
+    position: relative; padding: 10px; border-radius: 18px; background: #050408;
+    border: 1px solid var(--line); box-shadow: 0 0 0 1px #000 inset, 0 18px 40px -20px rgba(139, 92, 246, 0.35);
+  }
+  .device-screen { height: 460px; border-radius: 9px; overflow: hidden; background: var(--bg); }
+  .device-screen iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+  .device-screen.scaled iframe { transform-origin: 0 0; }
+  .device.full { position: fixed; inset: 0; z-index: 10; border-radius: 0; padding: 8px; display: flex; flex-direction: column; }
+  .device.full .device-screen { flex: 1; height: auto; }
+  .exit-full { position: absolute; right: 16px; bottom: 16px; }
+
+  .reply { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
+  .speech { margin: 2px 0 0; font-size: 14px; color: var(--text); min-height: 1.5em; }
+  .callchip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 11.5px; color: var(--muted); min-height: 18px; }
+  .callchip b { color: var(--text-2); font-weight: 600; }
+  .budget { width: 120px; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .budget i { display: block; height: 100%; background: var(--good); }
+
+  .panel-body { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; overflow: auto; overscroll-behavior: contain; }
+  .panel-body h3 { margin: 14px 0 6px; }
+  .panel-body h3:first-child { margin-top: 0; }
+  .note { margin: 0 0 10px; color: var(--text-2); font-size: 13px; }
+
+  .add { display: grid; gap: 8px; }
+  .add-row { display: flex; gap: 8px; }
+  input, select { min-width: 0; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: 14px var(--sans); }
+  input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .add-row input { flex: 1; }
+  .more summary { cursor: pointer; font: 12px var(--mono); color: var(--muted); }
+  .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; }
+  .fields label { display: grid; gap: 3px; font: 11px var(--mono); color: var(--muted); }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { background: var(--surface-2); border: 1px solid var(--line); color: var(--text-2); border-radius: var(--radius-pill); padding: 6px 10px; font: 12px var(--sans); cursor: pointer; }
+  .chip:hover { border-color: var(--accent); color: var(--accent-hi); }
+  .btn.small { padding: 6px 10px; font-size: 12px; }
+  .add-reply { margin: 8px 0; font-size: 12.5px; color: var(--text-2); min-height: 1.2em; }
+  .items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .items li { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .it-main { flex: 1; min-width: 0; display: grid; gap: 2px; font-size: 13.5px; }
+  .it-main span { overflow-wrap: anywhere; }
+  .badge { font: 11px/1 var(--mono); padding: 5px 7px; border-radius: var(--radius-pill); white-space: nowrap; }
+  .badge.ok { color: var(--good); border: 1px solid rgba(74, 222, 128, 0.35); }
+  .badge.bad { color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.45); }
+  .badge.none { color: var(--muted); border: 1px dashed var(--line); }
+
+  .mitem { padding: 10px 0; border-top: 1px solid var(--line); }
+  .mitem:first-child { border-top: 0; padding-top: 0; }
+  .mitem h4 { margin: 0 0 6px; font-size: 13.5px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+  .cands { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .cand-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .score { font-size: 13px; color: var(--text); width: 3.2em; }
+  .bar { position: relative; width: 110px; height: 6px; border-radius: 3px; background: var(--line); }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--muted); }
+  .bar b { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--text-2); }
+  .cand.likely .bar i { background: var(--accent); }
+  .cand.possible .bar i { background: #c4b5fd; opacity: 0.7; }
+  .cand.likely .band { color: var(--accent-hi); }
+  .cand.below { opacity: 0.75; }
+  .cand-title { font-size: 12.5px; color: var(--text-2); margin-top: 2px; overflow-wrap: anywhere; }
+  .reason { color: var(--muted); overflow-wrap: anywhere; }
+
+  .calls, .reqs, .sweeplog, .notes, .checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .calls li { border-left: 2px solid var(--line); padding-left: 8px; overflow-wrap: anywhere; }
+  .from { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 1px 5px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+  .from.app { color: var(--accent-hi); border-color: rgba(167, 139, 250, 0.5); }
+  .lat { border-collapse: collapse; width: 100%; }
+  .lat th, .lat td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--line); }
+  .lat th { color: var(--muted); font-weight: 500; }
+  .reqs li { overflow-wrap: anywhere; }
+  .st { padding: 1px 5px; border-radius: 4px; }
+  .st.ok { color: var(--good); }
+  .st.standin { color: var(--accent-hi); }
+  .st.miss { color: #fda4af; }
+  .sweeplog li { font-size: 11.5px; color: var(--text-2); overflow-wrap: anywhere; }
+  .pass { color: var(--good); font: 11px var(--mono); }
+  .fail { color: var(--danger); font: 11px var(--mono); }
+
+  /* Phones: a thinner bezel that reaches 6 px from the edges, so the scaled screen stays legible. */
+  @media (max-width: 480px) {
+    .device { margin: 0 -10px; padding: 4px; border-radius: 14px; }
+    .device-screen { border-radius: 10px; }
+  }
+
+  @media (min-width: 980px) {
+    body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    #app:not([hidden]) { flex: 1; min-height: 0; }
+    .layout { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1.45fr) minmax(330px, 1fr); }
+    .stage { min-height: 0; }
+    .device { flex: 1; min-height: 300px; display: flex; flex-direction: column; }
+    .device-screen { flex: 1; height: auto; min-height: 0; }
+    .side { min-height: 0; }
+    .panel-body { flex: 1; min-height: 0; }
+    .reply { max-height: 8.2em; overflow: auto; overscroll-behavior: contain; }
+    .poster { min-height: 0; flex: 1; }
+  }
+</style>
+</head>
+<body>
+<div id="poster" class="poster">
+  <p class="label">Live demo · runs entirely in this tab</p>
+  <h1>Custodian, <em>in your browser</em></h1>
+  <p>The repo's MCP server, recall sweeper and matcher start in this page, add a sample household through <code>add_item</code>, and check it against the CPSC, NHTSA and openFDA responses recorded in the repo's test fixtures, served by a stand-in for the feeds written for this demo. Anything the recordings don't cover gets an empty or not-found answer, so it shows no recalls here, whatever the live feeds say. The repo's Preact MCP App draws each tool result on an Echo Show style screen.</p>
+  <ul aria-label="What runs">
+    <li>MCP server + client in the page</li>
+    <li>10 tools, 5 views</li>
+    <li>sweeper + MiniSearch matcher</li>
+    <li>recorded feeds, no outside requests</li>
+  </ul>
+  <button type="button" class="btn primary" id="start">Start the server</button>
+  <p class="size" id="size-note">Downloads about 1.2 MB (about 320 KB compressed) from this site. No live feeds, no sign-in, no model.</p>
+  <div class="progress" id="progress" hidden><i></i></div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <noscript><p class="error">This demo needs JavaScript: it runs the server in the page.</p></noscript>
+</div>
+<div id="app" hidden tabindex="-1" role="region" aria-label="Custodian running in this tab"></div>
+<footer class="demo-foot">
+  <span>Runs: the repo's TypeScript (MCP server and tools, sweeper, matcher, feed parsers, <code>:memory:</code> store, Preact MCP App) bundled with esbuild. A stand-in fetch written for the demo answers the feed clients from the repo's recorded fixture responses: CPSC name searches filter the recorded records, openFDA recordings are picked by query word, and requests with no recording get an empty or 404 answer. Bedrock and OAuth are off; the server speaks to an MCP client in the page instead of over HTTP.</span>
+  <span>Source: <a href="https://github.com/happyc0der/custodian/tree/e53c104706e388e42b9a058a0a59d065cfe00074" target="_blank" rel="noopener">happyc0der/custodian @ e53c104</a> · GPL-3.0-or-later; the demo glue and exact build steps are in <a href="https://github.com/happyc0der/happyc0der.github.io/tree/main/public/demos/custodian" target="_blank" rel="noopener">BUILD.md and build-src/</a>; bundled npm packages and their licenses: <a href="THIRD_PARTY_NOTICES.txt" target="_blank" rel="noopener">THIRD_PARTY_NOTICES.txt</a>.</span>
+</footer>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const bar = $('progress').querySelector('i');
+  const setStatus = (text, fraction) => {
+    $('status').textContent = text;
+    if (typeof fraction === 'number') bar.style.width = `${Math.round(fraction * 100)}%`;
+  };
+  $('start').addEventListener('click', async () => {
+    const btn = $('start');
+    btn.disabled = true;
+    $('progress').hidden = false;
+    $('status').classList.remove('error');
+    setStatus('Downloading the server bundle', 0.05);
+    try {
+      const mod = await import('./host.js');
+      await mod.mount($('app'), setStatus, () => {
+        $('poster').hidden = true;
+        $('app').hidden = false;
+        // The Start button just disappeared; keep keyboard focus at the start of the running demo.
+        $('app').focus({ preventScroll: true });
+      });
+    } catch (err) {
+      console.error(err);
+      $('poster').hidden = false;
+      $('app').hidden = true;
+      $('status').classList.add('error');
+      setStatus(`Could not start: ${err && err.message ? err.message : err}`);
+      btn.disabled = false;
+      btn.textContent = 'Try again';
+    }
+  });
+</script>
+</body>
+</html>
