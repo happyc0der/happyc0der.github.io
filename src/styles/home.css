@@ -162,7 +162,7 @@ html:not(.js) .work-count { display: none; }
   background: radial-gradient(closest-side at 50% 35%, color-mix(in srgb, var(--hue) 30%, transparent), transparent), linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 28px 28px, linear-gradient(90deg, var(--line) 1px, var(--surface-2) 1px) 0 0 / 28px 28px; }
 .wcard-panel span { max-width: 18ch; font: 400 clamp(1.1rem, 1.9vw, 1.55rem)/1.3 var(--mono); color: var(--accent-hi); }
 /* On a work card the headline stat splits in two: the figure big, the words after it as a mono label. */
-.wcard-panel.is-split { place-items: start; align-content: start; gap: var(--space-3); padding: var(--space-7) var(--space-6); text-align: left; }
+.wcard-panel.has-fig { place-items: start; align-content: start; gap: var(--space-3); padding: var(--space-7) var(--space-6); text-align: left; }
 .wcard-panel .wcard-fig { max-width: none; font: var(--fw-heavy) clamp(2.6rem, 4.4vw, 4rem)/0.95 var(--display); letter-spacing: -0.05em; color: var(--text); font-variant-numeric: tabular-nums; }
 .wcard-panel .wcard-fig-label { max-width: 24ch; font: var(--fw-medium) var(--fs-2xs)/1.6 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-hi); }
 .wcard-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-3) var(--space-4); align-items: start; }

@@ -17,7 +17,7 @@ const [fig, figLabel] = splitStat(d.stats[0] ?? '');
     {d.image
       ? <div class="wcard-shot shot" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} thumb sizes={sizes} eager={eager} /></div>
       : d.stats[0] && figLabel
-        ? <div class="wcard-panel is-split"><span class="wcard-fig">{fig}</span><span class="wcard-fig-label">{figLabel}</span></div>
+        ? <div class="wcard-panel has-fig"><span class="wcard-fig">{fig}</span><span class="wcard-fig-label">{figLabel}</span></div>
         : <div class="wcard-panel"><span>{d.stats[0] ?? d.title}</span></div>}
     <span class="wcard-wash" aria-hidden="true"></span>
     <span class="wcard-num" aria-hidden="true">{pad(index + 1)}</span>
