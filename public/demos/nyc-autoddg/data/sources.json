@@ -1,0 +1,47 @@
+[
+ {
+  "id": "25th-nujf",
+  "title": "Popular Baby Names",
+  "agency": "Department of Health and Mental Hygiene (DOHMH)",
+  "attribution_link": null,
+  "portal_url": "https://data.cityofnewyork.us/d/25th-nujf",
+  "export_url": "https://data.cityofnewyork.us/api/views/25th-nujf/rows.csv?accessType=DOWNLOAD",
+  "license": null,
+  "rows_updated": "2026-06-08",
+  "downloaded": "2026-10-23",
+  "bytes": 1208766,
+  "sha256": "9b14e1926e79eebc8146b2d95672c3ec474e33b1f32e7165193066d0e3a24f30",
+  "rows": 29685,
+  "columns": 6
+ },
+ {
+  "id": "wxhr-qbhz",
+  "title": "Cool It! NYC 2020 - Drinking Fountains",
+  "agency": "Department of Parks and Recreation (DPR)",
+  "attribution_link": null,
+  "portal_url": "https://data.cityofnewyork.us/d/wxhr-qbhz",
+  "export_url": "https://data.cityofnewyork.us/api/views/wxhr-qbhz/rows.csv?accessType=DOWNLOAD",
+  "license": null,
+  "rows_updated": "2020-11-27",
+  "downloaded": "2026-10-23",
+  "bytes": 878815,
+  "sha256": "ab9436f996f2d71eb51415f0df1c2bf6280c0d4af7f1d0ea8fd7da008ee9239c",
+  "rows": 3871,
+  "columns": 25
+ },
+ {
+  "id": "a4qt-mpr5",
+  "title": "Parks Closure Status Due to COVID-19: Playgrounds",
+  "agency": "Department of Parks and Recreation (DPR)",
+  "attribution_link": null,
+  "portal_url": "https://data.cityofnewyork.us/d/a4qt-mpr5",
+  "export_url": "https://data.cityofnewyork.us/api/views/a4qt-mpr5/rows.csv?accessType=DOWNLOAD",
+  "license": null,
+  "rows_updated": "2024-04-03",
+  "downloaded": "2026-10-23",
+  "bytes": 339530,
+  "sha256": "5517639f8f8eea6f78c214d3e07b9dca7bac34e1ae151b5c4f2316e054f9b58e",
+  "rows": 1030,
+  "columns": 20
+ }
+]
