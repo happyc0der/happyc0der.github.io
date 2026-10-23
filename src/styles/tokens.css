@@ -54,7 +54,7 @@
   --fs-hero: clamp(2.6rem, 8vw, 4.75rem);
   --fs-statement: clamp(1.45rem, 3.3vw, 2.9rem);  /* the scrub paragraphs */
   --fs-card: clamp(1.6rem, 2.6vw, 2.25rem);       /* card and row titles */
-  --fs-number: clamp(2.6rem, 6vw, 5.25rem);       /* counters */
+  --fs-number: clamp(2.6rem, 5.4vw, 4.6rem);      /* counters */
   --fs-display: clamp(3.1rem, 10vw, 8.75rem);     /* section titles */
   --fs-giant: clamp(5.25rem, 21vw, 17.5rem);      /* the name in the hero */
   --track-display: -0.045em;

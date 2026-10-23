@@ -77,6 +77,12 @@ html:not(.js) .sphere-caption { display: none; }
 .skill { padding: 0.25rem 0.7rem; border: 1px solid var(--line-2); border-radius: var(--radius-pill); color: var(--text-2); font-size: var(--fs-xs); line-height: 1.45; transition: border-color 0.2s, color 0.2s; }
 .skill:hover { border-color: var(--accent); color: var(--text); }
 @media (max-width: 40rem) {
+  /* Phones: each skill group is one row you swipe, so nine groups stay a screen or so tall. */
+  .skills { gap: var(--space-6); }
+  .skill-list { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--space-1); scrollbar-width: none; overscroll-behavior-x: contain;
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+  .skill-list::-webkit-scrollbar { display: none; }
+  .skill { flex: none; white-space: nowrap; }
   .counters { grid-template-columns: 1fr 1fr; }
   .counter { padding: var(--space-5) var(--space-4) var(--space-5) 0; border-left: 0; border-bottom: 1px solid var(--line); }
   .counter:nth-child(even) { padding-left: var(--space-4); border-left: 1px solid var(--line); }
@@ -201,7 +207,7 @@ html:not(.js) .work-count { display: none; }
 
 /* ---------- Contact ---------- */
 .contact { padding-bottom: var(--section); }
-.signoff { margin: var(--space-5) 0 var(--space-9); font-size: clamp(3rem, 11vw, 10.5rem); font-weight: var(--fw-heavy); line-height: 0.92; letter-spacing: var(--track-display); }
+.signoff { margin: var(--space-5) 0 var(--space-9); font-size: clamp(3.1rem, 12.5vw, 10.5rem); font-weight: var(--fw-heavy); line-height: 0.92; letter-spacing: var(--track-display); }
 .signoff > span, .signoff > em { display: block; }
 .signoff em { padding-left: 0.03em; font-family: var(--serif); font-weight: 400; font-size: 1.06em; letter-spacing: -0.02em; color: var(--accent); }
 .contact-email { display: inline-block; padding-bottom: 0.12em; color: var(--text); font: var(--fw-medium) clamp(1.35rem, 4.4vw, 3.6rem)/1.2 var(--display); letter-spacing: -0.035em; overflow-wrap: anywhere;
