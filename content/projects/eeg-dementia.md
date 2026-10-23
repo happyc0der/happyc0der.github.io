@@ -5,6 +5,7 @@ repo: https://github.com/happyc0der/eeg-dementia-graph-transformer
 demo_embed: /demos/eeg-dementia/
 demo_label: "Interactive charts of the repo's saved out-of-fold subject predictions, result tables and permutation nulls, plus a replay of the 2025 team model's training log; confusion matrices and balanced accuracies are recomputed in your browser from those saved predictions, and no model runs."
 demo_kind: "Interactive charts of saved predictions"
+demo_poster: /img/demo/eeg-dementia.jpg
 demo_height: 840
 image: /img/eeg-dementia.png
 year: 2026

@@ -5,6 +5,7 @@ repo: https://github.com/happyc0der/ledger
 demo_embed: /demos/ledger/
 demo_label: "The repo's verification code (field rules, quote verifier, consistency checks, scorer) running in Pyodide over the claims Claude Sonnet 5.5 returned in the recorded 2026-10-17 run; no model is called, and any edit you make is checked live."
 demo_kind: "Verification code over a recorded run"
+demo_poster: /img/demo/ledger.jpg
 demo_height: 760
 image: /img/ledger.png
 year: 2026

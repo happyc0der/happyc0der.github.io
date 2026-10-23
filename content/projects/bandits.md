@@ -10,6 +10,7 @@ tags: [ml, quant]
 demo_embed: /demos/bandits/
 demo_label: "The repo's five bandit algorithms, environment and bench/ metrics at commit 2be15ab, running unmodified in Pyodide in your browser; a glue file written for the page derives the arm raster, 'On best arm' and 'Detects after' from their output, and JavaScript draws the charts."
 demo_kind: "Five algorithms running unmodified in Pyodide"
+demo_poster: /img/demo/bandits.jpg
 demo_height: 720
 stats: ["5 algorithms", "59x faster AdSwitch", "regret 21,860 to 174"]
 bullets:

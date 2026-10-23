@@ -5,6 +5,7 @@ repo: https://github.com/happyc0der/atlas-engine
 demo_embed: /demos/atlas-engine/
 demo_label: "Atlas's own C++23 simulation kernel, lab world and chess rules compiled to WebAssembly and run single-threaded in your browser, where the repos' golden hashes are recomputed and checked; the chess opponent is the committed C mod's .wasm behind a JavaScript stand-in for the engine's WAMR mod host, without its per-tick instruction budget, and the drawing is this page's own, not the SDL_GPU renderer."
 demo_kind: "C++23 kernel compiled to WebAssembly"
+demo_poster: /img/demo/atlas-engine.jpg
 demo_height: 800
 image: /img/atlas-engine.png
 year: 2026

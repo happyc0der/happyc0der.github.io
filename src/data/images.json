@@ -150,5 +150,80 @@
    800,
    1440
   ]
+ },
+ "/img/demo/atlas-engine.jpg": {
+  "width": 960,
+  "height": 579,
+  "opt": []
+ },
+ "/img/demo/bandits.jpg": {
+  "width": 960,
+  "height": 521,
+  "opt": []
+ },
+ "/img/demo/blockwave.jpg": {
+  "width": 960,
+  "height": 521,
+  "opt": []
+ },
+ "/img/demo/custodian.jpg": {
+  "width": 960,
+  "height": 550,
+  "opt": []
+ },
+ "/img/demo/doom-ports.jpg": {
+  "width": 960,
+  "height": 507,
+  "opt": []
+ },
+ "/img/demo/eeg-dementia.jpg": {
+  "width": 960,
+  "height": 599,
+  "opt": []
+ },
+ "/img/demo/ephys-mcp.jpg": {
+  "width": 960,
+  "height": 550,
+  "opt": []
+ },
+ "/img/demo/gtnh-agent.jpg": {
+  "width": 960,
+  "height": 550,
+  "opt": []
+ },
+ "/img/demo/hawk-signature-study.jpg": {
+  "width": 960,
+  "height": 599,
+  "opt": []
+ },
+ "/img/demo/ledger.jpg": {
+  "width": 960,
+  "height": 550,
+  "opt": []
+ },
+ "/img/demo/lfp2vec-audit.jpg": {
+  "width": 960,
+  "height": 565,
+  "opt": []
+ },
+ "/img/demo/mldsa-auth.jpg": {
+  "width": 960,
+  "height": 599,
+  "opt": []
+ },
+ "/img/demo/nyc-autoddg.jpg": {
+  "width": 960,
+  "height": 550,
+  "opt": []
+ },
+ "/img/demo/otp-pad-allocation.jpg": {
+  "width": 960,
+  "height": 599,
+  "opt": []
+ },
+ "/img/demo/snakes-ladders-markov.jpg": {
+  "width": 960,
+  "height": 599,
+  "opt": []
  }
 }

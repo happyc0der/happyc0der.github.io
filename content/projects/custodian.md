@@ -5,6 +5,7 @@ repo: https://github.com/happyc0der/custodian
 demo_embed: /demos/custodian/
 demo_label: "The repo's TypeScript (MCP server and tools, recall sweeper, matcher, feed parsers and Preact MCP App) bundled with esbuild and run in your browser over an in-memory MCP transport; a stand-in fetch written for the demo answers the feed clients from the CPSC, NHTSA and openFDA responses recorded in the repo's test fixtures (CPSC name searches filter those records, openFDA recordings are picked by query word, and anything unrecorded gets an empty or not-found answer); no live feeds, OAuth or Bedrock."
 demo_kind: "TypeScript MCP server over recorded fixtures"
+demo_poster: /img/demo/custodian.jpg
 demo_height: 760
 image: /img/custodian.png
 year: 2026

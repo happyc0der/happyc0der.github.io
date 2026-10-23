@@ -5,6 +5,8 @@
 //   public/img/opt/<name>-{800,1600}.{avif,webp}        project-page images at their own aspect ratio
 //   src/data/images.json                                 each original's width and height, so pages can
 //                                                        reserve the space before the image arrives
+// public/img/demo/<slug>.jpg (frames of each live demo running, a project's demo_poster) get thumbnails only,
+// in thumb/demo/.
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -12,7 +14,9 @@ import sharp from 'sharp';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const src = path.join(root, 'public/img');
 const out = { thumb: path.join(src, 'thumb'), opt: path.join(src, 'opt') };
-for (const d of Object.values(out)) fs.mkdirSync(d, { recursive: true });
+const SUBDIRS = ['', 'demo'];
+fs.mkdirSync(path.join(out.opt), { recursive: true });
+for (const sub of SUBDIRS) fs.mkdirSync(path.join(out.thumb, sub), { recursive: true });
 
 const encode = {
   avif: (s) => s.avif({ quality: 50, effort: 6 }),
@@ -22,13 +26,16 @@ const encode = {
 const fresh = (file, than) => fs.existsSync(file) && fs.statSync(file).mtimeMs >= fs.statSync(than).mtimeMs;
 
 const manifest = {};
-for (const f of fs.readdirSync(src).filter((f) => /\.(png|jpe?g)$/i.test(f)).sort()) {
+const files = SUBDIRS.flatMap((sub) => (fs.existsSync(path.join(src, sub)) ? fs.readdirSync(path.join(src, sub)) : [])
+  .filter((f) => /\.(png|jpe?g)$/i.test(f)).sort().map((f) => path.posix.join(sub, f)));
+for (const f of files) {
   const file = path.join(src, f);
   const name = f.replace(/\.[^.]+$/, '');
   const { width, height } = await sharp(file).metadata();
-  // Page-image widths: 800 and 1600 where the original is bigger, plus the original itself up to 1600.
-  const opt = [800, 1600].filter((w) => w < width);
-  if (width <= 1600) opt.push(width);
+  // Page-image widths: 800 and 1600 where the original is bigger, plus the original itself up to 1600. Demo
+  // posters only ever show as thumbnails, so they get none.
+  const opt = f.startsWith('demo/') ? [] : [800, 1600].filter((w) => w < width);
+  if (width <= 1600 && !f.startsWith('demo/')) opt.push(width);
   manifest[`/img/${f}`] = { width, height, opt };
   let made = 0;
   for (const w of [400, 800]) {
