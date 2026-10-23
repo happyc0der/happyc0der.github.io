@@ -5,14 +5,23 @@
  * this page fetches from its own origin. Nothing goes to saferproducts.gov, nhtsa.gov or fda.gov.
  *
  * Where a feed's answer depends on a server-side search the recording cannot reproduce, the
- * rule below says what stands in for it. A request with no recording gets a 404 whose body says
- * so, and the source code handles that the way it handles a real 404.
+ * rule below says what stands in for it. A request with no recording gets a made-up answer that
+ * the source code treats as "nothing found":
+ *   - an NHTSA vehicle lookup gets NHTSA's empty-result body ({Count: 0, results: []}) with
+ *     status 200, so the repo's full sweep keeps going (see the note at the vehicle branch);
+ *   - an openFDA search gets a 404, which is what openFDA itself sends for "no matches" and what
+ *     OpenFdaSource reads as no recalls;
+ *   - anything else (a child-seat catalogue page other than the recorded one) gets a 404, which
+ *     the sweeper logs as a failed crawl and moves past.
+ * Every request and what answered it goes to onRequest, and the Feeds tab lists them all.
  */
 
 export interface RequestLogEntry {
   at: number;
   url: string;
   status: number;
+  /** recording: a recorded response; search: the stand-in search over recorded records; none: no recording, made-up empty or 404 answer. */
+  kind: 'recording' | 'search' | 'none';
   served: string;
 }
 
@@ -79,16 +88,17 @@ function json(body: Json, status = 200): Response {
 }
 
 export function createFixtureFetch(onRequest: (e: RequestLogEntry) => void): typeof fetch {
-  const done = (url: string, status: number, served: string, res: Response) => {
-    onRequest({ at: performance.now(), url, status, served });
+  const done = (url: string, status: number, served: string, res: Response, kind: RequestLogEntry['kind'] = 'recording') => {
+    onRequest({ at: performance.now(), url, status, kind, served });
     return res;
   };
-  const notRecorded = (url: string) =>
+  const notRecorded = (url: string, served = 'no recording: answered 404') =>
     done(
       url,
       404,
-      'no recording for this request',
+      served,
       json({ error: 'no recorded response for this request in the browser demo' }, 404),
+      'none',
     );
 
   const fixtureFetch = async (input: RequestInfo | URL): Promise<Response> => {
@@ -116,8 +126,9 @@ export function createFixtureFetch(onRequest: (e: RequestLogEntry) => void): typ
         return done(
           url,
           200,
-          `search over recorded CPSC records: ${rows.length} hit${rows.length === 1 ? '' : 's'}`,
+          `stand-in search over the recorded CPSC records: ${rows.length} hit${rows.length === 1 ? '' : 's'}`,
           json(rows),
+          'search',
         );
       }
     }
@@ -130,7 +141,18 @@ export function createFixtureFetch(onRequest: (e: RequestLogEntry) => void): typ
       if (make === 'honda' && model === 'odyssey' && year === '2019') {
         return done(url, 200, 'nhtsa-odyssey-2019.json', json(await load('nhtsa-odyssey-2019.json')));
       }
-      return notRecorded(url);
+      // No recording for this vehicle. Answer with NHTSA's empty-result body, so the vehicle
+      // simply has no campaigns here. A 404 would be wrong twice over: the repo's full sweep
+      // (Sweeper.doRunFull) calls refreshItemSources without a try/catch, so one thrown lookup
+      // ends the whole sweep. The live API would list this vehicle's campaigns, if it has any;
+      // the demo cannot know, and the Feeds tab and the Household list say so.
+      return done(
+        url,
+        200,
+        'no recording for this vehicle: answered with an empty result (Count 0)',
+        json({ Count: 0, Message: 'Results returned successfully', results: [] }),
+        'none',
+      );
     }
 
     // NHTSA child-seat catalogue: https://api.nhtsa.gov/childSeats?issueType=r&max=100&offset=N
@@ -143,7 +165,7 @@ export function createFixtureFetch(onRequest: (e: RequestLogEntry) => void): typ
           json(await load('nhtsa-childseats-page.json')),
         );
       }
-      return notRecorded(url);
+      return notRecorded(url, 'no recording for this catalogue page: answered 404 (the sweeper logs a failed crawl)');
     }
 
     // openFDA enforcement reports: https://api.fda.gov/{food,drug,device}/enforcement.json?search=...
@@ -153,9 +175,10 @@ export function createFixtureFetch(onRequest: (e: RequestLogEntry) => void): typ
       const rec = FDA_RECORDINGS.find(
         (r) => r.endpoint === endpoint && r.words.some((w) => search.includes(`"${w}"`)),
       );
-      if (rec) return done(url, 200, `${rec.file} (recorded search)`, json(await load(rec.file)));
+      // The recordings are picked by product word, not by running openFDA's search.
+      if (rec) return done(url, 200, `${rec.file} (recording picked by query word)`, json(await load(rec.file)), 'search');
       // openFDA itself answers 404 when nothing matches; OpenFdaSource reads that as "no recalls".
-      return notRecorded(url);
+      return notRecorded(url, 'no recording for this search: answered 404, which OpenFdaSource reads as no recalls');
     }
 
     return notRecorded(url);
