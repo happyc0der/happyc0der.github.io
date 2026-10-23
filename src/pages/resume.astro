@@ -1,7 +1,8 @@
 ---
 import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
-import { resumes } from '../lib';
+import Icon from '../components/Icon.astro';
+import { resumes, hue, pad } from '../lib';
 
 // The build date written inside the PDF (CreationDate). File mtimes are useless here: in CI they are the
 // checkout time, so every daily stats deploy would label the resumes as updated today.
@@ -14,26 +15,31 @@ const updated = (file: string) => {
     return new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}${zone}`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
   } catch { return null; }
 };
+const list = Object.values(resumes) as any[];
 ---
 <Base title="Resume" description="One-page resumes for software, ML, data, security and quant roles.">
-  <h1 class="page-title">Resume</h1>
-  <p class="muted lead">One page each, built from the same project data as this site. Pick the one that fits the role.</p>
-  <div class="resumes">
-    {Object.values(resumes).map((r: any) => (
-      <article class="resume-card">
-        <a class="preview" href={`/resume/${r.file}.pdf`} aria-label={`Open the ${r.label} resume (PDF)`}>
-          <img src={`/resume/${r.file}.png`} alt="" loading="lazy" decoding="async" width="612" height="792" />
-        </a>
-        <div class="body">
-          <h2>{r.label}</h2>
-          <p class="muted">{r.headline}</p>
-          <div class="links">
-            <a class="btn primary" href={`/resume/${r.file}.pdf`}>Open PDF</a>
-            <a class="btn" href={`/resume/${r.file}.pdf`} download>Download</a>
+  <div class="wrap page-top">
+    <p class="label">{list.length} one-page PDFs</p>
+    <h1 class="page-title" data-split="chars" data-intro>Resume</h1>
+    <p class="lead" data-reveal-intro>One page each, built from the same project data as this site. Pick the one that fits the role.</p>
+    <ul class="resumes">
+      {list.map((r, i) => (
+        <li class="rcard" data-reveal style={`--hue: ${hue(i)}`}>
+          <a class="rcard-preview" href={`/resume/${r.file}.pdf`} data-cursor="PDF" aria-label={`Open the ${r.label} resume (PDF)`}>
+            <img src={`/resume/${r.file}.png`} alt="" loading="lazy" decoding="async" width="612" height="792" />
+            <span class="rcard-num" aria-hidden="true">{pad(i + 1)}</span>
+          </a>
+          <div class="rcard-body">
+            <h2>{r.label}</h2>
+            <p class="muted">{r.headline}</p>
+            <div class="links">
+              <a class="btn primary" href={`/resume/${r.file}.pdf`} data-cursor="PDF">Open PDF <Icon name="out" /></a>
+              <a class="btn" href={`/resume/${r.file}.pdf`} download>Download <Icon name="down" /></a>
+            </div>
+            {updated(r.file) && <p class="mono muted rcard-date">Updated {updated(r.file)}</p>}
           </div>
-          {updated(r.file) && <p class="mono muted small">Updated {updated(r.file)}</p>}
-        </div>
-      </article>
-    ))}
+        </li>
+      ))}
+    </ul>
   </div>
 </Base>

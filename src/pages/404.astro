@@ -1,13 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
 ---
 <Base title="Not found">
-  <section class="notfound">
-    <p class="label">404</p>
-    <h1 class="page-title">Nothing at this address.</h1>
-    <p class="muted lead">The page may have moved when the site was reorganized. These are the places most people are looking for:</p>
-    <div class="links">
-      <a class="btn primary" href="/">Home</a>
+  <section class="wrap page-top notfound">
+    <p class="label">Error 404</p>
+    <h1 class="page-title notfound-code" data-split="chars" data-intro>404</h1>
+    <p class="notfound-line serif" data-split data-intro>Nothing at this address.</p>
+    <p class="lead" data-reveal-intro>The page may have moved when the site was reorganized. These are the places most people are looking for:</p>
+    <div class="links" data-reveal-intro>
+      <a class="btn primary" href="/" data-label="Home">Home <Icon name="right" /></a>
       <a class="btn" href="/projects/">Projects</a>
       <a class="btn" href="/resume/">Resume</a>
       <a class="btn" href="/#numbers">By the numbers</a>

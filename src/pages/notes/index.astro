@@ -1,21 +1,31 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { hasNotes } from '../../lib';
+import Icon from '../../components/Icon.astro';
+import { hasNotes, pad } from '../../lib';
 
 // Shows up in the nav once content/notes/ has its first post.
 const notes = (hasNotes ? await getCollection('notes') : []).sort((a, b) => +b.data.date - +a.data.date);
 ---
 <Base title="Notes">
-  <h1 class="page-title">Notes</h1>
-  <div class="rows" style="margin-top:2rem">
-    {notes.length === 0 && <p class="muted" style="padding-top:1rem">Nothing here yet.</p>}
-    {notes.map((n) => (
-      <a class="row" href={`/notes/${n.id}/`}>
-        <span class="what">{n.data.title}</span>
-        <span class="when mono">{n.data.date.toISOString().slice(0, 10)}</span>
-        {n.data.summary && <span class="detail">{n.data.summary}</span>}
-      </a>
-    ))}
+  <div class="wrap page-top">
+    <p class="label">{notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
+    <h1 class="page-title" data-split="chars" data-intro>Notes</h1>
+    <ol class="plist notes-list">
+      {notes.length === 0 && <li class="muted notes-empty">Nothing here yet.</li>}
+      {notes.map((n, i) => (
+        <li class="prow-item">
+          <a class="prow" href={`/notes/${n.id}/`} data-label={n.data.title} data-cursor="Open">
+            <span class="prow-num mono">{pad(notes.length - i)}</span>
+            <div class="prow-main">
+              <h2 class="prow-title">{n.data.title}</h2>
+              {n.data.summary && <p class="prow-blurb">{n.data.summary}</p>}
+            </div>
+            <span class="prow-year mono">{n.data.date.toISOString().slice(0, 10)}</span>
+            <span class="prow-arrow" aria-hidden="true"><Icon name="right" /></span>
+          </a>
+        </li>
+      ))}
+    </ol>
   </div>
 </Base>

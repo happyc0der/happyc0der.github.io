@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
 import { hasNotes } from '../../lib';
 
 export async function getStaticPaths() {
@@ -10,8 +11,13 @@ const { note } = Astro.props;
 const { Content } = await render(note);
 ---
 <Base title={note.data.title} description={note.data.summary}>
-  <a class="back" href="/notes/">← Notes</a>
-  <p class="label">{note.data.date.toISOString().slice(0, 10)}</p>
-  <h1 class="page-title">{note.data.title}</h1>
-  <div class="prose" style="margin-top:2rem"><Content /></div>
+  <article class="wrap page-top note">
+    <div class="ptop mono">
+      <a class="back" href="/notes/" data-label="Notes"><Icon name="left" /> Notes</a>
+      <time datetime={note.data.date.toISOString().slice(0, 10)}>{note.data.date.toISOString().slice(0, 10)}</time>
+    </div>
+    <h1 class="ptitle note-title" data-split data-intro>{note.data.title}</h1>
+    {note.data.summary && <p class="pblurb" data-reveal-intro>{note.data.summary}</p>}
+    <div class="prose note-body"><Content /></div>
+  </article>
 </Base>
