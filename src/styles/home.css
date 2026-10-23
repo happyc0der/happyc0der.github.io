@@ -88,6 +88,9 @@ html:not(.js) .sphere-caption { display: none; }
    mouse: a row that motion.ts pins and moves sideways as you scroll down. */
 .work-count { color: var(--muted); font-size: var(--fs-xs); letter-spacing: 0.1em; }
 html:not(.js) .work-count { display: none; }
+/* The counter follows the swipe row on phones and the pinned track on desktop; the plain grid needs none. */
+@media (min-width: 900px) { .work-count { display: none; } }
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) { .motion .work-count { display: block; } }
 .work-viewport { position: relative; }
 .work-track { display: flex; gap: var(--space-5); margin: 0; padding: 0 var(--gutter) var(--space-5); list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
 .work-track > li { flex: none; width: min(84vw, 30rem); scroll-snap-align: start; }

@@ -41,6 +41,8 @@ export function start() {
   if (html.classList.contains('wipe-in')) setTimeout(() => html.classList.remove('wipe-in'), 1000);
 
   addEventListener('kr:layout', () => ScrollTrigger.refresh());
+  // An opened competition row pushes everything below it down: measure again once it has eased open.
+  document.addEventListener('toggle', (e) => { if ((e.target as Element).matches?.('details')) setTimeout(() => ScrollTrigger.refresh(), 600); }, true);
   // Fonts change line breaks and heights: measure again once they are in.
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
 }
@@ -95,7 +97,7 @@ function links() {
     const url = new URL(a.href, location.href);
     if (url.origin !== location.origin) return;
     if (url.pathname === location.pathname && url.search === location.search) {
-      if (url.hash && scrollToHash(url.hash)) e.preventDefault();
+      if (url.hash ? scrollToHash(url.hash) : scrollToHash('#top', false)) e.preventDefault();
       return;
     }
     // Files and demos open as themselves.
