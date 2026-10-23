@@ -1,21 +1,40 @@
 ---
-import '@fontsource-variable/inter';
-import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
-import { profile, hasNotes } from '../lib';
+// Latin-only font files, so a page downloads exactly four (and preloads the two the hero paints first).
+import interTight from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
+import serifItalic from '@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2?url';
+import inter from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import mono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+import Icon from '../components/Icon.astro';
+import { profile, hasNotes, initials } from '../lib';
 
 // image: a 1200x630 link-preview card (project pages pass theirs from scripts/make-og.mjs)
 const { title, description = profile.tagline, image = '/og.png' } = Astro.props;
 const ogImage = new URL(image, Astro.site).href;
 const path = Astro.url.pathname;
+const year = new Date().getFullYear();
 
-// Add a nav entry here when a new section goes live.
+const latin = 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
+const face = (family: string, url: string, weight: string, style = 'normal') =>
+  `@font-face{font-family:'${family}';font-style:${style};font-display:swap;font-weight:${weight};src:url(${url}) format('woff2');unicode-range:${latin}}`;
+const fonts = [
+  face('Inter Tight Variable', interTight, '100 900'),
+  face('Instrument Serif', serifItalic, '400', 'italic'),
+  face('Inter Variable', inter, '100 900'),
+  face('JetBrains Mono Variable', mono, '100 800'),
+].join('');
+
+// Add a nav entry here when a new section goes live. The # entries are sections of the home page.
 const nav = [
+  { href: '/#about', text: 'About' },
+  { href: '/#work', text: 'Work' },
   { href: '/projects/', text: 'Projects' },
   { href: '/#numbers', text: 'Numbers' },
   ...(hasNotes ? [{ href: '/notes/', text: 'Notes' }] : []),
   { href: '/resume/', text: 'Resume' },
+  { href: '/#contact', text: 'Contact' },
 ];
+const current = (href: string) => (!href.includes('#') && path.startsWith(href) ? 'page' : undefined);
 ---
 <!doctype html>
 <html lang="en">
@@ -24,6 +43,7 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0b0a10" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={profile.name} />
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site).href} />
@@ -37,43 +57,115 @@ const nav = [
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={interTight} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifItalic} as="font" type="font/woff2" crossorigin />
+    <Fragment set:html={`<style>${fonts}</style>`} />
     <title>{title ? `${title} · ${profile.name}` : profile.name}</title>
     <script is:inline>
-      // Motion is opt-in: it needs JS and IntersectionObserver, and stays off for reduced-motion users.
+      // Every effect is opt-in. .js: scripts run. .motion: scripts run and motion is welcome, so
+      // src/scripts/motion.ts may hide things it is about to reveal. Without either, the page is complete and still.
       (() => {
         const h = document.documentElement;
-        if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('motion');
-        // Arriving through a cross-page view transition: the transition already moves the page, so skip entrances.
-        addEventListener('pagereveal', (e) => { if (e.viewTransition) h.classList.add('arrived'); });
+        h.classList.add('js');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+        h.classList.add('motion');
+        try {
+          // The intro counter plays once per browser session; a page reached through the purple wipe starts covered.
+          if (!sessionStorage.getItem('kr-intro')) { sessionStorage.setItem('kr-intro', '1'); h.classList.add('preload'); }
+          const to = sessionStorage.getItem('kr-wipe');
+          if (to) { sessionStorage.removeItem('kr-wipe'); h.classList.add('wipe-in'); h.dataset.wipe = to; h.classList.remove('preload'); }
+        } catch {}
+        // The wipe replaces the browser's own cross-page transition, so the two never run together.
+        addEventListener('pagereveal', (e) => { if (e.viewTransition && h.classList.contains('wipe-in')) e.viewTransition.skipTransition(); });
+        // If the motion script never arrives, show everything rather than leave it hidden.
+        setTimeout(() => { if (!h.classList.contains('motion-ready')) h.classList.remove('motion', 'preload', 'wipe-in'); }, 2600);
       })();
     </script>
   </head>
   <body>
+    <span id="top"></span>
     <a class="skip" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true"></div>
+
+    <div class="loader" aria-hidden="true">
+      <p class="loader-name mono">{profile.name}</p>
+      <p class="loader-hint mono">Click or press any key to skip</p>
+      <p class="loader-count"><span data-loader-count>0</span></p>
+      <span class="loader-line"><i></i></span>
+    </div>
+    <div class="wipe" aria-hidden="true"><p class="wipe-label"><span class="mono">Opening</span><strong data-wipe-label></strong></p></div>
+    <script is:inline>
+      // Runs before first paint. The intro counts to 100 in 0.75 s, then slides away by 1.2 s (the slide is CSS,
+      // so it ends even if this stops). A click or a key skips it. "kr:intro" tells motion.ts to play the hero.
+      (() => {
+        const h = document.documentElement;
+        const label = document.querySelector('[data-wipe-label]');
+        if (h.dataset.wipe && label) label.textContent = h.dataset.wipe;
+        if (!h.classList.contains('preload')) return;
+        const out = document.querySelector('[data-loader-count]'), t0 = performance.now(), D = 750;
+        let went = false, ended = false;
+        const go = () => { if (went) return; went = true; h.classList.add('intro-go'); dispatchEvent(new Event('kr:intro')); };
+        const end = () => {
+          if (ended) return;
+          ended = true;
+          h.classList.remove('preload', 'preload-skip');
+          removeEventListener('pointerdown', skip);
+          removeEventListener('keydown', skip);
+        };
+        const skip = () => { h.classList.add('preload-skip'); go(); setTimeout(end, 360); };
+        const tick = (t) => {
+          const p = Math.min(1, (t - t0) / D);
+          out.textContent = String(Math.round(100 * (1 - Math.pow(1 - p, 2))));
+          if (p < 1 && !went) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        setTimeout(go, D + 60);
+        setTimeout(end, D + 460);
+        addEventListener('pointerdown', skip);
+        addEventListener('keydown', skip);
+      })();
+    </script>
+
     <header class="site">
-      <div class="wrap">
-        <a class="home" href="/"><span>~/</span>keshav</a>
-        <nav>
-          {nav.map((n) => <a href={n.href} aria-current={!n.href.includes('#') && path.startsWith(n.href) ? 'page' : undefined}>{n.text}</a>)}
+      <div class="wrap bar">
+        <a class="mark" href="/" aria-label={`${profile.name}, home`} data-magnetic data-label="Home">{initials(profile.name)}</a>
+        <nav class="nav" aria-label="Site">
+          {nav.map((n) => <a href={n.href} aria-current={current(n.href)}>{n.text}</a>)}
         </nav>
+        <div class="bar-end">
+          {profile.open_to_work && <a class="open-pill" href="/#contact" title={profile.availability}><span class="dot" aria-hidden="true"></span>Open to work</a>}
+          <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn-text">Menu</span><span class="menu-btn-icon" aria-hidden="true"><i></i><i></i></span></button>
+        </div>
       </div>
     </header>
-    <main id="main" class="wrap"><slot /></main>
-    <footer class="site">
-      <div class="wrap">
-        <div>
-          <p class="foot-name">{profile.name}</p>
-          <p class="muted">{profile.location} · open to new-grad roles</p>
+
+    <div class="menu" id="menu" hidden>
+      <nav class="menu-nav wrap" aria-label="Menu">
+        <p class="mono label">Menu</p>
+        <ul>
+          {nav.map((n, i) => <li><a href={n.href} aria-current={current(n.href)}><span class="mono">{String(i + 1).padStart(2, '0')}</span>{n.text}</a></li>)}
+        </ul>
+        <div class="menu-foot">
+          {profile.open_to_work && <p class="mono"><span class="dot" aria-hidden="true"></span>{profile.availability}</p>}
+          <p class="menu-links"><a href={`mailto:${profile.email}`}>Email</a><a href={profile.links.github}>GitHub</a><a href={profile.links.linkedin}>LinkedIn</a></p>
         </div>
-        <nav class="foot-links" aria-label="Elsewhere">
-          <a href={`mailto:${profile.email}`}>Email</a>
-          <a href={profile.links.github}>GitHub</a>
-          <a href={profile.links.linkedin}>LinkedIn</a>
-          <a href="/resume/">Resume</a>
-        </nav>
-        <p class="foot-note muted">Built with Astro from one content folder · <a href="https://github.com/happyc0der/happyc0der.github.io">source</a> (code public domain, content © {new Date().getFullYear()} {profile.name})</p>
+      </nav>
+    </div>
+
+    <main id="main"><slot /></main>
+
+    <footer class="site">
+      <div class="wrap foot-row">
+        <p class="mono">© {year} {profile.name}</p>
+        <p class="mono foot-clock">{profile.location}<span data-clock hidden></span></p>
+        <a class="mono foot-top" href="#top" data-top>Back to top <Icon name="up" /></a>
       </div>
+      <p class="wrap foot-note">Built with Astro from one content folder · <a href={profile.links.source}>source</a> (code public domain, content © {year} {profile.name})</p>
     </footer>
-    <script is:inline src="/motion.js"></script>
+    <div class="grain" aria-hidden="true"></div>
+
+    <script>
+      import '../scripts/site';
+    </script>
   </body>
 </html>

@@ -1,0 +1,75 @@
+/* ---------- By the numbers ----------
+   Every tile and chart of src/components/Stats.astro, in the site's display type: big tight numbers,
+   mono labels, purple charts. Tiles are open panels separated by hairlines rather than filled boxes. */
+.stats-updated { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--fs-2xs); }
+.stats .group { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-10) 0 var(--space-5); font: var(--fw-bold) var(--fs-xl)/1 var(--display); letter-spacing: -0.03em; color: var(--text); }
+.stats .group::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.stats .shead + .group { margin-top: 0; }
+
+.tile { position: relative; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--bg) 70%, transparent)); transition: border-color 0.3s; }
+.tile:hover { border-color: var(--line-2); }
+.tile.wide { margin-bottom: var(--space-4); }
+.tiles { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+.tiles:empty { display: none; }
+@media (min-width: 40rem) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tiles > .tile:last-child:nth-child(2n + 1) { grid-column: 1 / -1; } }
+@media (min-width: 60rem) {
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tiles > .tile:last-child:nth-child(2n + 1) { grid-column: auto; }
+  .tiles > .tile:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .tiles > .tile:last-child:nth-child(3n + 2) { grid-column: span 2; }   /* two in the last row: the second fills the gap */
+}
+/* A tile that spans the row (a lone last tile, or one on a tablet) spreads its figures out. */
+.tile { container-type: inline-size; }
+@container (min-width: 34rem) { .tile .kv:not(.inline) { grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr)); } }
+.head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--space-4); }
+.tile .label { margin: 0; color: var(--muted); }
+.tile-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); }
+.tile-head a { font-size: var(--fs-xs); }
+.tile .stat { margin: var(--space-2) 0 0; font-size: var(--fs-sm); color: var(--muted); }
+.tile .stat strong { display: block; margin-bottom: var(--space-1); font: var(--fw-heavy) clamp(2.3rem, 4.2vw, 3.6rem)/0.95 var(--display); letter-spacing: -0.05em; color: var(--text); font-variant-numeric: tabular-nums; }
+.tile.wide .stat strong { font-size: clamp(3rem, 7vw, 5.5rem); }
+.tile .sub { margin: 0; font-size: var(--fs-sm); color: var(--muted); line-height: 1.55; }
+.tile .sub strong { color: var(--text); font-weight: var(--fw-semibold); }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-4); margin: var(--space-2) 0; }
+.kv dt { font-family: var(--mono); font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.kv dd { margin: 0.15rem 0 0; font: var(--fw-bold) var(--fs-lg)/1.2 var(--display); letter-spacing: -0.025em; color: var(--text); font-variant-numeric: tabular-nums; }
+.kv dd .muted { font: 400 var(--fs-xs) var(--sans); letter-spacing: 0; }
+.kv.inline { grid-template-columns: repeat(3, auto); gap: 0 var(--space-7); margin: 0; }
+.shares { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: var(--space-2); }
+.shares li { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) 2.6rem; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); }
+.shares li.other .track i { background: var(--heat-1); }
+.shares .name { line-height: 1.25; overflow-wrap: anywhere; }
+.shares .track { height: 6px; border-radius: var(--radius-sm); background: var(--heat-0); overflow: hidden; }
+.shares .track i { display: block; height: 100%; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--accent-deep), var(--accent-hi)); }
+.shares .mono { text-align: right; color: var(--muted); font-size: var(--fs-xs); }
+.ticks { display: flex; gap: 3px; flex-wrap: wrap; margin: var(--space-1) 0; }
+.ticks i { width: 8px; height: 18px; border-radius: var(--radius-xs); }
+.ticks i.ok { background: var(--good); opacity: 0.85; }
+.ticks i.bad { background: var(--danger); }
+.split { list-style: none; margin: var(--space-2) 0 0; padding: 0; border-top: 1px solid var(--line); }
+.split li { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); padding: var(--space-2) 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); }
+.split li > :last-child { white-space: nowrap; text-align: right; }
+.split li .mono { color: var(--text); font-size: var(--fs-xs); }
+.live { margin-left: var(--space-2); padding: 0.05rem var(--space-2); border-radius: var(--radius-sm); background: var(--danger); color: var(--text); font-size: var(--fs-2xs); letter-spacing: 0.08em; }
+
+.heatmap { margin: var(--space-3) 0 0; }
+.heatmap .scroll { overflow-x: auto; }
+.heatmap svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+.heatmap .legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: var(--space-2); color: var(--muted); font-size: var(--fs-2xs); }
+.heatmap .legend span { margin-inline: var(--space-1); }
+.heatmap .legend i { width: 10px; height: 10px; border-radius: var(--radius-xs); display: inline-block; }
+.h0 { fill: var(--heat-0); background: var(--heat-0); }
+.h1 { fill: var(--heat-1); background: var(--heat-1); }
+.h2 { fill: var(--heat-2); background: var(--heat-2); }
+.h3 { fill: var(--heat-3); background: var(--heat-3); }
+.h4 { fill: var(--heat-4); background: var(--heat-4); }
+.heatmap rect:hover { stroke: var(--text); stroke-width: 1; }
+svg .axis { font: 400 8px var(--mono); fill: var(--muted); }
+svg .value { font: var(--fw-semibold) 9px var(--sans); fill: var(--text); }
+.weekbars { width: 100%; height: auto; margin: var(--space-2) 0; }
+.weekbars .bar { fill: var(--accent); }
+.weekbars .bar.partial { fill: var(--heat-2); }
+.weekbars .bar.soft { fill: var(--heat-2); }
+.weekbars g:hover .bar { fill: var(--accent-hi); }
+.weekbars .baseline { stroke: var(--line); stroke-width: 1; }
