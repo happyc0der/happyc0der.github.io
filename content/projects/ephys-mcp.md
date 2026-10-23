@@ -3,6 +3,9 @@ title: ephys-mcp
 blurb: MCP server for read-only analysis of spike-level brain-computer-interface recordings.
 repo: https://github.com/happyc0der/ephys-mcp
 image: /img/ephys-mcp.png
+demo_embed: /demos/ephys-mcp/
+demo_label: "ephys-mcp v0.5.1's own Python, unmodified, running in Pyodide on its synthetic motor-cortex source: you call the server's tool functions directly (no MCP transport, no LLM), figures are drawn from the arrays its plot tools would hand to matplotlib, and every number is computed in your browser on simulated data."
+demo_height: 760
 year: 2026
 order: 13
 featured: false
