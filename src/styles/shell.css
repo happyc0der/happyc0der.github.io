@@ -11,7 +11,7 @@ header.site { position: sticky; top: 0; z-index: 60; height: var(--header-h); ba
 .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0.2rem; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.35s var(--ease-expo); }
 .nav a:hover, .nav a[aria-current='page'] { color: var(--text); }
 .nav a:hover::after, .nav a[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
-.bar-end { justify-self: end; display: flex; align-items: center; gap: var(--space-3); }
+.bar-end { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: var(--space-3); }
 
 /* "Open to work": the only place green appears, as a pulsing dot. */
 .open-pill { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-1) var(--space-3); min-height: 2.25rem; border: 1px solid var(--line-2); border-radius: var(--radius-pill); color: var(--text); font-size: var(--fs-xs); white-space: nowrap; background: color-mix(in srgb, var(--bg) 40%, transparent); }
@@ -34,6 +34,7 @@ header.site { position: sticky; top: 0; z-index: 60; height: var(--header-h); ba
   .js .menu-btn { display: inline-flex; }
   html:not(.js) header.site { height: auto; position: static; }
   html:not(.js) .bar { grid-template-columns: auto 1fr; padding-block: var(--space-3); row-gap: var(--space-2); }
+  html:not(.js) .bar-end { grid-column: 2; }
   html:not(.js) .nav { grid-column: 1 / -1; grid-row: 2; flex-wrap: wrap; gap: 0 var(--space-5); }
 }
 @media (max-width: 30rem) { .menu-btn-text { display: none; } .open-pill { font-size: var(--fs-2xs); } }
@@ -106,8 +107,8 @@ footer.site { border-top: 1px solid var(--line); padding-block: var(--space-7) v
    .wipe-in before first paint and the panel slides off by itself. */
 .wipe { display: none; position: fixed; inset: 0; z-index: 110; place-items: center; padding: var(--gutter); color: var(--bg);
   background: radial-gradient(70% 60% at 50% 110%, var(--accent-deeper), transparent 70%), radial-gradient(60% 50% at 0% 0%, var(--accent-hi), transparent 70%), var(--accent); }
-.wipe.is-covering { display: grid; animation: wipe-cover 0.5s var(--ease-in-out) both; }
 .wipe-in .wipe { display: grid; animation: wipe-leave 0.7s var(--ease-in-out) 0.15s both; }
+.wipe.is-covering { display: grid; animation: wipe-cover 0.5s var(--ease-in-out) both; }
 .wipe-label { margin: 0; display: grid; gap: var(--space-3); justify-items: center; text-align: center; }
 .wipe-label .mono { text-transform: uppercase; letter-spacing: 0.16em; }
 .wipe-label strong { font: var(--fw-heavy) clamp(2.6rem, 9vw, 7.5rem)/0.95 var(--display); letter-spacing: var(--track-display); max-width: 14ch; }

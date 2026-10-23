@@ -43,7 +43,7 @@ function sphere(canvas: HTMLCanvasElement) {
     const narrow = w < 720;
     R = narrow ? Math.min(w * 0.56, h * 0.3) : Math.min(w * 0.27, h * 0.4);
     cx = narrow ? w * 0.66 : w * 0.71;
-    cy = narrow ? h * 0.36 : h * 0.47;
+    cy = narrow ? h * 0.36 : h * 0.45;
     draw(last);
   };
 

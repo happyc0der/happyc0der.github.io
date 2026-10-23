@@ -34,7 +34,7 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
         <a class="back" href="/projects/" data-label="Projects"><Icon name="left" /> All work</a>
         <span>Project {pad(index + 1)} / {pad(total)}</span>
       </div>
-      <h1 class="ptitle" data-split="chars" data-intro style={`--fit: ${fit}vw`}>{d.title}</h1>
+      <h1 class:list={['ptitle', { long: d.title.length > 16 }]} data-split="chars" data-intro style={`--fit: ${fit}vw`}>{d.title}</h1>
       <p class="pblurb" data-split data-intro>{d.blurb}</p>
       <dl class="pmeta" data-reveal-intro>
         <div><dt>Year</dt><dd>{d.year}{d.status && <span class="muted"> · {d.status}</span>}</dd></div>
@@ -54,7 +54,7 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
     {d.image && (
       <div class="wrap">
         <figure class:list={['frame', portrait ? 'frame-phone' : 'frame-browser']} data-reveal-intro>
-          {!portrait && <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">{d.repo ? d.repo.replace('https://', '') : d.demo ? d.demo.replace('https://', '') : d.title}</span></div>}
+          {!portrait && <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">{(d.demo ?? d.repo)?.replace('https://', '') ?? d.title}</span></div>}
           <div class="frame-shot shot" style={`view-transition-name: shot-${project.id}`}>
             <div class="frame-parallax" data-parallax>
               <Picture src={d.image} alt={`Screenshot or figure from ${d.title}`} priority sizes={portrait ? '(min-width: 40rem) 24rem, 80vw' : '(min-width: 90rem) 84rem, calc(100vw - 2rem)'} />

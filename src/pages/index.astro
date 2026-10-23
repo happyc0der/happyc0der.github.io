@@ -74,7 +74,7 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
     </div>
     <div class="work-viewport" data-work-viewport>
       <ol class="work-track" data-work-track>
-        {featured.map((p, i) => <li><ProjectCard project={p} index={projects.indexOf(p)} eager={i < 2} /></li>)}
+        {featured.map((p) => <li><ProjectCard project={p} index={projects.indexOf(p)} /></li>)}
         <li class="work-more"><a href="/projects/" data-cursor="Open" data-label="Projects"><span class="mono">Index</span><strong>All {projects.length} projects</strong><Icon name="right" /></a></li>
       </ol>
     </div>
