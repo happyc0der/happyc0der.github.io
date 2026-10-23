@@ -5,10 +5,9 @@ import Hero from '../components/home/Hero.astro';
 import Marquee from '../components/home/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import Picture from '../components/Picture.astro';
 import Icon from '../components/Icon.astro';
 import Stats from '../components/Stats.astro';
-import { profile, competitions, hue, pad, resultShort, skillList } from '../lib';
+import { profile, competitions, hue, pad, resultShort, sentences, skillChips } from '../lib';
 import { commitStats, publicStats, hasStats } from '../stats';
 
 const projects = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
@@ -33,8 +32,17 @@ const counters = [
   lc?.solved && { value: lc.solved.toLocaleString('en-US'), label: 'LeetCode problems solved' },
 ].filter(Boolean) as { pre?: string; value: string | number; unit?: string; label: string }[];
 
+// About: the lead (first and last sentence) fills in with the scroll; the examples between them sit under it.
+const lead: string | undefined = profile.about_lead;
+const examples = lead ? sentences(profile.about).filter((x) => !lead.includes(x)) : [];
+
+// Skills, display only (the resumes read the same lists): up to eight chips a group, a name once across groups,
+// the first five groups in profile.yaml order on show and the others, plus every group's extra chips, under "More".
 const skillNames: Record<string, string> = { languages: 'Languages', systems: 'Systems', ml: 'Machine learning', ai: 'AI and agents', data: 'Data', security: 'Security', testing: 'Testing', quant: 'Quant', tools: 'Tools' };
-const skillGroups = Object.entries(profile.skills as Record<string, string[]>).map(([k, list]) => [k, skillList(list)] as const);
+const SHOWN = 5;
+const chipGroups = skillChips(profile.skills, Object.keys(profile.skills));
+const skillsShown = chipGroups.slice(0, SHOWN), skillsMore = chipGroups.slice(SHOWN);
+const skillsExtra = chipGroups.flatMap((g) => g.more);
 
 // Every course on the transcripts, once. profile.yaml groups them by resume track, not by school.
 const courses = [...new Set(Object.values(profile.coursework as Record<string, string[]>).flat())];
@@ -46,7 +54,12 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
   <section class="section about" id="about">
     <div class="wrap">
       <SectionHead {...num('about')} title="About" />
-      {profile.about && <p class="statement" data-scrub>{profile.about}</p>}
+      {lead ? (
+        <div class="about-text">
+          <p class="statement" data-scrub>{lead}</p>
+          {examples.length > 0 && <p class="about-examples" data-reveal>{examples.join(' ')}</p>}
+        </div>
+      ) : profile.about && <p class="statement" data-scrub>{profile.about}</p>}
       <dl class="counters">
         {counters.map((c) => (
           <div class="counter" data-reveal>
@@ -56,13 +69,32 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
         ))}
       </dl>
       <div class="skills">
-        {skillGroups.map(([k, list]) => (
+        {skillsShown.map((g) => (
           <div class="skill-group" data-reveal>
-            <h3 class="label quiet">{skillNames[k] ?? k}</h3>
-            <ul class="skill-list">{list.map((s) => <li class="skill">{s}</li>)}</ul>
+            <h3 class="label quiet">{skillNames[g.key] ?? g.key}</h3>
+            <ul class="tags skill-list">{g.shown.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
           </div>
         ))}
       </div>
+      {(skillsMore.length > 0 || skillsExtra.length > 0) && (
+        <details class="skills-more" data-reveal>
+          <summary><span class="label quiet">More</span><span class="skills-more-names">{[...skillsMore.map((g) => skillNames[g.key] ?? g.key), skillsExtra.length > 0 && 'and the rest of each list'].filter(Boolean).join(', ')}</span><span class="acc-icon" aria-hidden="true"><Icon name="plus" /></span></summary>
+          <div class="skills">
+            {skillsMore.map((g) => (
+              <div class="skill-group">
+                <h3 class="label quiet">{skillNames[g.key] ?? g.key}</h3>
+                <ul class="tags skill-list">{g.shown.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
+              </div>
+            ))}
+            {skillsExtra.length > 0 && (
+              <div class="skill-group skill-group-wide">
+                <h3 class="label quiet">Also</h3>
+                <ul class="tags skill-list">{skillsExtra.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
+              </div>
+            )}
+          </div>
+        </details>
+      )}
     </div>
   </section>
 
@@ -85,24 +117,24 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
       <div class="wrap">
         <SectionHead {...num('demos')} title="Live demos" />
         <p class="section-lead">These run in your browser, on this site. Each one says exactly what it is.</p>
-        <ul class="demo-grid">
-          {demos.map((p) => (
-            <li data-reveal>
-              <a class="dcard" href={`/projects/${p.id}/#demo`} data-cursor="Demo" data-label={p.data.title} style={`--hue: ${hue(projects.indexOf(p))}`}>
-                <div class="dcard-poster">
-                  {p.data.image ? <Picture src={p.data.image} thumb sizes="(min-width: 900px) 30vw, 90vw" /> : <div class="wcard-panel"><span>{p.data.stats[0] ?? p.data.title}</span></div>}
-                  <span class="wcard-wash" aria-hidden="true"></span>
-                  <span class="dcard-play" aria-hidden="true"><Icon name="play" /></span>
-                </div>
-                <div class="dcard-body">
-                  <h3>{p.data.title}</h3>
-                  {p.data.demo_label && <p class="mono">{p.data.demo_label}</p>}
-                  <span class="link-cta">Run it <Icon name="right" /></span>
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <ol class="plist dlist">
+          {demos.map((p, i) => {
+            const poster = p.data.demo_poster?.replace(/^\/img\/(.+)\.[^.]+$/, '$1');
+            return (
+              <li class="prow-item" data-reveal>
+                <a class="prow drow" href={`/projects/${p.id}/#demo`} data-cursor="Demo" data-label={p.data.title} style={`--hue: ${hue(projects.indexOf(p))}`}
+                  data-thumb={poster ? `/img/thumb/${poster}-800.webp` : undefined} data-thumb-text={poster ? undefined : p.data.stats[0] ?? p.data.title}>
+                  <span class="prow-num mono">{pad(i + 1)}</span>
+                  <div class="prow-main">
+                    <h3 class="prow-title">{p.data.title}</h3>
+                    {p.data.demo_kind && <p class="drow-kind mono">{p.data.demo_kind}</p>}
+                  </div>
+                  <span class="drow-run" aria-hidden="true"><Icon name="play" /><span>Run</span></span>
+                </a>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </section>
   )}

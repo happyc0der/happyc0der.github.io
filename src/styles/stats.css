@@ -1,23 +1,32 @@
 /* ---------- By the numbers ----------
    Every tile and chart of src/components/Stats.astro, in the site's display type: big tight numbers,
-   mono labels, purple charts. Tiles are open panels separated by hairlines rather than filled boxes. */
+   mono labels, purple charts. Tiles are open panels: a hairline on top and, in three columns, between them. */
 .stats-updated { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: var(--fs-2xs); }
 .stats .group { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-10) 0 var(--space-5); font: var(--fw-bold) var(--fs-xl)/1 var(--display); letter-spacing: -0.03em; color: var(--text); }
 .stats .group::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 .stats .shead + .group { margin-top: 0; }
 
-.tile { position: relative; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--bg) 70%, transparent)); transition: border-color 0.3s; }
-.tile:hover { border-color: var(--line-2); }
+.tile { position: relative; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-6) 0 var(--space-7); border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; transition: border-color 0.3s; }
+.tile:hover { border-top-color: var(--line-2); }
 .tile.wide { margin-bottom: var(--space-4); }
-.tiles { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+.tiles { display: grid; grid-template-columns: 1fr; gap: 0 var(--space-7); }
 .tiles:empty { display: none; }
 @media (min-width: 40rem) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tiles > .tile:last-child:nth-child(2n + 1) { grid-column: 1 / -1; } }
+/* Three columns split by hairlines, like the About counters. */
 @media (min-width: 60rem) {
-  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
+  .tiles > .tile { padding-inline: var(--space-6); border-left: 1px solid var(--line); }
+  .tiles > .tile:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+  .tiles > .tile:nth-child(3n), .tiles > .tile:last-child { padding-right: 0; }
   .tiles > .tile:last-child:nth-child(2n + 1) { grid-column: auto; }
   .tiles > .tile:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
   .tiles > .tile:last-child:nth-child(3n + 2) { grid-column: span 2; }   /* two in the last row: the second fills the gap */
+}
+/* Phones: each group is a row of tiles you swipe, like the Selected work row. */
+@media (max-width: 40rem) {
+  .tiles { display: flex; gap: var(--space-5); margin-inline: calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--space-3); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  .tiles > .tile { flex: none; width: min(84vw, 22rem); scroll-snap-align: start; }
+  .tiles > .tile:only-child { width: 100%; }
 }
 /* A tile that spans the row (a lone last tile, or one on a tablet) spreads its figures out. */
 .tile { container-type: inline-size; }
@@ -27,8 +36,8 @@
 .tile-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); }
 .tile-head a { font-size: var(--fs-xs); }
 .tile .stat { margin: var(--space-2) 0 0; font-size: var(--fs-sm); color: var(--muted); }
-.tile .stat strong { display: block; margin-bottom: var(--space-1); font: var(--fw-heavy) clamp(2.3rem, 4.2vw, 3.6rem)/0.95 var(--display); letter-spacing: -0.05em; color: var(--text); font-variant-numeric: tabular-nums; }
-.tile.wide .stat strong { font-size: clamp(3rem, 7vw, 5.5rem); }
+.tile .stat strong { display: block; margin-bottom: var(--space-2); font: var(--fw-heavy) clamp(2.8rem, 5.2vw, 4.6rem)/0.92 var(--display); letter-spacing: -0.05em; color: var(--text); font-variant-numeric: tabular-nums; }
+.tile.wide .stat strong { font-size: clamp(3.4rem, 8vw, 6.75rem); }
 .tile .sub { margin: 0; font-size: var(--fs-sm); color: var(--muted); line-height: 1.55; }
 .tile .sub strong { color: var(--text); font-weight: var(--fw-semibold); }
 .kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-4); margin: var(--space-2) 0; }

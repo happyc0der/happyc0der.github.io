@@ -41,6 +41,8 @@ html:not(.js) .sphere-caption { display: none; }
 @media (max-width: 56rem) {
   .hero-foot { grid-template-columns: minmax(0, 1fr) auto; }
   .hero-build { grid-column: 1 / -1; }
+  /* Tablets and phones: the name sits on the caption and the bottom row, and the space above it goes to the sphere. */
+  .hero-name { align-self: end; margin-bottom: var(--space-6); }
 }
 @media (max-width: 40rem) {
   .hero-name { margin: var(--space-9) 0 var(--space-6); align-self: end; }
@@ -64,6 +66,10 @@ html:not(.js) .sphere-caption { display: none; }
 
 /* ---------- About ---------- */
 .statement { max-width: 66rem; margin: 0 0 var(--space-10); font: var(--fw-medium) var(--fs-statement)/1.2 var(--display); letter-spacing: -0.028em; color: var(--text); }
+/* The lead scrubs in; the four examples under it read as plain text. */
+.about-text { margin: 0 0 var(--space-10); }
+.about-text .statement { margin-bottom: var(--space-7); }
+.about-examples { max-width: 50rem; margin: 0; font-size: var(--fs-lead); line-height: 1.6; color: var(--text-2); }
 .counters { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); margin: 0 0 var(--space-10); border-top: 1px solid var(--line); }
 .counter { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: var(--space-3); padding: var(--space-6) var(--space-5) 0; border-left: 1px solid var(--line); }
 .counter:first-child { border-left: 0; padding-left: 0; }
@@ -71,18 +77,24 @@ html:not(.js) .sphere-caption { display: none; }
 .counter dd small { font-size: 0.42em; font-weight: var(--fw-bold); letter-spacing: -0.02em; color: var(--accent); vertical-align: 0.95em; margin-left: 0.06em; }
 .counter dd small.pre { margin: 0 0.1em 0 0; color: var(--muted); vertical-align: 0.95em; }
 .counter dt { max-width: 15rem; font: var(--fw-medium) var(--fs-2xs)/1.6 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
-.skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--space-8) var(--space-7); }
+.skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-8) var(--space-7); }
+@media (min-width: 64rem) { .skills { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .skill-group .label { margin-bottom: var(--space-4); }
-.skill-list { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: 0; list-style: none; }
-.skill { padding: 0.25rem 0.7rem; border: 1px solid var(--line-2); border-radius: var(--radius-pill); color: var(--text-2); font-size: var(--fs-xs); line-height: 1.45; transition: border-color 0.2s, color 0.2s; }
-.skill:hover { border-color: var(--accent); color: var(--text); }
+.skill-group-wide { grid-column: 1 / -1; }
+.skill-list .tag { cursor: default; }
+.skill-list .tag[title] { text-decoration: underline dotted var(--line-2); text-underline-offset: 0.25em; }
+/* "More": the other groups and every group's chips past eight, one click away. */
+.skills-more { margin-top: var(--space-8); border-block: 1px solid var(--line); }
+.skills-more summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-5); padding: var(--space-4) 0; cursor: pointer; list-style: none; }
+.skills-more summary::-webkit-details-marker { display: none; }
+.skills-more-names { color: var(--text-2); font-size: var(--fs-sm); }
+.skills-more summary:hover .skills-more-names { color: var(--text); }
+.skills-more[open] .acc-icon { rotate: 45deg; background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.skills-more > .skills { padding: var(--space-5) 0 var(--space-8); }
+.skills-more::details-content { block-size: 0; overflow-y: clip; transition: block-size 0.55s var(--ease-expo), content-visibility 0.55s allow-discrete; }
+.skills-more[open]::details-content { block-size: auto; }
 @media (max-width: 40rem) {
-  /* Phones: each skill group is one row you swipe, so nine groups stay a screen or so tall. */
   .skills { gap: var(--space-6); }
-  .skill-list { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--space-1); scrollbar-width: none; overscroll-behavior-x: contain;
-    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
-  .skill-list::-webkit-scrollbar { display: none; }
-  .skill { flex: none; white-space: nowrap; }
   .counters { grid-template-columns: 1fr 1fr; }
   .counter { padding: var(--space-5) var(--space-4) var(--space-5) 0; border-left: 0; border-bottom: 1px solid var(--line); }
   .counter:nth-child(even) { padding-left: var(--space-4); border-left: 1px solid var(--line); }
@@ -100,7 +112,7 @@ html:not(.js) .work-count { display: none; }
 .work-viewport { position: relative; }
 .work-track { display: flex; gap: var(--space-5); margin: 0; padding: 0 var(--gutter) var(--space-5); list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
 .work-track > li { flex: none; width: min(84vw, 30rem); scroll-snap-align: start; }
-.work-more a { display: flex; flex-direction: column; justify-content: center; gap: var(--space-3); height: 100%; min-height: 14rem; padding: var(--space-7); border: 1px dashed var(--line-2); border-radius: var(--radius-lg); color: var(--text); font-size: var(--fs-xl); }
+.work-more a { display: flex; flex-direction: column; justify-content: center; gap: var(--space-3); height: 100%; min-height: 14rem; padding: var(--space-7); border: 1px solid var(--line-2); border-radius: var(--radius-lg); color: var(--text); font-size: var(--fs-xl); }
 .work-more strong { font: var(--fw-bold) var(--fs-card)/1.05 var(--display); letter-spacing: -0.035em; }
 .work-more .mono { color: var(--accent); text-transform: uppercase; letter-spacing: 0.14em; font-size: var(--fs-2xs); }
 .work-more a:hover { border-color: var(--accent); color: var(--accent-hi); }
@@ -124,17 +136,17 @@ html:not(.js) .work-count { display: none; }
 .wcard:hover { color: var(--text); }
 .wcard-media { position: relative; isolation: isolate; aspect-ratio: 16 / 10; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-2); }
 .wcard-shot, .wcard-shot picture, .wcard-shot img { width: 100%; height: 100%; }
-.wcard-shot img { object-fit: cover; object-position: top; filter: saturate(0.8); transition: transform 0.9s var(--ease-expo), filter 0.5s; }
-.wcard:hover .wcard-shot img { transform: scale(1.045); filter: none; }
-/* The wash, in two layers: a multiply tint that turns white chart backgrounds into this card's hue in the dark,
-   then the hue glowing from the lower left and a fade toward the number. Hover pulls both back. */
+.wcard-shot img { object-fit: cover; object-position: top; opacity: 0.7; filter: saturate(0.85); transition: transform 0.9s var(--ease-expo), opacity 0.5s, filter 0.5s; }
+.wcard:hover .wcard-shot img { transform: scale(1.045); opacity: 1; filter: none; }
+/* The wash, kept light so the screenshot reads: a faint tint in this card's hue, its glow from the lower left,
+   and a dark fade at the bottom for the number. Hover pulls the tint and glow back. */
 .wcard-wash { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
 .wcard-wash::before, .wcard-wash::after { content: ''; position: absolute; inset: 0; transition: opacity 0.6s; }
-.wcard-wash::before { background: linear-gradient(160deg, color-mix(in srgb, var(--hue) 55%, #1a1530), color-mix(in srgb, var(--hue) 30%, #0b0a10)); mix-blend-mode: multiply; opacity: 0.78; }
-.wcard-wash::after { background: radial-gradient(90% 85% at 8% 100%, color-mix(in srgb, var(--hue) 55%, transparent), transparent 62%), radial-gradient(60% 60% at 85% 10%, color-mix(in srgb, var(--hue) 20%, transparent), transparent 70%), linear-gradient(180deg, transparent 40%, color-mix(in srgb, var(--bg) 70%, transparent)); opacity: 0.9; }
-.wcard:hover .wcard-wash::before, .dcard:hover .wcard-wash::before { opacity: 0.25; }
-.wcard:hover .wcard-wash::after, .dcard:hover .wcard-wash::after { opacity: 0.5; }
-.wcard-num { position: absolute; left: 0.18em; bottom: -0.16em; z-index: 2; font: 800 clamp(5rem, 8.5vw, 9rem)/1 var(--display); letter-spacing: -0.065em; pointer-events: none;
+.wcard-wash::before { background: linear-gradient(160deg, color-mix(in srgb, var(--hue) 55%, #1a1530), color-mix(in srgb, var(--hue) 30%, #0b0a10)); mix-blend-mode: multiply; opacity: 0.32; }
+.wcard-wash::after { background: radial-gradient(80% 70% at 6% 100%, color-mix(in srgb, var(--hue) 34%, transparent), transparent 62%), linear-gradient(180deg, transparent 38%, color-mix(in srgb, var(--bg) 55%, transparent) 68%, color-mix(in srgb, var(--bg) 92%, transparent)); }
+.wcard:hover .wcard-wash::before { opacity: 0; }
+.wcard:hover .wcard-wash::after { opacity: 0.75; }
+.wcard-num { position: absolute; left: var(--space-5); bottom: var(--space-3); z-index: 2; font: 800 clamp(5rem, 8.5vw, 9rem)/0.85 var(--display); letter-spacing: -0.065em; pointer-events: none;
   background: linear-gradient(165deg, #fff 8%, var(--hue) 50%, color-mix(in srgb, var(--hue) 35%, var(--accent-deeper)) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; transition: translate 0.7s var(--ease-expo); }
 .wcard:hover .wcard-num { translate: 0 -0.06em; }
 .wcard-year { position: absolute; top: var(--space-4); right: var(--space-4); z-index: 2; padding: 0.2rem 0.6rem; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--bg) 62%, transparent); color: var(--text); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -143,24 +155,36 @@ html:not(.js) .work-count { display: none; }
 .wcard-panel { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-6) var(--space-6) 30%; text-align: center;
   background: radial-gradient(closest-side at 50% 35%, color-mix(in srgb, var(--hue) 30%, transparent), transparent), linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 28px 28px, linear-gradient(90deg, var(--line) 1px, var(--surface-2) 1px) 0 0 / 28px 28px; }
 .wcard-panel span { max-width: 18ch; font: 400 clamp(1.1rem, 1.9vw, 1.55rem)/1.3 var(--mono); color: var(--accent-hi); }
-.wcard-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-3) var(--space-4); align-items: center; }
-.wcard-title { font: var(--fw-bold) var(--fs-card)/1.05 var(--display); letter-spacing: -0.035em; }
+/* On a work card the headline stat splits in two: the figure big, the words after it as a mono label. */
+.wcard-panel.is-split { place-items: start; align-content: start; gap: var(--space-3); padding: var(--space-7) var(--space-6); text-align: left; }
+.wcard-panel .wcard-fig { max-width: none; font: var(--fw-heavy) clamp(2.6rem, 4.4vw, 4rem)/0.95 var(--display); letter-spacing: -0.05em; color: var(--text); font-variant-numeric: tabular-nums; }
+.wcard-panel .wcard-fig-label { max-width: 24ch; font: var(--fw-medium) var(--fs-2xs)/1.6 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-hi); }
+.wcard-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-3) var(--space-4); align-items: start; }
+.wcard-title { font: var(--fw-bold) var(--fs-card)/1.05 var(--display); letter-spacing: -0.035em; text-wrap: balance; }
 .wcard-blurb { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: var(--fs-sm); line-height: 1.55; }
 .wcard-stack { grid-column: 1 / -1; }
 .wcard:hover .round-btn { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
-/* ---------- Live demos ---------- */
-.demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); gap: var(--space-6); padding: 0; list-style: none; }
-.dcard { display: flex; flex-direction: column; height: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); color: var(--text); transition: border-color 0.3s; }
-.dcard:hover { border-color: var(--accent); color: var(--text); }
-.dcard-poster { position: relative; isolation: isolate; aspect-ratio: 16 / 9; overflow: hidden; background: var(--surface-2); }
-.dcard-poster picture, .dcard-poster img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.dcard-play { position: absolute; inset: 0; z-index: 2; margin: auto; display: grid; place-items: center; width: 4.5rem; height: 4.5rem; border-radius: 50%; background: var(--accent); color: var(--bg); font-size: 1.4rem; box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 22%, transparent); transition: scale 0.4s var(--ease-expo); }
-.dcard:hover .dcard-play { scale: 1.08; }
-.dcard-poster .wcard-panel, .demo-poster .wcard-panel { place-items: start; padding: var(--space-5) var(--space-6); text-align: left; }
-.dcard-body { display: grid; gap: var(--space-3); padding: var(--space-5) var(--space-6) var(--space-6); }
-.dcard-body h3 { font: var(--fw-bold) var(--fs-xl)/1.05 var(--display); letter-spacing: -0.035em; }
-.dcard-body p { margin: 0; color: var(--muted); font-size: var(--fs-xs); line-height: 1.6; }
+/* ---------- Live demos ----------
+   Hairline index rows like /projects/ (.prow): number, title, what runs, and a round Run button. Two columns on
+   a wide screen; the floating thumbnail is a screenshot of the demo running. */
+.dlist { margin: 0; }
+@media (min-width: 64rem) {
+  .dlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-8); border-top: 0; }
+  .dlist > li { border-top: 1px solid var(--line); }
+  .dlist > li:nth-child(n + 3) { border-top: 0; }
+}
+.prow.drow { grid-template-columns: 2.75rem minmax(0, 1fr) auto; gap: var(--space-4); padding-block: var(--space-5); }
+.drow .prow-title { font-size: clamp(1.35rem, 2vw, 1.75rem); text-wrap: balance; }
+.drow-kind { margin: var(--space-2) 0 0; color: var(--muted); }
+.drow-run { display: inline-grid; place-items: center; align-content: center; gap: 0.15rem; width: 3.6rem; height: 3.6rem; border: 1px solid var(--line-2); border-radius: 50%; color: var(--text); font: var(--fw-semibold) var(--fs-2xs)/1 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; transition: background 0.25s, border-color 0.25s, color 0.25s, scale 0.45s var(--ease-expo); }
+.drow-run .icon { font-size: 0.8rem; }
+.drow:hover .drow-run { background: var(--accent); border-color: var(--accent); color: var(--bg); scale: 1.06; }
+@media (max-width: 56rem) {
+  .prow.drow { grid-template-columns: 2.25rem minmax(0, 1fr) auto; }
+  .prow.drow .prow-main { grid-column: 2; }
+  .drow-run { width: 3.1rem; height: 3.1rem; }
+}
 
 /* ---------- Competitions: one <details> per row ---------- */
 .acc { border-top: 1px solid var(--line); }
@@ -207,9 +231,10 @@ html:not(.js) .work-count { display: none; }
 
 /* ---------- Contact ---------- */
 .contact { padding-bottom: var(--section); }
-.signoff { margin: var(--space-5) 0 var(--space-9); font-size: clamp(3.1rem, 12.5vw, 10.5rem); font-weight: var(--fw-heavy); line-height: 0.92; letter-spacing: var(--track-display); }
+.signoff { margin: var(--space-5) 0 var(--space-9); font-size: clamp(3.4rem, 10.4vw, 9rem); font-weight: var(--fw-heavy); line-height: 0.95; letter-spacing: var(--track-display); text-wrap: balance; }
 .signoff > span, .signoff > em { display: block; }
-.signoff em { padding-left: 0.03em; font-family: var(--serif); font-weight: 400; font-size: 1.06em; letter-spacing: -0.02em; color: var(--accent); }
+.signoff em { margin-top: 0.06em; padding-left: 0.03em; font-family: var(--serif); font-weight: 400; font-size: 1.06em; letter-spacing: -0.02em; color: var(--accent); }
+@media (max-width: 40rem) { .signoff { font-size: 15.5vw; } }
 .contact-email { display: inline-block; padding-bottom: 0.12em; color: var(--text); font: var(--fw-medium) clamp(1.35rem, 4.4vw, 3.6rem)/1.2 var(--display); letter-spacing: -0.035em; overflow-wrap: anywhere;
   background: linear-gradient(var(--accent), var(--accent)) 0 100% / 100% 2px no-repeat; transition: color 0.25s, background-size 0.4s var(--ease-expo); }
 .contact-email:hover { color: var(--accent-hi); background-size: 100% 4px; }

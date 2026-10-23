@@ -24,11 +24,15 @@ function sphere(canvas: HTMLCanvasElement) {
   // Depth in ten steps, back to front: deep purple and nearly clear, to lavender and nearly solid.
   const STEPS = 10;
   const back = [109, 40, 217], front = [196, 181, 253];
-  const fills = Array.from({ length: STEPS }, (_, s) => {
-    const t = s / (STEPS - 1);
-    const c = back.map((b, k) => Math.round(b + (front[k] - b) * t));
-    return `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.1 + 0.85 * t * t).toFixed(3)})`;
-  });
+  // On a phone the sphere sits behind the text, so it is drawn at 70% of the alpha.
+  let fills: string[] = [];
+  const paint = (alpha: number) => {
+    fills = Array.from({ length: STEPS }, (_, s) => {
+      const t = s / (STEPS - 1);
+      const c = back.map((b, k) => Math.round(b + (front[k] - b) * t));
+      return `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${((0.1 + 0.85 * t * t) * alpha).toFixed(3)})`;
+    });
+  };
   const xs = new Float32Array(N), ys = new Float32Array(N), step = new Uint8Array(N);
 
   let w = 0, h = 0, cx = 0, cy = 0, R = 0;
@@ -39,11 +43,12 @@ function sphere(canvas: HTMLCanvasElement) {
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // Wide screens: to the right of the name. Phones: up and to the right, behind it.
+    // Wide screens: to the right of the name. Phones: smaller, right and below the meta row, behind the name.
     const narrow = w < 720;
-    R = narrow ? Math.min(w * 0.56, h * 0.3) : Math.min(w * 0.27, h * 0.4);
-    cx = narrow ? w * 0.66 : w * 0.71;
-    cy = narrow ? h * 0.36 : h * 0.45;
+    R = narrow ? Math.min(w * 0.46, h * 0.24) : Math.min(w * 0.27, h * 0.4);
+    cx = narrow ? w * 0.7 : w * 0.71;
+    cy = narrow ? h * 0.4 : h * 0.45;
+    paint(narrow ? 0.7 : 1);
     draw(last);
   };
 
