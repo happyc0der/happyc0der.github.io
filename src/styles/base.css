@@ -24,6 +24,8 @@ p { margin: 0 0 1em; }
 ul, ol { margin: 0; }
 button { font: inherit; color: inherit; }
 code { font-family: var(--mono); font-size: 0.85em; background: var(--surface-2); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
+/* The hidden attribute always wins, even over a component's own display (.btn is inline-flex). */
+[hidden] { display: none !important; }
 
 /* Skip link: first thing a keyboard user reaches, hidden until focused. */
 .skip { position: fixed; left: var(--space-4); top: -4rem; z-index: 120; padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); background: var(--accent); color: var(--bg); font-weight: var(--fw-semibold); transition: top 0.15s; }
@@ -72,10 +74,11 @@ code { font-family: var(--mono); font-size: 0.85em; background: var(--surface-2)
 .link-cta .icon { transition: translate 0.25s var(--ease-out); }
 .link-cta:hover .icon, a:hover .link-cta .icon { translate: 3px 0; }
 
+/* Pills, three kinds and no more: tags (outlined sans: areas, stack, skills), filter chips (mono, below)
+   and status pills (filled, .pill: "in progress"). */
 .tags { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: 0; list-style: none; }
-.tag { font-family: var(--mono); font-size: var(--fs-2xs); padding: 0.2rem var(--space-3); border-radius: var(--radius-pill); background: var(--accent-dim); color: var(--accent-hi); }
-.tag.plain { background: none; border: 1px solid var(--line-2); color: var(--text-2); }
-a.tag:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.tag { display: inline-block; padding: 0.22rem 0.7rem; border: 1px solid var(--line-2); border-radius: var(--radius-pill); background: none; color: var(--text-2); font: 400 var(--fs-xs)/1.45 var(--sans); letter-spacing: 0; white-space: nowrap; transition: border-color 0.2s, color 0.2s; }
+a.tag:hover { border-color: var(--accent); color: var(--text); }
 
 /* Filter chips (buttons) on /projects/. */
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -84,7 +87,7 @@ a.tag:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 2
 .chip:active { transform: scale(0.96); }
 .chip[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .chip span { margin-left: var(--space-1); opacity: 0.65; }
-.pill { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0.1rem var(--space-3); border-radius: var(--radius-pill); background: var(--accent-dim); color: var(--accent-hi); font-size: var(--fs-2xs); white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0.1rem var(--space-3); border-radius: var(--radius-pill); background: var(--accent-dim); color: var(--accent-hi); font: var(--fw-medium) var(--fs-2xs)/1.6 var(--sans); letter-spacing: 0.01em; white-space: nowrap; }
 .pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
 /* Long-form text: project stories, notes. */

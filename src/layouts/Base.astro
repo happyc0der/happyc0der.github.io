@@ -164,8 +164,8 @@ const current = (href: string) => (!href.includes('#') && path.startsWith(href) 
         <p class="mono">© {year} {profile.name}</p>
         <p class="mono foot-clock">{profile.location}<span data-clock hidden></span></p>
         <a class="mono foot-top" href="#top" data-top>Back to top <Icon name="up" /></a>
+        <p class="mono foot-note">Built with Astro from one content folder · <a href={profile.links.source}>source</a> (code public domain, content © {year} {profile.name})</p>
       </div>
-      <p class="wrap foot-note">Built with Astro from one content folder · <a href={profile.links.source}>source</a> (code public domain, content © {year} {profile.name})</p>
     </footer>
     <div class="grain" aria-hidden="true"></div>
 
