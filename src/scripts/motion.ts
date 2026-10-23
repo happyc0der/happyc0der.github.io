@@ -28,6 +28,7 @@ export function start() {
   const intro = prepareSplits();
   scrubs();
   reveals();
+  highlights();
   marquee();
   ticker();
   parallax();
@@ -264,22 +265,32 @@ function textNodes(root: Node) {
 }
 
 // ---------------------------------------------------------------- reveals and counters
+// On a phone a fast flick covers a screen in a moment, so blocks start rising as soon as their top enters
+// the window, with a shorter stagger (and, in motion.css, a shorter, smaller rise): nothing waits blank.
 function reveals() {
   const targets = $$('[data-reveal], .tile, .stats .group');
+  const phone = matchMedia('(max-width: 40rem)').matches;
   // Stagger index for the marks inside a chart, so bars and cells draw in one after another.
   for (const set of $$('.weekbars, .heatmap svg, .ticks, .shares')) {
     $$('.bar, rect[class], i, .track i', set).forEach((el, i) => el.style.setProperty('--i', String(i)));
   }
   ScrollTrigger.batch(targets, {
-    start: 'top 92%',
+    start: phone ? 'top bottom' : 'top 92%',
     once: true,
     onEnter: (batch) => batch.forEach((el, i) => {
-      const d = Math.min(i, 6) * 80;
+      const d = phone ? Math.min(i, 3) * 60 : Math.min(i, 6) * 80;
       el.style.setProperty('--d', `${d}ms`);
       el.classList.add('is-in');
       countUp(el, d + 150);
     }),
   });
+}
+
+// Project highlights: each one lights up, muted to full text, while it crosses the middle of the window.
+function highlights() {
+  for (const el of $$('[data-light]')) {
+    ScrollTrigger.create({ trigger: el, start: 'top 78%', end: 'bottom 28%', toggleClass: { targets: el, className: 'is-lit' } });
+  }
 }
 
 // Count a figure up from zero: "2,345", "1.23B", "94%". Anything else (ranks, times, "7h 12m") is left alone.
@@ -455,7 +466,8 @@ function magnetic() {
   }
 }
 
-// /projects/: the row under the mouse shows its screenshot (or headline number) beside the cursor.
+// /projects/ and the home page's demo rows: the row under the mouse shows its screenshot (or headline
+// number) beside the cursor.
 function floatingThumbs() {
   const rows = $$<HTMLAnchorElement>('.prow[data-thumb], .prow[data-thumb-text]');
   if (!rows.length) return;
@@ -473,7 +485,10 @@ function floatingThumbs() {
   let placed = false;
   const move = (e: PointerEvent) => {
     const w = box.offsetWidth, h = box.offsetHeight;
-    const x = Math.min(innerWidth - w - 16, e.clientX + 28), y = Math.min(innerHeight - h - 16, Math.max(16, e.clientY - h / 2));
+    // Past 55% of the width the thumbnail flips to the cursor's left, so it never runs off the right edge.
+    const left = e.clientX > innerWidth * 0.55;
+    const x = left ? Math.max(16, e.clientX - 28 - w) : Math.min(innerWidth - w - 16, e.clientX + 28);
+    const y = Math.min(innerHeight - h - 16, Math.max(16, e.clientY - h / 2));
     if (!placed) { gsap.set(box, { x, y }); placed = true; }
     xTo(x); yTo(y);
   };

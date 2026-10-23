@@ -6,7 +6,8 @@ import { tagNames, badge, hue, pad } from '../lib';
 const { project, index } = Astro.props;
 const d = project.data;
 const b = badge(d);
-const base = d.image?.replace(/^\/img\/(.+)\.[^.]+$/, '$1');
+// The floating thumbnail: the screenshot, else a frame of the running demo.
+const base = (d.image ?? d.demo_poster)?.replace(/^\/img\/(.+)\.[^.]+$/, '$1');
 ---
 <li class="prow-item" data-tags={d.tags.join(' ')}>
   <a class="prow" href={`/projects/${project.id}/`} data-label={d.title} data-cursor={d.demo_embed ? 'Demo' : 'Open'}
