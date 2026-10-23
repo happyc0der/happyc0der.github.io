@@ -48,7 +48,21 @@ const SYN = {
   seed: { min: 0, max: 99, step: 1, label: '' },
   pitch_um: { min: 0, max: 100, step: 5, label: 'µm' },
 };
-const SLOW = { fit_latent_factors: 'GPFA runs 60 EM iterations; expect around 20 s here (PCA takes well under a second).', evaluate_cross_session: 'Cross-validates the decoder on every session; expect several seconds.', fit_decoder: 'Ridge picks its penalty by 5-fold blocked cross-validation; expect a few seconds.' };
+// Times measured in desktop Edge on 2026-10-23 with default synthetic sessions (32 units, 120 s);
+// a phone is slower. Pyodide's NumPy has no optimised BLAS, so big matrix products cost far more
+// than natively. Any call can be stopped (see stopPython).
+const SLOW = {
+  fit_latent_factors: 'GPFA runs EM for up to 60 iterations and stops early once the log-likelihood settles (29 at the defaults; em_iterations in the result gives the count). That took about 19 s in a desktop browser; PCA takes well under a second.',
+  evaluate_cross_session: 'Fits one decoder on the whole training session and scores it unchanged on each test session. Cross-validation happens only inside the training session, where ridge picks its penalty by 5-fold blocked folds. At bin_s 0.05 this took about 9 s for ridge and under 1 s for Kalman in a desktop browser.',
+  fit_decoder: 'Kalman, the default, took under a second in a desktop browser. Ridge picks its penalty by 5-fold blocked cross-validation inside the training split and took about 4 s.',
+};
+// Values the page fills in where the server's default is too slow for Pyodide. The call line shows
+// them, so the request sent is always visible.
+const PAGE_DEFAULTS = {
+  evaluate_cross_session: {
+    bin_s: [0.05, 'The page fills in 0.05, fit_decoder\'s default bin. At 0.02 with 32 units, ridge gets an 801-column design matrix and the call took 3 to 4 minutes in a desktop browser, against under a second natively.'],
+  },
+};
 
 const state = {
   meta: null,
@@ -59,6 +73,8 @@ const state = {
   current: null,
   viewing: null,
   busy: false,
+  restarting: false, // Python is restarting after the visitor pressed Stop
+  testing: false, // the self-check is running
   values: new Map(), // tool -> {param: value} the visitor set
 };
 
@@ -79,13 +95,41 @@ function startWorker() {
     else if (data.type === 'test-log') testHandlers?.log(data.line);
     else if (data.type === 'fatal') {
       if (data.id && pending.has(data.id)) { pending.get(data.id)({ ok: false, error: data.error, ms: 0, fatal: true }); pending.delete(data.id); }
-      else showFatal(data.error);
+      else (state.meta ? restartFailed : showFatal)(data.error);
     }
   };
-  worker.onerror = (e) => showFatal(e.message || 'the worker failed to start');
+  worker.onerror = (e) => (state.meta ? restartFailed : showFatal)(e.message || 'the worker failed to start');
   worker.postMessage({ type: 'init' });
 }
 const send = (msg) => new Promise((resolve) => { const id = nextId++; pending.set(id, resolve); worker.postMessage({ ...msg, id }); });
+
+// Python cannot be interrupted inside a NumPy call (and Pyodide's interrupt buffer needs a
+// cross-origin-isolated page, which GitHub Pages is not), so Stop ends the worker and starts a new
+// one. The runtime comes from the browser cache; open sessions and fitted decoders are lost.
+let restartStarted = 0;
+function stopPython() {
+  if (!state.busy || state.restarting || !worker) return;
+  const secs = (performance.now() - busySince) / 1000;
+  const lost = state.sessions.size;
+  worker.terminate();
+  state.restarting = true;
+  state.sessions.clear();
+  state.decoders.clear();
+  testHandlers = null;
+  const what = lost === 1 ? 'the open session and anything fitted on it are gone' : lost ? `the ${lost} open sessions and anything fitted on them are gone` : '';
+  const error = `Stopped by you after ${secs.toFixed(1)} s. Stop ends the Python worker${what ? `, so ${what}` : ''}. Python restarts from the browser cache; open a session again to continue.`;
+  for (const resolve of pending.values()) resolve({ ok: false, stopped: true, error, ms: secs * 1000 });
+  pending.clear();
+  restartStarted = performance.now();
+  startWorker();
+}
+function restartFailed(msg) {
+  state.restarting = false;
+  clearInterval(ticker);
+  for (const l of document.querySelectorAll('[data-busy]')) l.textContent = `Python failed to restart: ${msg}. Reload the page to try again.`;
+  for (const s of document.querySelectorAll('[data-stop]')) s.hidden = true;
+  $('announce').textContent = 'Python failed to restart. Reload the page to try again.';
+}
 
 // ---- poster ---------------------------------------------------------------------------------
 let loadStarted = 0;
@@ -121,6 +165,15 @@ $('start').addEventListener('click', () => {
 });
 
 function onReady({ meta, loadMs, importMs }) {
+  if (state.meta) { // a fresh worker after Stop: the page is built, only Python's state is new
+    state.restarting = false;
+    setBusy(false);
+    $('runline').textContent = `Python ${meta.python} · NumPy ${meta.numpy} · SciPy ${meta.scipy} · restarted in ${((performance.now() - restartStarted) / 1000).toFixed(1)} s after Stop`;
+    renderSessions();
+    renderCard();
+    $('announce').textContent = 'Python restarted. Open a session to continue.';
+    return;
+  }
   state.meta = meta;
   for (const t of meta.tools) state.tools.set(t.name, t);
   $('progress').firstElementChild.style.width = '100%';
@@ -289,6 +342,8 @@ function fieldFor(tool, p, values, onChange) {
     const input = h('input', { id, type: 'number', step: p.type === 'int' ? 1 : 'any', value: v ?? '', inputmode: 'decimal',
       onchange: (e) => set(e.target.value === '' ? (p.optional ? null : p.default) : +e.target.value) });
     if (p.optional) input.placeholder = 'none';
+    const pageDefault = PAGE_DEFAULTS[tool.name]?.[p.name];
+    if (pageDefault) return h('div', { class: 'field wide' }, label, h('div', { class: 'narrow' }, input), hint(`Server default ${p.default}. ${pageDefault[1]}`));
     return h('div', { class: 'field' }, label, input, p.required && p.name === 't0' ? hint('Pick a window in the test split for an honest picture.') : null);
   }
   if (p.type === 'int_list') {
@@ -308,6 +363,7 @@ function fieldFor(tool, p, values, onChange) {
 function initialValues(tool) {
   const vals = {};
   for (const p of tool.params) if ('default' in p) vals[p.name] = p.default;
+  for (const [k, [v]] of Object.entries(PAGE_DEFAULTS[tool.name] || {})) vals[k] = v;
   const sid = [...state.sessions.keys()].pop();
   for (const p of tool.params) {
     if (p.type === 'sessions') vals[p.name] = [];
@@ -376,7 +432,7 @@ function renderCard() {
     btn.disabled = true;
     actions.append(h('button', { type: 'button', class: 'btn', text: 'Open a default session', disabled: state.busy, onclick: () => invoke('open_session', {}, { stay: true }) }));
   }
-  actions.append(h('span', { class: 'runline', 'data-busy': '' }));
+  actions.append(stopButton(), h('span', { class: 'runline', 'data-busy': '' }));
   if (SLOW[tool.name]) actions.append(h('span', { class: 'hint', text: SLOW[tool.name] }));
   form.append(actions, h('div', { class: 'field wide' }, line));
   card.append(form);
@@ -386,27 +442,43 @@ function renderCard() {
 // ---- calling --------------------------------------------------------------------------------
 // A running timer next to the Call button and in the call log; screen readers get one
 // announcement at the start and one at the end instead of every tick.
+// Stop appears after a second of running, so quick calls do not flash it.
 let ticker = null;
-function setBusy(on, label = '') {
+let busySince = 0;
+const STOP_AFTER_MS = 1000;
+// scope 'tests' shows only while the self-check runs; 'any' shows for every call.
+const stopButton = (scope = 'any') => h('button', { type: 'button', class: 'btn stop', 'data-stop': scope, hidden: true, onclick: stopPython,
+  title: 'Ends the Python worker and starts a new one; open sessions are lost', text: 'Stop' });
+function setBusy(on, text = '') {
   state.busy = on;
-  for (const b of document.querySelectorAll('#card button, .log-actions button')) b.disabled = on;
+  for (const b of document.querySelectorAll('#card button:not([data-stop]), .log-actions button:not([data-stop])')) b.disabled = on;
   clearInterval(ticker);
   const lines = () => document.querySelectorAll('[data-busy]');
+  const stops = () => document.querySelectorAll('[data-stop]');
   if (on) {
-    $('announce').textContent = `Running ${label}`;
-    const t0 = performance.now();
-    const tick = () => { for (const l of lines()) l.textContent = `Running ${label} · ${((performance.now() - t0) / 1000).toFixed(1)} s`; };
+    $('announce').textContent = text;
+    busySince = performance.now();
+    const tick = () => {
+      const ms = performance.now() - busySince;
+      for (const l of lines()) l.textContent = `${text} · ${(ms / 1000).toFixed(1)} s`;
+      for (const s of stops()) s.hidden = state.restarting || ms < STOP_AFTER_MS || (s.dataset.stop === 'tests' && !state.testing);
+    };
     tick();
     ticker = setInterval(tick, 100);
-  } else for (const l of lines()) l.textContent = '';
+  } else {
+    for (const l of lines()) l.textContent = '';
+    for (const s of stops()) s.hidden = true;
+  }
 }
+// After a call returns: idle, or still busy while Python restarts after Stop.
+const endBusy = () => (state.restarting ? setBusy(true, 'Restarting Python after Stop') : setBusy(false));
 
 async function invoke(name, kwargs, { quiet = false, stay = false } = {}) {
   const hadFocus = $('card').contains(document.activeElement); // the card is rebuilt below
-  setBusy(true, name);
+  setBusy(true, `Running ${name}`);
   const t0 = performance.now();
   const r = await send({ type: 'call', name, kwargs });
-  const entry = { n: state.log.length + 1, name, kwargs, ok: r.ok, result: r.result, error: r.error, figure: r.figure, ms: r.ms, roundMs: performance.now() - t0 };
+  const entry = { n: state.log.length + 1, name, kwargs, ok: r.ok, stopped: !!r.stopped, result: r.result, error: r.error, figure: r.figure, ms: r.ms, roundMs: performance.now() - t0 };
   state.log.push(entry);
   if (r.ok && name === 'open_session') state.sessions.set(r.result.session_id, r.result);
   if (r.ok && name === 'close_session') { state.sessions.delete(kwargs.session_id); state.decoders.delete(kwargs.session_id); }
@@ -419,8 +491,8 @@ async function invoke(name, kwargs, { quiet = false, stay = false } = {}) {
     for (const p of tool.params) if (p.type === 'session') v[p.name] = r.result.session_id;
     if (tool.params.some((p) => p.name === 'group_by') && (r.result.group_columns || []).includes('direction') && v.group_by == null) v.group_by = 'direction';
   }
-  setBusy(false);
-  $('announce').textContent = r.ok ? `${name} returned in ${fmtMs(r.ms)}` : `${name} returned an error`;
+  endBusy();
+  $('announce').textContent = r.ok ? `${name} returned in ${fmtMs(r.ms)}` : r.stopped ? `${name} stopped. Python is restarting.` : `${name} returned an error`;
   if (r.fatal) entry.error = `Python stopped: ${r.error}`;
   addLogEntry(entry);
   if (!quiet || !r.ok) {
@@ -460,10 +532,12 @@ function renderResult(entry, reveal = true) {
   const box = $('result');
   box.replaceChildren();
   box.append(h('div', { class: 'result-head' },
-    h('span', { class: entry.ok ? 'ok' : 'error', text: entry.ok ? `#${entry.n} returned` : `#${entry.n} ToolError` }),
-    h('span', { class: 'muted', text: `${fmtMs(entry.ms)} in Python here` }),
+    h('span', { class: entry.ok ? 'ok' : 'error', text: entry.ok ? `#${entry.n} returned` : entry.stopped ? `#${entry.n} stopped` : `#${entry.n} ToolError` }),
+    h('span', { class: 'muted', text: entry.stopped ? `after ${fmtMs(entry.ms)}, no result` : `${fmtMs(entry.ms)} in Python here` }),
     h('span', { class: 'muted callline', text: callText(entry.name, entry.kwargs) })));
-  if (!entry.ok) {
+  if (entry.stopped) {
+    box.append(h('p', { class: 'reason', text: entry.error }));
+  } else if (!entry.ok) {
     box.append(h('div', { class: 'err-box', text: entry.error }));
     box.append(h('p', { class: 'empty', text: 'This is the message the server would send back to the model as an error result.' }));
   } else {
@@ -510,12 +584,12 @@ function logPanel() {
       h('div', { class: 'sessions' })),
     h('section', { class: 'panel' },
       h('h3', { class: 'label', text: 'Call log' }),
-      h('p', { class: 'runline', 'data-busy': '' }),
+      h('div', { class: 'busy-row' }, h('p', { class: 'runline', 'data-busy': '' }), stopButton()),
       h('ol', { class: 'log-list' })),
     h('section', { class: 'panel' },
       h('h3', { class: 'label', text: 'Self-check' }),
       h('p', { text: 'Runs the repo\'s own offline tests (5 files) with pytest in this tab. Loads pytest (about 1.6 MB more) and takes around a minute.' }),
-      h('div', { class: 'log-actions actions' }, h('button', { class: 'btn', type: 'button', onclick: runTests, text: 'Run the tests' })),
+      h('div', { class: 'log-actions actions' }, h('button', { class: 'btn', type: 'button', onclick: runTests, text: 'Run the tests' }), stopButton('tests')),
       h('div', { class: 'tests-out' })));
 }
 function buildLog() {
@@ -533,7 +607,7 @@ function renderSessions() {
 function addLogEntry(entry) {
   for (const list of document.querySelectorAll('.log-list')) {
     const b = h('button', { type: 'button', class: `log-item${entry.ok ? '' : ' bad'}`, 'data-n': entry.n, onclick: () => { selectToolQuiet(entry.name); renderResult(entry); } },
-      h('span', { class: 'n', text: `#${entry.n}` }), h('span', { class: 'nm', text: entry.name }), h('span', { class: 'ms', text: fmtMs(entry.ms) }));
+      h('span', { class: 'n', text: `#${entry.n}` }), h('span', { class: 'nm', text: entry.name }), h('span', { class: 'ms', text: entry.stopped ? 'stopped' : fmtMs(entry.ms) }));
     list.prepend(h('li', {}, b));
   }
   renderSessions();
@@ -579,13 +653,17 @@ async function runAnalyze() {
       o.replaceChildren();
       if (!summary.length) continue;
       o.append(h('table', { class: 'summary-table' }, h('tbody', {}, summary.map(([k, v]) => h('tr', {}, h('td', { text: k }), h('td', { text: String(v) }))))));
-      if (done) o.append(h('p', { class: 'runline', style: 'margin-top:6px', text: `${steps.length} calls on ${sid} in ${((performance.now() - t0) / 1000).toFixed(1)} s. The prompt then asks the model to summarise findings and caveats; there is no model here.` }));
+      if (done) o.append(h('p', { class: 'runline', style: 'margin-top:6px', text: completed === steps.length
+        ? `${steps.length} calls on ${sid} in ${((performance.now() - t0) / 1000).toFixed(1)} s. The prompt then asks the model to summarise findings and caveats; there is no model here.`
+        : `Ended after ${completed} of ${steps.length} calls on ${sid}.` }));
     }
   };
+  let completed = 0;
   for (const [name, kw, ...picks] of steps) {
     const kwargs = typeof kw === 'function' ? kw() : kw;
     const r = await invoke(name, kwargs, { quiet: name !== 'plot_latent_factors' && !name.startsWith('plot_') });
-    if (!r.ok) { summary.push([name, `error: ${r.error}`]); break; }
+    if (!r.ok) { summary.push([name, r.stopped ? 'stopped' : `error: ${r.error}`]); break; }
+    completed++;
     for (const p of picks) { const row = p(r.result); if (row) summary.push(row); }
     show(false);
   }
@@ -608,12 +686,14 @@ async function runTests() {
     }
   };
   testHandlers = { row: (r) => { rows.push(r); draw(); }, log: (l) => { logs.push(l); } };
-  $('announce').textContent = 'Running the repo\'s tests';
-  setBusy(true, 'the repo\'s tests');
+  state.testing = true;
+  setBusy(true, 'Running the repo\'s tests');
   draw();
   const r = await send({ type: 'tests' });
-  setBusy(false);
+  state.testing = false;
+  endBusy();
   testHandlers = null;
+  if (r.stopped) { draw(`Stopped by you after ${fmtMs(r.ms)}; the rows above are the tests that had finished. Python is restarting.`); return; }
   if (r.fatal) { draw(`Could not run: ${r.error}`); return; }
   for (const [id, why] of Object.entries(r.deselected)) rows.push({ id, outcome: 'deselected', ms: 0, detail: why });
   const count = (o) => rows.filter((x) => x.outcome === o).length;
