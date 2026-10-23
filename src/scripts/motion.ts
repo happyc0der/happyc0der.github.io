@@ -37,6 +37,8 @@ export function start() {
   if (html.classList.contains('preload') && !html.classList.contains('intro-go')) addEventListener('kr:intro', go, { once: true });
   else if (html.classList.contains('wipe-in')) setTimeout(go, 280);
   else go();
+  // Once the arriving panel has slid off, drop its class so the next link can sweep a new one in.
+  if (html.classList.contains('wipe-in')) setTimeout(() => html.classList.remove('wipe-in'), 1000);
 
   addEventListener('kr:layout', () => ScrollTrigger.refresh());
   // Fonts change line breaks and heights: measure again once they are in.
@@ -471,16 +473,27 @@ function floatingThumbs() {
     if (!placed) { gsap.set(box, { x, y }); placed = true; }
     xTo(x); yTo(y);
   };
+  const show = (row: HTMLAnchorElement, e: { clientX: number; clientY: number }) => {
+    box.style.setProperty('--hue', row.style.getPropertyValue('--hue'));
+    if (row.dataset.thumb) { img.src = row.dataset.thumb; box.replaceChildren(img); }
+    else { panel.replaceChildren(Object.assign(document.createElement('span'), { textContent: row.dataset.thumbText ?? '' })); box.replaceChildren(panel); }
+    move(e as PointerEvent);
+    box.classList.add('is-on');
+  };
   for (const row of rows) {
-    row.addEventListener('pointerenter', (e) => {
-      box.style.setProperty('--hue', row.style.getPropertyValue('--hue'));
-      if (row.dataset.thumb) { img.src = row.dataset.thumb; box.replaceChildren(img); }
-      else { panel.innerHTML = ''; const s = document.createElement('span'); s.textContent = row.dataset.thumbText ?? ''; panel.append(s); box.replaceChildren(panel); }
-      move(e);
-      box.classList.add('is-on');
-    });
+    row.addEventListener('pointerenter', (e) => show(row, e));
     row.addEventListener('pointermove', move);
     row.addEventListener('pointerleave', () => box.classList.remove('is-on'));
   }
-  addEventListener('scroll', () => box.classList.remove('is-on'), { passive: true });
+  // Rows slide under a still mouse while scrolling: hide, then show whichever row it rests on once scrolling stops.
+  let px = -1, py = -1, settle = 0;
+  addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
+  addEventListener('scroll', () => {
+    box.classList.remove('is-on');
+    clearTimeout(settle);
+    settle = window.setTimeout(() => {
+      const row = document.elementFromPoint(px, py)?.closest<HTMLAnchorElement>('.prow');
+      if (row && rows.includes(row)) show(row, { clientX: px, clientY: py });
+    }, 160);
+  }, { passive: true });
 }

@@ -13,6 +13,8 @@
 .motion :is([data-reveal], [data-reveal-intro]):not(.is-in) { opacity: 0; }
 .motion :is([data-reveal], [data-reveal-intro]).is-in { animation: rise 1s var(--ease-expo) both var(--d, 0ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(36px); } }
+/* A screenshot that morphs in through a native view transition is already moving; it does not also rise. */
+.motion.arrived .frame[data-reveal-intro] { opacity: 1; animation: none; }
 .motion .tile:not(.is-in), .motion .stats .group:not(.is-in) { opacity: 0; }
 .motion :is(.tile, .stats .group).is-in { animation: rise 1s var(--ease-expo) both var(--d, 0ms); }
 

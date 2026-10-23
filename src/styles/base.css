@@ -45,7 +45,7 @@ code { font-family: var(--mono); font-size: 0.85em; background: var(--surface-2)
 /* The page title on every page but home: giant, tight, one line on a phone where it fits. */
 .page-title { font-family: var(--display); font-size: var(--fs-display); font-weight: var(--fw-heavy); letter-spacing: var(--track-display); line-height: 0.9; margin: 0 0 var(--space-6); }
 .page-title em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--accent); }
-.page-top { padding-top: clamp(var(--space-9), 9vw, var(--space-11)); }
+.page-top { padding-top: clamp(var(--space-8), 5.5vw, 5.5rem); }
 .lead { font-size: var(--fs-lead); color: var(--text-2); max-width: 40rem; margin-bottom: var(--space-7); }
 
 /* ---------- Controls ---------- */

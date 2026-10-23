@@ -75,8 +75,13 @@ const current = (href: string) => (!href.includes('#') && path.startsWith(href) 
           const to = sessionStorage.getItem('kr-wipe');
           if (to) { sessionStorage.removeItem('kr-wipe'); h.classList.add('wipe-in'); h.dataset.wipe = to; h.classList.remove('preload'); }
         } catch {}
-        // The wipe replaces the browser's own cross-page transition, so the two never run together.
-        addEventListener('pagereveal', (e) => { if (e.viewTransition && h.classList.contains('wipe-in')) e.viewTransition.skipTransition(); });
+        // The wipe replaces the browser's own cross-page transition, so the two never run together. Arriving by
+        // the browser's transition instead (a screenshot morphing in), .arrived keeps that screenshot in place.
+        addEventListener('pagereveal', (e) => {
+          if (!e.viewTransition) return;
+          if (h.classList.contains('wipe-in')) e.viewTransition.skipTransition();
+          else h.classList.add('arrived');
+        });
         // If the motion script never arrives, show everything rather than leave it hidden.
         setTimeout(() => { if (!h.classList.contains('motion-ready')) h.classList.remove('motion', 'preload', 'wipe-in'); }, 2600);
       })();
