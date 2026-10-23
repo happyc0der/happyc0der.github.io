@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOOMCE live demo</title>
+<meta name="description" content="DOOMCE, a from-scratch raycaster for the TI-84 Plus CE: the calculator's own C compiled to WebAssembly.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  [hidden] { display: none !important; }
+  body { padding: 14px 16px; }
+  .demo { max-width: 1400px; margin: 0 auto; }
+  .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; margin-bottom: 10px; }
+  .head h1 { margin: 0; font: 700 17px/1.2 var(--sans); letter-spacing: -0.01em; }
+  .head p { margin: 0; color: var(--text-2); font-size: 13.5px; }
+
+  .stage { display: flex; gap: 20px; align-items: flex-start; }
+  /* 4:3 screen as large as the frame allows; the header and footer need ~150 px of height */
+  .screen {
+    position: relative; flex: 0 0 auto; aspect-ratio: 4 / 3;
+    width: min(calc(100% - 300px), calc((100vh - 150px) * 4 / 3));
+    min-width: 280px;
+    background: #000; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    outline: none;
+  }
+  .screen:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .screen canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+
+  .cover { position: absolute; inset: 0; min-height: 0; border: 0; border-radius: 0; padding: 12px; }
+  .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; opacity: 0.4; }
+  .cover .ui { position: relative; display: grid; justify-items: center; gap: 9px; padding: 14px 18px; border-radius: var(--radius); background: rgba(11, 10, 16, 0.8); }
+  .cover .btn { font-size: 15px; padding: 12px 22px; }
+
+  .veil {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 12%;
+    padding: 8px 14px; border-radius: var(--radius-pill); white-space: nowrap;
+    background: rgba(11, 10, 16, 0.88); border: 1px solid var(--line); color: var(--text);
+    font: 500 12px/1.3 var(--mono); pointer-events: none;
+  }
+  .veil.paused { top: 50%; bottom: auto; transform: translate(-50%, -50%); border-color: var(--accent); }
+
+  .side { flex: 1 1 260px; min-width: 0; display: grid; gap: 12px; align-content: start; container-type: inline-size; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .side p { margin: 0; font-size: 13px; color: var(--text-2); }
+  .side p.small { font-size: 12px; color: var(--muted); }
+  .btn.small { padding: 7px 12px; font-size: 12px; }
+  .readout { font: 12px/1.4 var(--mono); color: var(--muted); }
+  .readout b { color: var(--accent-hi); font-weight: 500; }
+
+  /* key legend: what, keys here, the calculator key it stands for */
+  .keys { list-style: none; margin: 0; padding: 0; max-width: 460px; font-size: 12.5px; }
+  .keys li { display: grid; grid-template-columns: minmax(0, 82px) minmax(0, 150px) minmax(0, 1fr); gap: 8px; align-items: center; padding: 4px 0; border-top: 1px solid var(--line); color: var(--text-2); }
+  .keys li.th { border-top: 0; padding-top: 0; }
+  .keys li.th span { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .keys .calc { color: var(--muted); font: 11.5px/1.4 var(--mono); }
+  @container (max-width: 400px) {
+    .keys li { grid-template-columns: minmax(0, 70px) minmax(0, 1fr); }
+    .keys .calc, .keys li.th span:last-child { display: none; }
+  }
+  kbd { font: 11.5px/1 var(--mono); color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; white-space: nowrap; }
+
+  .model { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+  .model code { font: 12px/1.5 var(--mono); color: var(--accent-hi); overflow-wrap: anywhere; }
+
+  /* touch controls: shown for coarse pointers or after the first touch */
+  .pad { display: flex; justify-content: space-between; gap: 12px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; max-width: 420px; }
+  .pad button {
+    touch-action: none; border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
+    border-radius: 10px; font: 600 13px/1 var(--sans); min-width: 46px; min-height: 40px; padding: 0 8px;
+  }
+  .pad button.on { background: var(--accent); border-color: var(--accent); color: #140f24; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 40px); gap: 4px; }
+  .dpad .up { grid-area: 1 / 2; } .dpad .left { grid-area: 2 / 1; } .dpad .right { grid-area: 2 / 3; } .dpad .down { grid-area: 3 / 2; }
+  .acts { display: grid; grid-template-columns: repeat(2, minmax(64px, 88px)); grid-auto-rows: 40px; gap: 4px; align-content: center; }
+  .acts .fire { grid-column: span 2; }
+  .acts .fire.on { background: var(--accent-hi); }
+  body.touch .keys, body.touch .hint { display: none; }
+
+  .demo-foot { margin-top: 12px; }
+  .demo-foot .sep { color: var(--line); padding: 0 4px; }
+  .demo-foot a { color: var(--accent); }
+  .demo-foot b { color: var(--text-2); font-weight: 500; }
+
+  @media (min-width: 901px) and (max-width: 1150px) {
+    .model { display: none; }
+  }
+  @media (max-width: 900px) {
+    body { padding: 10px 16px; }
+    .head { margin-bottom: 8px; }
+    .head h1 { font-size: 16px; }
+    .head p { font-size: 12.5px; line-height: 1.4; }
+    .stage { flex-direction: column; gap: 10px; }
+    .screen { width: min(100%, calc((100vh - 320px) * 4 / 3)); min-width: 0; align-self: center; }
+    .side { flex: none; width: 100%; gap: 10px; }
+    .hint, .model, .keys li.th { display: none; }
+    .keys { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; max-width: none; font-size: 12px; }
+    .keys li { grid-template-columns: 58px 1fr; gap: 6px; padding: 3px 0; }
+    .keys .calc { display: none; }
+    .demo-foot { margin-top: 10px; font: 11.5px/1.45 var(--sans); gap: 4px; }
+    .demo-foot code { font-size: 11px; }
+    .demo-foot .wide, .keys .alt { display: none; }
+  }
+</style>
+</head>
+<body>
+<main class="demo">
+  <header class="head">
+    <h1>DOOMCE</h1>
+    <p>An original raycaster for the TI-84 Plus CE: the calculator program's own C, compiled to WebAssembly.</p>
+  </header>
+
+  <div class="stage">
+    <div class="screen" id="screen" tabindex="-1" aria-label="DOOMCE game screen">
+      <canvas id="cv" width="320" height="240" aria-hidden="true"></canvas>
+      <div class="poster cover" id="poster">
+        <img src="assets/poster.png" width="640" height="480" alt="">
+        <div class="ui">
+          <button class="btn primary" id="start" type="button">&#9654; Start DOOMCE</button>
+          <span class="size">about 70 KB of WebAssembly</span>
+          <div class="progress" id="progress" hidden><i></i></div>
+          <span class="status" id="status" role="status"></span>
+        </div>
+      </div>
+      <div class="veil paused" id="veil" hidden>Paused. Click to resume.</div>
+      <div class="veil" id="dead" hidden>You died. Press R or tap Restart.</div>
+    </div>
+
+    <aside class="side">
+      <div class="row">
+        <span class="label">Frame cap</span>
+        <div class="seg" role="group" aria-label="Frame cap">
+          <button type="button" data-cap="6" aria-pressed="false">6 fps</button>
+          <button type="button" data-cap="20" aria-pressed="true">20</button>
+          <button type="button" data-cap="60" aria-pressed="false">60</button>
+        </div>
+        <button class="btn small" id="restart" type="button" disabled>Restart</button>
+        <span class="readout" id="readout"></span>
+      </div>
+      <p class="small hint">6 fps is near the calculator's ceiling (it measures about 5 fps on this view); 20 is the desktop harness default. The game moves one step per frame, as on the calculator, so the cap also sets the game speed.</p>
+
+      <div class="pad" id="pad" hidden aria-label="Touch controls">
+        <div class="dpad">
+          <button type="button" class="up" data-k="1" aria-label="Forward">&#9650;</button>
+          <button type="button" class="left" data-k="4" aria-label="Turn left">&#9664;</button>
+          <button type="button" class="right" data-k="8" aria-label="Turn right">&#9654;</button>
+          <button type="button" class="down" data-k="2" aria-label="Back">&#9660;</button>
+        </div>
+        <div class="acts">
+          <button type="button" data-k="16" aria-label="Strafe left">&#8676; Strafe</button>
+          <button type="button" data-k="32" aria-label="Strafe right">Strafe &#8677;</button>
+          <button type="button" data-k="128">Door</button>
+          <button type="button" id="padReset" aria-label="Restart">Restart</button>
+          <button type="button" class="fire" data-k="64">Fire</button>
+        </div>
+      </div>
+
+      <ul class="keys" aria-label="Keys">
+        <li class="th"><span>Do</span><span>Keys here</span><span>On the calculator</span></li>
+        <li><span>Move</span><span><kbd>&#8593;</kbd> <kbd>&#8595;</kbd><span class="alt"> or <kbd>W</kbd> <kbd>S</kbd></span></span><span class="calc">arrows</span></li>
+        <li><span>Turn</span><span><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></span><span class="calc">arrows</span></li>
+        <li><span>Strafe</span><span><kbd>A</kbd> <kbd>D</kbd></span><span class="calc">Y= / GRAPH</span></li>
+        <li><span>Fire</span><span><kbd>Space</kbd></span><span class="calc">2nd</span></li>
+        <li><span>Door</span><span><kbd>E</kbd></span><span class="calc">ALPHA</span></li>
+        <li><span>Restart</span><span><kbd>R</kbd></span><span class="calc">quit and relaunch</span></li>
+      </ul>
+
+      <div class="model">
+        <span class="label" style="display:block;margin-bottom:6px">Why the calculator tops out near 6 fps</span>
+        <p>On the eZ80 one byte written to VRAM costs about 122 cycles, so frame time follows painted area. Measured in 32 kHz timer ticks:</p>
+        <p style="margin:6px 0"><code>frame_ticks = 1204 + bytes_painted &times; 122 / 1465</code></p>
+        <p class="small">Painting the full 320 &times; 200 view alone takes about 0.16 s, a ceiling of about 6.2 fps however good the renderer is. The readout next to the frame cap shows how long the same game logic and rendering take per frame in this browser.</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="demo-foot">
+    <span><b>What runs:</b> the repo's unmodified <code>src/main.c</code>, the file that builds the calculator program, compiled to WebAssembly with a browser port of its SDL2 host harness (<a href="src/web.c" target="_blank" rel="noopener">src/web.c</a>). Browser speed under a frame cap, not an emulated eZ80.<span class="wide"> All art is generated by the code at startup.</span></span>
+    <span>Source: <a href="https://github.com/happyc0der/doom-ports/tree/ad5898f344a08be85f7efbc293d53f2c801cb9b0" target="_blank" rel="noopener">happyc0der/doom-ports @ ad5898f</a><span class="sep">/</span>GPL-3.0-or-later, build notes in <a href="BUILD.md" target="_blank" rel="noopener">BUILD.md</a><span class="sep">/</span>The watch port (Monkey C) is not included: <a href="https://apps.garmin.com/apps/f81aaa08-71a6-4bc2-8faa-716f37a8ad44" target="_blank" rel="noopener">TRENCHFIRE on Connect IQ</a></span>
+  </footer>
+</main>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const screen = $('screen'), canvas = $('cv'), ctx = canvas.getContext('2d');
+const poster = $('poster'), startBtn = $('start'), statusEl = $('status');
+const progress = $('progress'), bar = progress.querySelector('i');
+const veil = $('veil'), deadMsg = $('dead'), readout = $('readout');
+const restartBtn = $('restart'), pad = $('pad');
+
+let game = null;          // the Emscripten module once running
+let cap = 20;
+let keyMask = 0;          // from the keyboard
+const touchBits = new Map();  // pointerId -> bit, from the touch pad
+let focused = true, visible = !document.hidden, onScreen = true;
+let lastPaused = null;
+
+const KEYS = {
+  ArrowUp: 1, KeyW: 1, ArrowDown: 2, KeyS: 2, ArrowLeft: 4, ArrowRight: 8,
+  KeyA: 16, KeyD: 32, Space: 64, KeyE: 128,
+};
+
+function mask() {
+  let m = keyMask;
+  for (const b of touchBits.values()) m |= b;
+  return m;
+}
+function pushKeys() { if (game) game._set_keys(mask()); }
+
+function updatePause() {
+  if (!game) return;
+  const p = !(focused && visible && onScreen);
+  if (p === lastPaused) return;
+  lastPaused = p;
+  game._set_paused(p ? 1 : 0);
+  veil.hidden = !p;
+  if (p) { keyMask = 0; touchBits.clear(); for (const b of pad.querySelectorAll('.on')) b.classList.remove('on'); pushKeys(); }
+}
+
+// ---- frames from the engine ----------------------------------------
+let img = null, lastHud = 0, workSum = 0, workN = 0, workAvg = 0;
+function present(pixels, st) {
+  const [hp, ammo, kills, dead, fps, x, y, angle, doors, workUs] = st;
+  if (!img || img.data.byteOffset !== pixels.byteOffset) {
+    img = new ImageData(new Uint8ClampedArray(pixels.buffer, pixels.byteOffset, pixels.length), 320, 240);
+  }
+  ctx.putImageData(img, 0, 0);
+  deadMsg.hidden = !dead;
+  // the browser's clock is coarse (often 0.1 ms), so average the engine's time per frame
+  workSum += workUs; workN++;
+  const now = performance.now();
+  if (now - lastHud > 500 && workN >= 10) {
+    lastHud = now;
+    workAvg = workSum / workN / 1000; workSum = 0; workN = 0;
+    const ms = workAvg < 0.1 ? 'under 0.1' : workAvg.toFixed(1);
+    readout.innerHTML = `<b>${fps}</b> fps &middot; engine <b>${ms}</b> ms a frame`;
+  }
+  // live values for anyone inspecting the page (and the automated test)
+  window.doomce = { hp, ammo, kills, dead: !!dead, fps, x: x / 256, y: y / 256, angle, doorsOpen: doors, workMs: workAvg, cap };
+}
+
+// ---- loading -------------------------------------------------------
+async function fetchWithProgress(url, onFrac) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+  const total = +res.headers.get('content-length') || 0;
+  if (!res.body || !total) return new Uint8Array(await res.arrayBuffer());
+  const reader = res.body.getReader();
+  const parts = []; let got = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    parts.push(value); got += value.length; onFrac(Math.min(1, got / total));  // total may be the compressed size
+  }
+  const out = new Uint8Array(got); let o = 0;
+  for (const p of parts) { out.set(p, o); o += p.length; }
+  return out;
+}
+
+async function start() {
+  if (game || startBtn.disabled) return;
+  if (typeof WebAssembly !== 'object') { statusEl.textContent = 'This browser has no WebAssembly.'; statusEl.classList.add('error'); return; }
+  startBtn.disabled = true;
+  progress.hidden = false;
+  statusEl.textContent = 'Loading the engine…';
+  try {
+    const [{ default: createDoomCE }, wasmBinary] = await Promise.all([
+      import('./doomce.js'),
+      fetchWithProgress('./doomce.wasm', (f) => { bar.style.width = `${Math.round(f * 90)}%`; }),
+    ]);
+    bar.style.width = '100%';
+    statusEl.textContent = 'Starting…';
+    let resolveReady;
+    const ready = new Promise((r) => { resolveReady = r; });
+    const mod = await createDoomCE({
+      wasmBinary,
+      present: (...a) => { present(...a); resolveReady(); },
+      print: (t) => console.log(t),
+      printErr: (t) => console.warn(t),
+    });
+    game = mod;
+    game._set_cap(cap);
+    await ready;
+    poster.hidden = true;
+    restartBtn.disabled = false;
+    focused = true;
+    screen.focus({ preventScroll: true });
+    updatePause();
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = `Could not start: ${err.message}`;
+    statusEl.classList.add('error');
+    startBtn.disabled = false;
+  }
+}
+
+startBtn.addEventListener('click', start);
+screen.addEventListener('click', () => { if (!game) start(); else { focused = true; screen.focus({ preventScroll: true }); updatePause(); } });
+
+// ---- keyboard ------------------------------------------------------
+addEventListener('keydown', (e) => {
+  if (!game || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.code === 'KeyR') { if (!e.repeat) game._request_reset(); e.preventDefault(); return; }
+  const bit = KEYS[e.code];
+  if (bit === undefined) return;
+  e.preventDefault();                 // arrows and space must not scroll anything
+  if (!focused) { focused = true; updatePause(); }
+  keyMask |= bit; pushKeys();
+});
+addEventListener('keyup', (e) => {
+  const bit = KEYS[e.code];
+  if (bit === undefined || !game) return;
+  e.preventDefault();
+  keyMask &= ~bit; pushKeys();
+});
+
+// ---- touch pad -----------------------------------------------------
+function showPad() { pad.hidden = false; document.body.classList.add('touch'); }
+if (matchMedia('(pointer: coarse)').matches) showPad();
+addEventListener('touchstart', showPad, { once: true, passive: true });
+
+for (const b of pad.querySelectorAll('button[data-k]')) {
+  const bit = +b.dataset.k;
+  const down = (e) => {
+    e.preventDefault();
+    if (!game) return;
+    focused = true; updatePause();
+    try { b.setPointerCapture(e.pointerId); } catch {}
+    touchBits.set(e.pointerId, bit); b.classList.add('on'); pushKeys();
+  };
+  const up = (e) => {
+    if (!touchBits.has(e.pointerId)) return;
+    touchBits.delete(e.pointerId);
+    if (![...touchBits.values()].includes(bit)) b.classList.remove('on');
+    pushKeys();
+  };
+  b.addEventListener('pointerdown', down);
+  b.addEventListener('pointerup', up);
+  b.addEventListener('pointercancel', up);
+  b.addEventListener('lostpointercapture', up);
+}
+pad.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// ---- controls ------------------------------------------------------
+for (const b of document.querySelectorAll('[data-cap]')) {
+  b.addEventListener('click', () => {
+    cap = +b.dataset.cap;
+    for (const o of document.querySelectorAll('[data-cap]')) o.setAttribute('aria-pressed', String(o === b));
+    if (game) { game._set_cap(cap); screen.focus({ preventScroll: true }); }
+  });
+}
+const restart = () => { if (game) { game._request_reset(); screen.focus({ preventScroll: true }); } };
+restartBtn.addEventListener('click', restart);
+$('padReset').addEventListener('click', restart);
+
+// ---- pause while hidden, unfocused or scrolled away -----------------
+addEventListener('blur', () => { focused = false; keyMask = 0; pushKeys(); updatePause(); });
+addEventListener('focus', () => { focused = true; updatePause(); });
+addEventListener('pointerdown', () => { if (!focused) { focused = true; updatePause(); } });
+document.addEventListener('visibilitychange', () => { visible = !document.hidden; updatePause(); });
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver((entries) => {
+    for (const e of entries) onScreen = e.isIntersecting;
+    updatePause();
+  }).observe(screen);
+}
+</script>
+</body>
+</html>
