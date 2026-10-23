@@ -16,6 +16,7 @@ const projects = defineCollection({
     demo_kind: z.string().optional(),      // six words or fewer from demo_label, for the home page's demo rows
     demo_poster: z.string().optional(),    // a screenshot of the running demo, /img/demo/<slug>.jpg (npm run images)
     image: z.string().optional(),
+    image_url: z.string().optional(),      // the address the screenshot shows, when it is a live site; the frame bar prints it
     year: z.number(),
     order: z.number().default(99),
     featured: z.boolean().default(false),

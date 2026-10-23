@@ -58,7 +58,7 @@ const fit = (150 / Math.max(longest, 6)).toFixed(2);
     {d.image && (
       <div class="wrap">
         <figure class:list={['frame', portrait ? 'frame-phone' : 'frame-browser']} data-reveal-intro>
-          {!portrait && <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">{(d.demo ?? d.repo)?.replace('https://', '') ?? d.title}</span></div>}
+          {!portrait && <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span class="mono">{d.image_url ?? d.title}</span></div>}
           <div class="frame-shot shot" style={`view-transition-name: shot-${project.id}`}>
             <div class="frame-parallax" data-parallax>
               <Picture src={d.image} alt={`Screenshot or figure from ${d.title}`} priority sizes={portrait ? '(min-width: 40rem) 24rem, 80vw' : '(min-width: 90rem) 84rem, calc(100vw - 2rem)'} />
