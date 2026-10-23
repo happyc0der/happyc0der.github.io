@@ -2,8 +2,11 @@
 
 `/demos/ledger/` runs the verification layer of [happyc0der/ledger](https://github.com/happyc0der/ledger)
 at commit `617c985371ec21e90d36d5d190ff4186feccd471` in Pyodide 0.29.5 (pandas 2.3.3), over the claim
-ledgers Claude Sonnet 5.5 returned in the recorded event-day run of 2026-10-17. Nothing is compiled;
-the files are copied and served as they are. No model is called: `py/ledger/llm.py` is a stub that raises.
+ledgers Claude Sonnet 5.5 returned in the recorded event-day run of 2026-10-17. Nothing is compiled.
+The Python files are served as they are; the `.csv` and `.jsonl` files are stored gzip-compressed (`gzip -9n`,
+1.5 MB down to 0.18 MB, so the transfer stays small whether or not the server compresses `.jsonl`) and `app.js` unpacks them with Python's
+`gzip` module in Pyodide, back to their original names and bytes, before `ledger` is imported.
+No model is called: `py/ledger/llm.py` is a stub that raises.
 
 ## What is in this folder
 
@@ -14,11 +17,11 @@ the files are copied and served as they are. No model is called: `py/ledger/llm.
 | `py/ledger/{__init__,config,data,attribution,tools,rules,consistency,claims,redact,score_issues,forecast,evaluate}.py` | the repo's modules | copied unchanged from `ledger/` at 617c985 |
 | `py/ledger/llm.py` | stub: raises if anything asks for a model call | written for the demo (replaces the repo's `ledger/llm.py`) |
 | `py/dotenv/__init__.py` | stub for python-dotenv (`load_dotenv` does nothing) | written for the demo |
-| `py/LICENSE` | GPL-3.0 text | copied from the repo |
-| `data/company_nicrron/*.csv`, `company.md`, `profile.json` | the 235-deal company and its planted-anomaly and outcome labels | `data/company/` at 617c985 (byte-identical to the local `data/company_nicrron/` the event run used) |
-| `runs/company_nicrron/v3.jsonl` | Ledger v3, Claude Sonnet 5.5, 2026-10-17 | recorded run, not in git; PRISM trace and trajectory ids removed, nothing else changed |
-| `runs/company_nicrron/naive.jsonl` | the naive "list the issues" agent, same model and day | recorded run, not in git; byte-identical copy |
-| `runs/company_nicrron/v1.jsonl` | the naive v1 forecaster, same model and day | recorded run, not in git; byte-identical copy |
+| `py/LICENSE.txt` | GPL-3.0 text (`.txt` so servers show it as text instead of downloading it) | the repo's `LICENSE`, renamed |
+| `data/company_nicrron/*.csv.gz`, `company.md`, `profile.json` | the 235-deal company and its planted-anomaly and outcome labels | `data/company/` at 617c985 (byte-identical to the local `data/company_nicrron/` the event run used), CSVs gzipped |
+| `runs/company_nicrron/v3.jsonl.gz` | Ledger v3, Claude Sonnet 5.5, 2026-10-17 | recorded run, not in git; PRISM trace and trajectory ids removed, nothing else changed; gzipped |
+| `runs/company_nicrron/naive.jsonl.gz` | the naive "list the issues" agent, same model and day | recorded run, not in git; byte-identical copy, gzipped |
+| `runs/company_nicrron/v1.jsonl.gz` | the naive v1 forecaster, same model and day | recorded run, not in git; byte-identical copy, gzipped |
 
 Left out on purpose: `history.csv` and `activities_original.csv` (not read by these modules), the
 agents, the store, the FastAPI app, PRISM tracing and every provider client.
@@ -46,7 +49,7 @@ mkdir -p $D/py/ledger $D/data/company_nicrron $D/runs/company_nicrron
 for m in __init__ config data attribution tools rules consistency claims redact score_issues forecast evaluate; do
   cp "$SRC/ledger/$m.py" $D/py/ledger/
 done
-cp "$SRC/LICENSE" $D/py/LICENSE
+cp "$SRC/LICENSE" $D/py/LICENSE.txt
 for f in accounts.csv activities.csv anomalies.csv company.md contacts.csv deals.csv ground_truth.csv products.csv profile.json team.csv; do
   cp "$SRC/data/company/$f" $D/data/company_nicrron/
 done
@@ -62,10 +65,11 @@ for v in ("v3", "naive", "v1"):
             f.write(json.dumps(r) + "\n")
 EOF
 
-shasum -a 256 $D/runs/company_nicrron/*.jsonl
+(cd $D && shasum -a 256 runs/company_nicrron/*.jsonl)
+gzip -9nf $D/data/company_nicrron/*.csv $D/runs/company_nicrron/*.jsonl
 ```
 
-Expected checksums:
+Expected checksums (of the uncompressed files; check a published copy with `gunzip -c f.jsonl.gz | shasum -a 256`):
 
 ```
 21e30f0033644469057af799d498937726193635e77d564ceb94abd26c4cf9cf  runs/company_nicrron/naive.jsonl
@@ -83,6 +87,7 @@ The same bridge runs under CPython with pandas, which is how the numbers were fi
 
 ```bash
 T=$(mktemp -d); cp -R $D/py/ledger $D/py/dotenv $D/py/ledger_demo.py $D/data $D/runs "$T"/
+gunzip "$T"/data/company_nicrron/*.gz "$T"/runs/company_nicrron/*.gz
 cd "$T" && LEDGER_DATA="$T/data/company_nicrron" python3 -c '
 import json, ledger_demo as L
 L.step_load(); print(L.step_recompute())
@@ -95,7 +100,8 @@ print("fabrications v1/v3:", e["v1"]["fabrications"], e["v3"]["fabrications"])'
 Expected: 238 findings recomputed, identical to the 238 recorded; Ledger semantic recall 0.939 and
 precision 0.988 with 0 of 86 clean deals flagged; naive recall 0.721, precision 0.872, 10 of 86;
 fabrications 6 (v1) and 0 (v3). These match `docs/reports/issues_sonnet.md` and
-`docs/reports/v1_v3_sonnet.md` at 617c985. Checked with pandas 3.0.2 (CPython) and 2.3.3 (Pyodide).
+`docs/reports/v1_v3_sonnet.md` at 617c985, which the Scoreboard tab names and links. Checked with pandas 3.0.2
+(CPython) and 2.3.3 (Pyodide).
 
 ## Test
 

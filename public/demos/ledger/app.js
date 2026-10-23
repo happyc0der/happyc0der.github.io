@@ -1,6 +1,6 @@
 // Ledger demo: the page is a thin view. Every check, drop, finding and score shown comes from the
 // repo's Python (py/ledger/*, unchanged) via py/ledger_demo.py, running in Pyodide.
-import { startPython } from '../_shared/pyodide.js';
+import { startPython, PYODIDE_VERSION } from '../_shared/pyodide.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -27,7 +27,7 @@ const code = (t) => t.split('_')[0];
 const tname = (t) => TYPE[t] || t;
 
 // The numbers published in the repo at 617c985 (docs/reports/issues_sonnet.md, docs/reports/v1_v3_sonnet.md),
-// used only to mark whether the browser's recomputation matches them.
+// used only to mark whether the browser's recomputation matches them. The scoreboard names and links both files.
 const PUBLISHED = {
   rules: { semR: 0, synR: 0.99, clean: 0, findings: 68 },
   naive: { semR: 0.72, semP: 0.87, synR: 0.86, clean: 10, findings: 234 },
@@ -40,13 +40,24 @@ const MODULES = ['__init__', 'config', 'data', 'attribution', 'tools', 'rules', 
 const DATA = ['accounts.csv', 'activities.csv', 'anomalies.csv', 'company.md', 'contacts.csv', 'deals.csv',
   'ground_truth.csv', 'products.csv', 'profile.json', 'team.csv'];
 const RUNS = ['v3.jsonl', 'naive.jsonl', 'v1.jsonl'];
+// CSV and JSONL files are stored gzip-compressed (v3.jsonl alone is 1 MB, and a static host may serve .jsonl
+// uncompressed) and unpacked to their original names in Pyodide's file system before the ledger package is imported.
+const gz = (f) => (/\.(csv|jsonl)$/.test(f) ? `${f}.gz` : f);
 const FILES = {
   'ledger_demo.py': './py/ledger_demo.py',
   'dotenv/__init__.py': './py/dotenv/__init__.py',
   ...Object.fromEntries(MODULES.map((m) => [`ledger/${m}.py`, `./py/ledger/${m}.py`])),
-  ...Object.fromEntries(DATA.map((f) => [`data/company_nicrron/${f}`, `./data/company_nicrron/${f}`])),
-  ...Object.fromEntries(RUNS.map((f) => [`runs/company_nicrron/${f}`, `./runs/company_nicrron/${f}`])),
+  ...Object.fromEntries(DATA.map((f) => [`data/company_nicrron/${gz(f)}`, `./data/company_nicrron/${gz(f)}`])),
+  ...Object.fromEntries(RUNS.map((f) => [`runs/company_nicrron/${gz(f)}`, `./runs/company_nicrron/${gz(f)}`])),
 };
+// Unpack with Python's own gzip module. If a server already decoded the file (Content-Encoding), keep it as is.
+const UNPACK = `
+import gzip, pathlib
+for p in pathlib.Path('/home/pyodide').glob('*/company_nicrron/*.gz'):
+    b = p.read_bytes()
+    p.with_suffix('').write_bytes(gzip.decompress(b) if b[:2] == b'\\x1f\\x8b' else b)
+    p.unlink()
+`;
 
 const app = $('#app');
 const runBtn = $('#run');
@@ -70,9 +81,12 @@ async function run() {
   runBtn.disabled = true;
   bar.hidden = false;
   try {
-    const py = await startPython({ packages: ['pandas'], files: FILES, onStatus: (t, f) => setStatus(t, f * 0.7) });
-    setStatus('Importing the ledger package', 0.72);
+    // The shared loader's first message reads "Python <version>", but that number is Pyodide's; say which is which.
+    const said = (t) => (t.startsWith('Downloading Python') ? `Downloading Pyodide ${PYODIDE_VERSION} (Python 3.13 in WebAssembly)` : t);
+    const py = await startPython({ packages: ['pandas'], files: FILES, onStatus: (t, f) => setStatus(said(t), f * 0.7) });
+    setStatus('Unpacking the data and importing the ledger package', 0.72);
     await paint();
+    py.runPython(UNPACK);
     py.runPython('import ledger_demo');
     L = py.pyimport('ledger_demo');
     setStatus('Loading the company: deals, activities, contacts, planted labels', 0.75);
@@ -151,8 +165,9 @@ $('#filters').addEventListener('click', (e) => {
   st.filter = b.dataset.f;
   renderFilters();
   renderList();
+  $('#list').scrollTop = 0; // a new filter starts at its first row, not at the old list's scroll position
 });
-$('#q').addEventListener('input', (e) => { st.q = e.target.value.trim().toLowerCase(); renderList(); });
+$('#q').addEventListener('input', (e) => { st.q = e.target.value.trim().toLowerCase(); renderList(); $('#list').scrollTop = 0; });
 
 function visibleDeals() {
   const f = FILTERS.find((x) => x[0] === st.filter)[2];
@@ -206,6 +221,13 @@ function keepVisible(box, el, center = false) {
   if (center && (r.top < c.top || r.bottom > c.bottom)) box.scrollTop += r.top - c.top - (c.height - r.height) / 2;
   else if (r.top < c.top) box.scrollTop -= c.top - r.top;
   else if (r.bottom > c.bottom) box.scrollTop += r.bottom - c.bottom;
+}
+// Bring the top of el into a scrolling pane when it is above the pane or too low to read (again without
+// scrollIntoView, which would move the embedding page too).
+function revealTop(box, el, need = 160) {
+  const c = box.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
+  if (r.top < c.top || r.top + Math.min(r.height, need) > c.bottom) box.scrollTop += r.top - c.top - 6;
 }
 
 async function select(id, { focus } = {}) {
@@ -406,6 +428,7 @@ async function applyEdit(edit, tryId) {
     st.result = describe(before, res.detail, res, tryId);
     await refreshList();
     renderDetail();
+    revealTop($('#detail'), $('#tries')); // a hand edit is submitted from lower down; show its result
   } catch (e) {
     console.error(e);
     st.result = { cls: 'bad', html: `Re-check failed: ${esc(e.message || e)}` };
@@ -429,7 +452,12 @@ $('#detail').addEventListener('click', async (e) => {
   if (e.target.closest('#edit-toggle') || e.target.closest('#cancel-edit')) {
     st.editing = !st.editing;
     renderDetail();
-    if (st.editing) { const f = $('#editform select, #editform input'); if (f) f.focus({ preventScroll: true }); }
+    if (st.editing) {
+      // On a phone the editor card sits below the CRM card, out of view: scroll the pane to it, then focus.
+      revealTop($('#detail'), $('#editform').closest('.card'));
+      const f = $('#editform select, #editform input');
+      if (f) f.focus({ preventScroll: true });
+    }
     return;
   }
   if (e.target.closest('#reset')) {
@@ -439,6 +467,7 @@ $('#detail').addEventListener('click', async (e) => {
     st.result = describe(before, res.detail, res, null);
     await refreshList();
     renderDetail();
+    revealTop($('#detail'), $('#tries'));
   }
 });
 $('#detail').addEventListener('submit', async (e) => {
@@ -453,10 +482,13 @@ $('#detail').addEventListener('submit', async (e) => {
 });
 
 /* ---------------------------------------------------------------- scoreboard */
-function mark(v, pub, fmt = pct) {
+const REPO_AT = 'https://github.com/happyc0der/ledger/blob/617c985371ec21e90d36d5d190ff4186feccd471/';
+const REPORT = { issues: 'docs/reports/issues_sonnet.md', outcomes: 'docs/reports/v1_v3_sonnet.md' };
+const reportLink = (k) => `<a class="mono" href="${REPO_AT}${REPORT[k]}" target="_blank" rel="noopener">${REPORT[k]}</a>`;
+function mark(v, pub, fmt = pct, src = 'issues') {
   if (pub == null) return '';
   const same = fmt === pct ? Math.round(v * 100) === Math.round(pub * 100) : v === pub;
-  return `<span class="pub ${same ? 'ok' : 'no'}"><span class="long">report </span>${fmt(pub)} ${same ? '✓' : '≠'}</span>`;
+  return `<span class="pub ${same ? 'ok' : 'no'}" title="${same ? 'matches' : 'differs from'} ${REPORT[src]} at 617c985"><span class="long">report </span>${fmt(pub)} ${same ? '✓' : '≠'}</span>`;
 }
 async function renderScore() {
   const sb = await call('scoreboard');
@@ -472,12 +504,16 @@ async function renderScore() {
   }).join('')}</tr>`;
   const n = (x) => String(x);
   const types = Object.keys(sb.v3_day.per_type);
+  const s6 = sb.v3_day.per_type.S6_duplicate_deal;
+  const dup = s6 ? s6.tp + s6.fn : 0; // S6 rows in anomalies.csv
   const cell = (p) => (p.tp + p.fn === 0 && p.fp === 0 ? '—' : `${pct(p.precision ?? 0)} / ${pct(p.recall ?? 0)} <span class="pub">${p.tp}/${p.tp + p.fn}${p.fp ? `, ${p.fp} false` : ''}</span>`);
   $('#view-score').innerHTML = `
     <p class="sb-intro">Computed in your browser just now: the CRM rules run on the fields, Ledger's findings rebuilt by the repo's checks from the recorded claims,
       and the naive agent's recorded findings, all scored by <span class="mono">score_issues.score</span> against <span class="mono">anomalies.csv</span>
-      (${st.info.load.planted} planted anomalies on ${st.info.load.planted_deals} deals; ${sb.v3_day.clean_deals} deals clean).
-      Grey marks compare each number with the repo's published report.</p>
+      (${st.info.load.planted} planted anomalies of ${types.length} types on ${st.info.load.planted_deals} deals, ${sb.v3_day.clean_deals} deals clean;
+      the ${st.info.load.deals} deals are ${st.info.load.deals - dup} open deals plus ${dup} planted duplicates).
+      The small line under each number is the value published in the repo at 617c985, from ${reportLink('issues')} for this table
+      and ${reportLink('outcomes')} for fabrications: green ✓ when the browser's number matches it, red ≠ when it does not.</p>
     <div class="repro">
       <span class="chip ${rc.identical ? 'pass' : 'fail'}">${rc.identical ? '✓' : '✗'} ${rc.recomputed_findings} findings recomputed, ${rc.identical ? 'identical to' : 'differ from'} the ${rc.recorded_findings} recorded</span>
       <span class="chip ${rc.newly_dropped ? 'fail' : 'pass'}">${rc.quotes_reverified.toLocaleString('en-US')} recorded quoted claims re-verified against the record, ${rc.newly_dropped} newly dropped</span>
@@ -496,7 +532,7 @@ async function renderScore() {
     <div class="tbl-wrap"><table>
       <thead><tr><th>Against the CRM and the record</th><th>Naive v1<span class="long"> agent</span></th><th>Ledger<span class="long"> v3</span></th></tr></thead>
       <tbody>
-        <tr><td>Fabrications (amounts + day gaps + quotes)</td><td>${ev.v1.fabrications}${mark(ev.v1.fabrications, PUBLISHED.fab.v1, n)}</td><td class="hi">${ev.v3.fabrications}${mark(ev.v3.fabrications, PUBLISHED.fab.v3, n)}</td></tr>
+        <tr><td>Fabrications (amounts + day gaps + quotes)</td><td>${ev.v1.fabrications}${mark(ev.v1.fabrications, PUBLISHED.fab.v1, n, 'outcomes')}</td><td class="hi">${ev.v3.fabrications}${mark(ev.v3.fabrications, PUBLISHED.fab.v3, n, 'outcomes')}</td></tr>
         <tr><td>Amounts that differ from the CRM</td><td>${ev.v1.fab_amount}</td><td>${ev.v3.fab_amount}</td></tr>
         <tr><td>“Days since the buyer last replied” that differ from the record</td><td>${ev.v1.fab_gap}</td><td>${ev.v3.fab_gap}</td></tr>
         <tr><td>Quotes not in the record</td><td>${ev.v1.fab_quote}</td><td>${ev.v3.fab_quote}</td></tr>
