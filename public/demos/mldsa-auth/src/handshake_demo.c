@@ -192,27 +192,34 @@ EMSCRIPTEN_KEEPALIVE const char *hd_init(void) {
     return g_json;
 }
 
-static void wipe_all(void) {
-    session_wipe(&g_s_ini);
-    session_wipe(&g_s_res);
-    handshake_ctx_wipe(&g_ini);
-    handshake_ctx_wipe(&g_res);
-    handshake_pending_store_wipe(&g_store);
-    memset(&g_ini, 0, sizeof g_ini);
-    memset(&g_res, 0, sizeof g_res);
+static void wipe_pair(handshake_pending_store_t *store, handshake_ctx_t *ini, handshake_ctx_t *res) {
+    handshake_ctx_wipe(ini);
+    handshake_ctx_wipe(res);
+    handshake_pending_store_wipe(store);
+    memset(ini, 0, sizeof *ini);
+    memset(res, 0, sizeof *res);
 }
 
 /* Fresh store and contexts: the untimed "prepare" step, as bench/ does. */
-static handshake_status_t prepare(const keystore_t *dev_ks, const keystore_t *srv_ks) {
-    wipe_all();
-    if (handshake_pending_store_init(&g_store, 16, HANDSHAKE_PENDING_TTL_MS_DEFAULT, NULL, NULL) !=
+static handshake_status_t prepare_pair(handshake_pending_store_t *store, handshake_ctx_t *ini,
+                                       handshake_ctx_t *res, const keystore_t *dev_ks,
+                                       const keystore_t *srv_ks) {
+    wipe_pair(store, ini, res);
+    if (handshake_pending_store_init(store, 16, HANDSHAKE_PENDING_TTL_MS_DEFAULT, NULL, NULL) !=
         PENDING_OK) {
         return HANDSHAKE_ERR_INTERNAL;
     }
     handshake_status_t st =
-        handshake_initiator_init(&g_ini, ID_A, sizeof ID_A, &g_kp_a, dev_ks, ID_B, sizeof ID_B);
+        handshake_initiator_init(ini, ID_A, sizeof ID_A, &g_kp_a, dev_ks, ID_B, sizeof ID_B);
     if (st != HANDSHAKE_OK) return st;
-    return handshake_responder_init(&g_res, ID_B, sizeof ID_B, &g_kp_b, srv_ks, &g_store);
+    return handshake_responder_init(res, ID_B, sizeof ID_B, &g_kp_b, srv_ks, store);
+}
+
+/* A new step-by-step handshake replaces the live Records session. */
+static handshake_status_t prepare(const keystore_t *dev_ks, const keystore_t *srv_ks) {
+    session_wipe(&g_s_ini);
+    session_wipe(&g_s_res);
+    return prepare_pair(&g_store, &g_ini, &g_res, dev_ks, srv_ks);
 }
 
 /* ---- the ServerHello's fields, for "flip a byte" ---------------------------
@@ -423,6 +430,17 @@ done:;
     return g_json;
 }
 
+/* The two live sessions' states, straight from session_get_state(), so the
+ * page shows the library's state rather than its own guess. */
+EMSCRIPTEN_KEEPALIVE const char *hd_sessions(void) {
+    j_reset();
+    j_printf("{\"a\":\"%s\",\"b\":\"%s\",\"a_confirmed\":%s,\"b_confirmed\":%s}",
+             se_state_name(session_get_state(&g_s_ini)), se_state_name(session_get_state(&g_s_res)),
+             session_is_peer_confirmed(&g_s_ini) ? "true" : "false",
+             session_is_peer_confirmed(&g_s_res) ? "true" : "false");
+    return g_json;
+}
+
 /* ---- the record layer ------------------------------------------------------ */
 
 enum { REC_DELIVER = 0, REC_TAMPER = 1, REC_REPLAY = 2, REC_DROP = 3 };
@@ -508,34 +526,43 @@ EMSCRIPTEN_KEEPALIVE const char *hd_send(int dir, const uint8_t *msg, int len, i
 /* ---- benchmarks -------------------------------------------------------------
  * Same shape as bench/bench_handshake.c's in-process end-to-end row: a fresh
  * store and contexts are prepared OUTSIDE the timed region, then the eight
- * calls are timed. out receives 9 doubles per run: total, then each phase. */
+ * calls are timed. out receives 9 doubles per run: total, then each phase.
+ * It has its own store, contexts and wire buffers, so the live Records
+ * session (g_s_ini / g_s_res) and the step-by-step handshake are untouched. */
+
+static handshake_pending_store_t b_store;
+static handshake_ctx_t b_ini, b_res;
+static uint8_t b_ch[CLIENT_HELLO_MAX_ENCODED_LEN];
+static uint8_t b_sh[SERVER_HELLO_MAX_ENCODED_LEN];
+static uint8_t b_ca[CLIENT_AUTH_MAX_ENCODED_LEN];
 
 EMSCRIPTEN_KEEPALIVE int hd_bench(int n, double *out) {
     if (!g_ready || n <= 0) return -1;
     int done = 0;
+    size_t chl = 0, shl = 0, cal = 0;
     for (int i = 0; i < n; i++) {
-        if (prepare(&g_ks_dev, &g_ks_srv) != HANDSHAKE_OK) break;
+        if (prepare_pair(&b_store, &b_ini, &b_res, &g_ks_dev, &g_ks_srv) != HANDSHAKE_OK) break;
         double t[9];
         int ok = 1;
         t[0] = emscripten_get_now();
-        ok &= handshake_initiator_create_client_hello(&g_ini, g_ch, sizeof g_ch, &g_ch_len) == HANDSHAKE_OK;
+        ok &= handshake_initiator_create_client_hello(&b_ini, b_ch, sizeof b_ch, &chl) == HANDSHAKE_OK;
         t[1] = emscripten_get_now();
-        ok &= handshake_responder_accept_client_hello(&g_res, g_ch, g_ch_len) == HANDSHAKE_OK;
+        ok &= handshake_responder_accept_client_hello(&b_res, b_ch, chl) == HANDSHAKE_OK;
         t[2] = emscripten_get_now();
-        ok &= handshake_responder_create_server_hello(&g_res, g_sh, sizeof g_sh, &g_sh_len) == HANDSHAKE_OK;
+        ok &= handshake_responder_create_server_hello(&b_res, b_sh, sizeof b_sh, &shl) == HANDSHAKE_OK;
         t[3] = emscripten_get_now();
-        ok &= handshake_initiator_verify_server_hello(&g_ini, g_sh, g_sh_len) == HANDSHAKE_OK;
+        ok &= handshake_initiator_verify_server_hello(&b_ini, b_sh, shl) == HANDSHAKE_OK;
         t[4] = emscripten_get_now();
-        ok &= handshake_initiator_create_client_auth(&g_ini, g_ca, sizeof g_ca, &g_ca_len) == HANDSHAKE_OK;
+        ok &= handshake_initiator_create_client_auth(&b_ini, b_ca, sizeof b_ca, &cal) == HANDSHAKE_OK;
         t[5] = emscripten_get_now();
-        ok &= handshake_responder_verify_client_auth(&g_res, g_ca, g_ca_len) == HANDSHAKE_OK;
+        ok &= handshake_responder_verify_client_auth(&b_res, b_ca, cal) == HANDSHAKE_OK;
         t[6] = emscripten_get_now();
-        ok &= handshake_initiator_finish(&g_ini) == HANDSHAKE_OK;
+        ok &= handshake_initiator_finish(&b_ini) == HANDSHAKE_OK;
         t[7] = emscripten_get_now();
-        ok &= handshake_responder_finish(&g_res) == HANDSHAKE_OK;
+        ok &= handshake_responder_finish(&b_res) == HANDSHAKE_OK;
         t[8] = emscripten_get_now();
-        if (!ok || handshake_get_state(&g_ini) != HANDSHAKE_STATE_ESTABLISHED ||
-            handshake_get_state(&g_res) != HANDSHAKE_STATE_ESTABLISHED) {
+        if (!ok || handshake_get_state(&b_ini) != HANDSHAKE_STATE_ESTABLISHED ||
+            handshake_get_state(&b_res) != HANDSHAKE_STATE_ESTABLISHED) {
             break;
         }
         double *o = out + (size_t)i * 9;
@@ -543,7 +570,7 @@ EMSCRIPTEN_KEEPALIVE int hd_bench(int n, double *out) {
         for (int p = 0; p < 8; p++) o[p + 1] = t[p + 1] - t[p];
         done++;
     }
-    wipe_all();
+    wipe_pair(&b_store, &b_ini, &b_res);
     return done;
 }
 

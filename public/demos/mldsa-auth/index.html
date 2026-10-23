@@ -8,7 +8,8 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="../_shared/demo.css">
 <style>
-  html { overscroll-behavior: contain; }
+  /* No overscroll-behavior: contain anywhere. Wheel and touch scrolling that
+     the demo cannot use must chain to the project page around the iframe. */
   [hidden] { display: none !important; }
   body { padding: 16px; }
   .wrap { max-width: 1180px; margin: 0 auto; }
@@ -137,7 +138,7 @@
   .ref b { color: var(--text); }
 
   /* Tests */
-  .testout { margin: 10px 0 0; height: 300px; overflow: auto; overscroll-behavior: contain; background: #08070c; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font: 11.5px/1.5 var(--mono); color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .testout { margin: 10px 0 0; height: 300px; overflow: auto; background: #08070c; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font: 11.5px/1.5 var(--mono); color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
   .testout .f { color: var(--danger); }
   .counts { font: 13px/1.5 var(--mono); color: var(--text); margin-top: 8px; min-height: 1.5em; }
 
@@ -295,6 +296,7 @@
     <span>Licence: GPL-3.0. The .wasm files combine mldsa-auth (GPL-3.0), liboqs (MIT) and libsodium (ISC), so they are covered by the GPL; the source is linked above.</span>
   </footer>
 </div>
-<script type="module" src="app.js"></script>
+<!-- ?v= is a build tag: bump it whenever any file in this folder changes (BUILD.md). -->
+<script type="module" src="app.js?v=60180d1b"></script>
 </body>
 </html>

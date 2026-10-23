@@ -4,6 +4,9 @@
 # See ../BUILD.md for the full sequence, from clone to the files in this folder.
 # EMCC_ENV=worker (the default) is what the page ships; EMCC_ENV=node gives a
 # copy you can smoke-test with plain node.
+# INCOMING_MODULE_JS_API names the Module options the worker passes in.
+# Emscripten 6 no longer reads wasmBinary by default, and without it each
+# instance would fetch its .wasm a second time after the worker's own download.
 set -euo pipefail
 
 REPO=$(cd "$1" && pwd)
@@ -24,8 +27,8 @@ COMMON=(-O3 -std=c11 -Wall -Wextra
 
 # 1. The interactive demo: both parties of the handshake and the record layer.
 emcc "${COMMON[@]}" "${INC[@]}" "$HERE/handshake_demo.c" "${LIBS[@]}" \
-  -sEXPORT_NAME=createHandshakeDemo \
-  -sEXPORTED_FUNCTIONS=_hd_init,_hd_handshake,_hd_send,_hd_bench,_hd_record_bench,_malloc,_free \
+  -sEXPORT_NAME=createHandshakeDemo -sINCOMING_MODULE_JS_API=wasmBinary \
+  -sEXPORTED_FUNCTIONS=_hd_init,_hd_handshake,_hd_send,_hd_sessions,_hd_bench,_hd_record_bench,_malloc,_free \
   -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,UTF8ToString \
   -o "$OUT/hd.mjs"
 
@@ -39,6 +42,7 @@ emcc "${COMMON[@]}" "$HERE/tests_entry.c" "$OUT/.test_handshake.o" "$OUT/.test_s
   "$BUILD/src/libmldsa_core.a" "$BUILD/_deps/liboqs-build/lib/liboqs-internal.a" \
   "$BUILD/_deps/liboqs-build/lib/liboqs.a" "$SODIUM/lib/libsodium.a" \
   -sEXPORT_NAME=createRepoTests -sINVOKE_RUN=0 -sEXIT_RUNTIME=0 \
+  -sINCOMING_MODULE_JS_API=wasmBinary,print,printErr \
   -sEXPORTED_FUNCTIONS=_run_suite \
   -o "$OUT/tests.mjs"
 rm -f "$OUT/.test_handshake.o" "$OUT/.test_session.o"

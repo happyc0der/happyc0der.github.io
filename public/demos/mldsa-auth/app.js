@@ -17,9 +17,13 @@ function el(tag, props = {}, ...kids) {
 }
 
 const fmtMs = (ms) => (ms >= 10 ? ms.toFixed(1) : ms >= 1 ? ms.toFixed(2) : ms.toFixed(3)) + ' ms';
-// A single timing, honest about the browser's timer: below its resolution we
-// only know "less than one tick".
-const fmtT = (ms) => (S.timerRes && ms < S.timerRes ? `< ${fmtMs(S.timerRes)}` : fmtMs(ms));
+// One reading of performance.now() is a whole number of timer ticks, so it
+// gets only the decimals the tick has: 1 for Chromium's 0.1 ms, 3 for 5 us.
+const tickDp = () => (S.timerRes ? Math.min(3, Math.max(0, Math.ceil(-Math.log10(S.timerRes) - 1e-6))) : 3);
+const fmtTick = (ms) => ms.toFixed(tickDp());
+// A single timing, honest about the browser's timer: a reading of zero ticks
+// only says "less than one tick".
+const fmtT = (ms) => (S.timerRes && ms < S.timerRes / 2 ? `< ${fmtTick(S.timerRes)} ms` : `${fmtTick(ms)} ms`);
 const fmtB = (n) => n.toLocaleString('en-US') + ' B';
 const spaced = (hex, max = 24) => {
   const out = [];
@@ -50,7 +54,9 @@ function call(op, args) {
 }
 
 function startWorker() {
-  worker = new Worker(new URL('worker.js', import.meta.url), { type: 'module' });
+  // Pass index.html's ?v= build tag on, so the worker and the modules it loads
+  // always come from the same deploy as this file.
+  worker = new Worker(new URL('worker.js' + new URL(import.meta.url).search, import.meta.url), { type: 'module' });
   worker.onmessage = (ev) => {
     const m = ev.data;
     if (m.type === 'result' || m.type === 'error') {
@@ -69,7 +75,20 @@ function startWorker() {
 
 // ---- state ----------------------------------------------------------------
 
-const S = { init: null, timerRes: null, busy: false, session: null, seq: [0, 0] };
+// S.sess holds both sessions' states as session_get_state() reports them
+// (the worker sends them back after every call into hd); S.session is set
+// only while both are ACTIVE.
+const S = { init: null, timerRes: null, busy: false, sess: null, session: null, seq: [0, 0] };
+
+function applySessions(s) {
+  if (!s) return;
+  S.sess = s;
+  S.session = s.a === 'ACTIVE' && s.b === 'ACTIVE' ? { a: s.a, b: s.b } : null;
+}
+
+async function refreshSessions() {
+  try { applySessions(await call('sessions')); } catch { /* keep the last known states */ }
+}
 
 function setBusy(b) {
   S.busy = b;
@@ -103,6 +122,7 @@ $('start').addEventListener('click', async () => {
     if (!r.init.ok) throw new Error(r.init.error);
     S.init = r.init;
     S.timerRes = r.timerRes;
+    applySessions(r.sessions);
     bar.style.width = '100%';
     showParties();
     $('poster').hidden = true;
@@ -201,7 +221,7 @@ function actCell(step) {
       el('span', { class: 'who', text: step.party }),
       el('span', { class: 'fn', text: SHORT(step.call) }),
       el('span', { class: ok ? 'st-ok' : 'st-bad', text: ok ? 'OK' : step.status }),
-      el('span', { class: 'ms', text: fmtT(step.ms), title: res ? `timer resolution here: ${fmtMs(res)}` : '' })),
+      el('span', { class: 'ms', text: fmtT(step.ms), title: res ? `timer resolution here: ${fmtTick(res)} ms` : '' })),
     el('div', { class: 'l2', text: '→ ' + step.state + (step.note ? ' · ' + step.note : '') }));
 }
 
@@ -242,13 +262,14 @@ async function runHandshake() {
     }
     sum.replaceChildren(summaryFor(r));
     sum.dataset.run = String((S.runs = (S.runs || 0) + 1));
-    S.session = r.established && r.confirm && r.confirm.open === 'SESSION_OK' ? { a: 'ACTIVE', b: 'ACTIVE' } : null;
+    applySessions(r.sessions);
     S.seq = [0, S.session ? 1 : 0]; // B already sent its confirmation record (seq 0)
     S.lastHs = r;
     $('reclog').replaceChildren();
     renderSessLine();
   } catch (e) {
     sum.replaceChildren(el('div', { class: 'summary bad' }, el('p', { class: 'error', text: 'Error: ' + e.message })));
+    await refreshSessions();
   } finally {
     setBusy(false);
   }
@@ -257,12 +278,12 @@ async function runHandshake() {
 function summaryFor(r) {
   const last = [...r.steps].reverse().find((s) => s.party !== 'wire');
   const res = S.timerRes;
-  const resNote = res && res >= 0.02 ? ` Your browser's timer moves in ${fmtMs(res)} steps here, so single calls are rounded; the Bench tab averages 100 runs.` : '';
+  const resNote = res && res >= 0.02 ? ` Your browser's timer moves in ${fmtTick(res)} ms steps here, so single calls are rounded to a step; the Bench tab averages 100 runs.` : '';
   if (r.established) {
     const k = r.keys;
     const calls = r.steps.filter((s) => s.party !== 'wire').length;
     return el('div', { class: 'summary' },
-      el('p', { text: `Both sides reached ESTABLISHED. The ${({ 8: 'eight', 9: 'nine' })[calls] || calls} calls took ${fmtMs(r.handshake_ms)} of compute in this browser, and the three handshake messages total ${fmtB(r.sizes.ch + r.sizes.sh + r.sizes.ca)}.${resNote}` }),
+      el('p', { text: `Both sides reached ESTABLISHED. The ${({ 8: 'eight', 9: 'nine' })[calls] || calls} calls took ${fmtTick(r.handshake_ms)} ms of compute in this browser, and the three handshake messages total ${fmtB(r.sizes.ch + r.sizes.sh + r.sizes.ca)}.${resNote}` }),
       el('p', { class: 'mono', text: `Session keys match: ${k.match ? 'yes' : 'NO'} · c2s ${k.a_c2s.slice(0, 8)}… on A and ${k.b_c2s.slice(0, 8)}… on B · s2c ${k.a_s2c.slice(0, 8)}… / ${k.b_s2c.slice(0, 8)}… (BLAKE2b fingerprints, not the keys)` }),
       el('p', { class: 'mono', text: `B's empty confirmation record (${fmtB(r.confirm.record_bytes)}) opened on A: ${r.confirm.open}, so A is now peer-confirmed. Try the Records tab.` }));
   }
@@ -280,11 +301,16 @@ function summaryFor(r) {
 // ---- records ---------------------------------------------------------------
 
 function renderSessLine() {
-  const s = S.session;
+  const s = S.session, lib = S.sess;
   const line = $('sessline');
   if (!s) {
-    line.replaceChildren(el('span', { text: 'No live session. ' }),
-      el('span', { text: S.lastHs && S.lastHs.established ? 'The last one was closed by a refused record; ' : 'Run an honest handshake first; ' }),
+    const ended = lib && [lib.a, lib.b].some((x) => x === 'FAILED' || x === 'EXPIRED');
+    const why = ended ? 'A refused record is terminal, so this session is over; '
+      : S.lastHs && !S.lastHs.established ? 'The last handshake was refused, so neither side has a session; '
+      : 'Run an honest handshake first; ';
+    line.replaceChildren(el('span', { text: 'No live session' }),
+      lib ? el('span', { text: ` (A ${lib.a} · B ${lib.b})` }) : null,
+      el('span', { text: '. ' + why }),
       el('a', { href: '#', text: 'run one now', onclick: (e) => { e.preventDefault(); runHonestThenRecords(); } }), el('span', { text: '.' }));
     $('send').disabled = true;
     return;
@@ -312,6 +338,11 @@ const REC_EXPLAIN = {
   SESSION_ERR_OUT_OF_ORDER: 'The seq is higher than the next one expected: a gap. Terminal; the session is now FAILED.',
   SESSION_ERR_UNEXPECTED_STATE: 'This session is no longer ACTIVE. Run a new handshake.',
 };
+const SEAL_EXPLAIN = {
+  SESSION_ERR_UNEXPECTED_STATE: 'The sender has no ACTIVE session, so the library sealed nothing. Run a new handshake.',
+  SESSION_ERR_LIMIT: 'The session reached its message limit, so the library sealed nothing. A new handshake is required.',
+  SESSION_ERR_EXPIRED: 'The session reached its hard limit and is now EXPIRED. A new handshake is required.',
+};
 
 async function sendRecord() {
   if (S.busy || !S.session) return;
@@ -322,8 +353,21 @@ async function sendRecord() {
   try {
     const r = await call('send', { dir, text, attack });
     if (!r.ok) throw new Error(r.error);
+    applySessions(r.sessions);
     const tx = dir === 0 ? 'A' : 'B', rx = dir === 0 ? 'B' : 'A';
     const rec = attack === 3 ? r.record2 : r.record;
+    if (r.seal !== 'SESSION_OK' || !rec) {
+      // The library refused to seal (the first record, or the second one in
+      // "lose it"): show its status rather than a record that does not exist.
+      const st = r.seal !== 'SESSION_OK' ? r.seal : r.seal2;
+      $('reclog').prepend(el('div', { class: 'recard' + (reduceMotion ? '' : ' in') },
+        el('div', { class: 't' }, el('span', { text: `${tx} → ${rx} · ${fmtB(r.content_bytes)} of content · nothing sent` })),
+        el('div', { class: 'res' },
+          el('div', {}, el('span', { text: `${tx}: session_seal → ` }), el('span', { class: 'st-bad', text: st || 'no status' })),
+          el('div', { class: 'muted', text: SEAL_EXPLAIN[st] || '' }))));
+      while ($('reclog').children.length > 5) $('reclog').lastChild.remove();
+      return;
+    }
     const flipAt = r.tamper ? r.tamper.offset : -1;
     const body = rec.bytes - 9 - 16;
     const bytes = el('div', { class: 'bytes', 'aria-label': 'Record bytes' },
@@ -356,11 +400,9 @@ async function sendRecord() {
     $('reclog').prepend(card);
     while ($('reclog').children.length > 5) $('reclog').lastChild.remove();
     S.seq[dir] = rec.seq + 1;
-    const aState = dir === 0 ? r.tx_state : r.rx_state, bState = dir === 0 ? r.rx_state : r.tx_state;
-    S.session = aState === 'ACTIVE' && bState === 'ACTIVE' ? { a: aState, b: bState } : null;
-    if (!S.session) S.lastHs = { established: true };
   } catch (e) {
     $('reclog').prepend(el('div', { class: 'recard error', text: 'Error: ' + e.message }));
+    await refreshSessions();
   } finally {
     setBusy(false);
     renderSessLine();
@@ -388,10 +430,12 @@ $('run-bench').addEventListener('click', async () => {
   onProgress = (m) => { if (m.stage === 'bench') st.textContent = `${m.got} / ${m.total} handshakes…`; };
   try {
     const r = await call('bench', { n: 100 });
+    applySessions(r.sessions);
     st.textContent = '';
     drawBench(r);
   } catch (e) {
     st.textContent = 'Error: ' + e.message;
+    await refreshSessions();
   } finally {
     onProgress = () => {};
     setBusy(false);
@@ -405,6 +449,7 @@ $('run-rbench').addEventListener('click', async () => {
   st.textContent = 'Sealing and opening for about 1 s…';
   try {
     const r = await call('recbench', { budgetMs: 1000 });
+    applySessions(r.sessions);
     const mib = (r.records * r.contentBytes) / 1048576;
     const box = $('rbench') || el('div', { id: 'rbench', class: 'tiles' });
     box.replaceChildren(
@@ -415,6 +460,7 @@ $('run-rbench').addEventListener('click', async () => {
     st.textContent = 'Timed in batches of 16 records, default 256-byte pad bucket.';
   } catch (e) {
     st.textContent = 'Error: ' + e.message;
+    await refreshSessions();
   } finally {
     setBusy(false);
   }
@@ -433,9 +479,9 @@ function drawBench(r) {
   const mean = tot.reduce((a, b) => a + b, 0) / n;
   const out = $('bench-out');
   const tiles = el('div', { class: 'tiles' },
-    tile('Median, per handshake', med.toFixed(2), 'ms'),
-    tile('10th to 90th pct', `${quant(sorted, 0.1).toFixed(2)}–${quant(sorted, 0.9).toFixed(2)}`, 'ms'),
-    tile('Fastest', sorted[0].toFixed(2), 'ms'),
+    tile('Median, per handshake', fmtTick(med), 'ms'),
+    tile('10th to 90th pct', `${fmtTick(quant(sorted, 0.1))}–${fmtTick(quant(sorted, 0.9))}`, 'ms'),
+    tile('Fastest', fmtTick(sorted[0]), 'ms'),
     tile('Mean', mean.toFixed(2), 'ms'));
 
   const spark = el('div', { class: 'spark' });
@@ -453,7 +499,7 @@ function drawBench(r) {
     el('div', { class: 'benchgrid' },
       el('div', {}, el('div', { class: 'label', text: `Each of ${n} handshakes, in order (ms) · light rule = median` }), spark),
       el('div', {}, el('div', { class: 'label', text: 'Mean ms per call, over the same runs' }), phases)),
-    el('p', { class: 'note', text: `Measured in your browser with performance.now() inside the worker, same method as bench/bench_handshake.c: fresh contexts are prepared outside the timed region, then the eight calls are timed.${res ? ` Timer resolution here: ${fmtMs(res)}.` : ''}` }));
+    el('p', { class: 'note', text: `Measured in your browser with performance.now() inside the worker, same method as bench/bench_handshake.c: fresh contexts are prepared outside the timed region, then the eight calls are timed. The bench uses contexts of its own, so the Records session is left as it was.${res ? ` Timer resolution here: ${fmtTick(res)} ms, so the median, percentiles and fastest run (each one reading) are shown to that step; the means average ${n} readings.` : ''}` }));
   drawSpark(spark, tot, med);
   if (S.sparkRO) S.sparkRO.disconnect();
   let lastW = spark.clientWidth;
@@ -477,7 +523,7 @@ function drawSpark(spark, tot, med) {
   svg.setAttribute('width', W);
   svg.setAttribute('height', H);
   svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', `Per-handshake time for ${n} runs, median ${med.toFixed(2)} ms`);
+  svg.setAttribute('aria-label', `Per-handshake time for ${n} runs, median ${fmtTick(med)} ms`);
   const add = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); svg.append(e); return e; };
   const mono = { fill: '#8f8aa3', 'font-size': 10, 'font-family': 'ui-monospace, Menlo, monospace' };
   for (const t of [0, max / 2, max]) {
@@ -502,7 +548,7 @@ function drawSpark(spark, tot, med) {
     dot.setAttribute('cx', x(i)); dot.setAttribute('cy', y(tot[i]));
     cross.setAttribute('visibility', 'visible'); dot.setAttribute('visibility', 'visible');
     tip.hidden = false;
-    tip.textContent = `run ${i + 1}: ${tot[i].toFixed(2)} ms`;
+    tip.textContent = `run ${i + 1}: ${fmtTick(tot[i])} ms`;
     tip.style.left = Math.min(Math.max(x(i), 60), W - 60) + 'px';
     tip.style.top = y(tot[i]) + 'px';
   });

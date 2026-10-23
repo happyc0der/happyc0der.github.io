@@ -3,6 +3,11 @@
 // (src/handshake_demo.c). tests.mjs/tests.wasm: the repo's tests/test_handshake.c
 // and tests/test_session.c, fetched only when asked for.
 
+// The ?v= build tag index.html gave app.js, passed on to this worker. Every
+// file it loads carries it too, so a cached copy from an older deploy can
+// never be mixed with this one (hd.mjs and worker.js must match).
+const V = self.location.search;
+
 let hd = null;
 let testsBin = null;
 let testsFactory = null;
@@ -53,9 +58,9 @@ const J = (ptr) => JSON.parse(hd.UTF8ToString(ptr));
 
 const ops = {
   async init() {
-    const bin = await fetchBytes('hd.wasm', 'module');
+    const bin = await fetchBytes('hd.wasm' + V, 'module');
     post({ type: 'stage', stage: 'compile' });
-    const { default: create } = await import('./hd.mjs');
+    const { default: create } = await import('./hd.mjs' + V);
     hd = await create({ wasmBinary: bin });
     post({ type: 'stage', stage: 'keygen' });
     const init = J(hd._hd_init());
@@ -109,10 +114,14 @@ const ops = {
     }
   },
 
+  sessions() {
+    return hd ? J(hd._hd_sessions()) : null;
+  },
+
   async tests({ which }) {
     if (!testsBin) {
-      testsBin = await fetchBytes('tests.wasm', 'tests');
-      testsFactory = (await import('./tests.mjs')).default;
+      testsBin = await fetchBytes('tests.wasm' + V, 'tests');
+      testsFactory = (await import('./tests.mjs' + V)).default;
     }
     let buf = [];
     const flush = () => { if (buf.length) { post({ type: 'lines', lines: buf }); buf = []; } };
@@ -133,10 +142,15 @@ const ops = {
   },
 };
 
+// Ops that run in hd. After each one the page gets both live sessions' states
+// from session_get_state(), so it never shows a session the library has not got.
+const HD_OPS = new Set(['init', 'handshake', 'send', 'bench', 'recbench']);
+
 self.onmessage = async (ev) => {
   const { id, op, args } = ev.data;
   try {
     const result = await ops[op](args || {});
+    if (HD_OPS.has(op) && hd) result.sessions = J(hd._hd_sessions());
     post({ type: 'result', id, result });
   } catch (e) {
     post({ type: 'error', id, message: e && e.message ? e.message : String(e) });
