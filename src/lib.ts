@@ -39,6 +39,26 @@ export const firstParagraph = (body = '') => {
   return esc(block.replace(/\s*\n\s*/g, ' ')).replace(/`([^`]+)`/g, '<code>$1</code>');
 };
 
+// A paragraph's sentences: split after . ! or ? where the next sentence starts with a capital, a digit,
+// a backtick or a bracket. Good enough for the content here (no "e.g. X" or "Dr. Y" mid-sentence).
+export const sentences = (text = '') => text.replace(/\s*\n\s*/g, ' ').trim().split(/(?<=[.!?])\s+(?=[A-Z0-9`("<])/).filter(Boolean);
+
+// A project's first paragraph, cut after its first `n` sentences: [the head, the rest], both as HTML in the
+// same form as firstParagraph. The head is the project page's scrub Overview; the rest opens the story.
+export const splitParagraph = (body = '', n = 2) => {
+  const html = firstParagraph(body);
+  if (!html) return null;
+  const parts = sentences(html);
+  return { head: parts.slice(0, n).join(' '), rest: parts.slice(n).join(' ') };
+};
+
+// "0.45 ms handshake" -> ["0.45 ms", "handshake"]: the leading figure (with a unit word) and the words after
+// it, for a big number over a mono label. The text is unchanged, only cut in two; no figure gives [s, ''].
+export const splitStat = (s = '') => {
+  const m = s.match(/^(\S*\d\S*(?:\s(?:ms|us|s|min|h|KB|MB|GB|fps|pts|%))?)\s+(.+)$/);
+  return m ? [m[1], m[2]] : [s, ''];
+};
+
 // Short result for a competition row, in the content's own words: a final rank, or the stated status.
 export const resultShort = (result: string) => {
   const final = result.match(/Final rank ([\d,]+) of ([\d,]+) teams \(top (\d+)%\)/);
@@ -59,6 +79,31 @@ export const skillList = (list: string[]) => {
     open += (item.match(/\(/g) ?? []).length - (item.match(/\)/g) ?? []).length;
   }
   return out;
+};
+
+// Skills as chips for the home page: the bracketed detail moves to a tooltip ("statistics" with
+// "hypothesis testing, regression"), a name already shown in an earlier group is dropped (its detail joins
+// the first one's), and each group keeps its first `max` chips; the rest come back as `more`.
+export type Chip = { name: string; detail: string };
+export const skillChips = (skills: Record<string, string[]>, order: string[], max = 8) => {
+  const seen = new Map<string, Chip>();
+  return order.filter((k) => skills[k]).map((key) => {
+    const chips: Chip[] = [];
+    for (const raw of skillList(skills[key])) {
+      const m = raw.match(/^(.*?)\s*\((.*)\)\s*$/);
+      const chip = { name: (m ? m[1] : raw).trim(), detail: m ? m[2].trim() : '' };
+      const id = chip.name.toLowerCase();
+      const first = seen.get(id);
+      if (first) {
+        if (chip.detail.includes(first.detail)) first.detail = chip.detail;
+        else if (chip.detail && !first.detail.includes(chip.detail)) first.detail = `${first.detail}; ${chip.detail}`;
+        continue;
+      }
+      seen.set(id, chip);
+      chips.push(chip);
+    }
+    return { key, shown: chips.slice(0, max), more: chips.slice(max) };
+  });
 };
 
 // The marquee: the first few short skills of each group in profile.yaml, parentheticals dropped, no repeats.
