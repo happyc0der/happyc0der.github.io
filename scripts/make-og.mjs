@@ -49,6 +49,8 @@ p { font-size: 22px; line-height: 1.4; color: #b4afc6; margin-top: 18px; display
 ${img ? `<div class="shot"><img src="file://${path.join(root, 'public', img)}"></div>` : `<div class="hero"><span>${esc((d.stats || [])[0] || d.title)}</span></div>`}
 </body></html>`;
 
+// A fresh Edge profile otherwise signs itself into the Mac's Microsoft account through the Keychain and syncs
+// extensions; these flags keep each headless run signed out, with no extensions.
 let made = 0;
 for (const f of fs.readdirSync(path.join(root, 'content/projects')).filter((f) => f.endsWith('.md')).sort()) {
   const id = f.replace(/\.md$/, '');
@@ -56,7 +58,8 @@ for (const f of fs.readdirSync(path.join(root, 'content/projects')).filter((f) =
   if (d.listed === false) continue;
   const html = path.join(tmp, `${id}.html`), png = path.join(tmp, `${id}.png`);
   fs.writeFileSync(html, card(d, d.image || null));
-  const r = spawnSync(EDGE, ['--headless', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1',
+  const r = spawnSync(EDGE, ['--headless', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', `--user-data-dir=${path.join(tmp, 'edge')}`,
+    '--use-mock-keychain', '--password-store=basic', '--disable-sync', '--disable-extensions', '--disable-background-networking', '--disable-component-update', '--no-service-autorun',
     '--window-size=1200,630', '--virtual-time-budget=3000', `--screenshot=${png}`, `file://${html}`], { timeout: 60000 });
   if (!fs.existsSync(png)) { console.error(`${id}: no screenshot (${r.status ?? r.error})`); process.exitCode = 1; continue; }
   await sharp(png).resize(1200, 630).jpeg({ quality: 86, mozjpeg: true }).toFile(path.join(outDir, `${id}.jpg`));
