@@ -6,7 +6,7 @@ Site and resumes, both built from `content/`.
 Copy any file in `content/projects/`, change the frontmatter, write a few lines. It shows up on the site.
 `bullets` are for the site; `resume_bullets` (optional, about 20 words each) are what the PDFs use.
 For a picture, put it in `public/img/`, set `image: /img/<file>` and run `npm run images` (AVIF, WebP and card crops; the build stops if you forget).
-For a demo that runs on the site, put a self-contained page in `public/demos/<slug>/` (relative URLs only) and set `demo_embed: /demos/<slug>/`, `demo_label` (one sentence saying exactly what runs) and optionally `demo_height` (default 640). The project page gets a click-to-load demo and the home page a "Live demos" section; `demo` stays the external live link.
+For a demo that runs on the site, put a self-contained page in `public/demos/<slug>/` (relative URLs only; link `../_shared/demo.css` for the fonts, the `.demo-top` title bar and the `.btn.primary.big` start button, and keep the page itself a light poster until its Start button is pressed) and set `demo_embed: /demos/<slug>/`, `demo_label` (one sentence saying exactly what runs), `demo_kind` (six words or fewer from that sentence, for the home page's demo rows) and optionally `demo_height` (default 640; phones cap it at 75% of the window) and `demo_poster: /img/demo/<slug>.jpg` (a frame of it running; then `npm run images`). The project page loads the demo straight after its hero, and the home page lists it under "Live demos"; `demo` stays the external live link.
 To put it on a resume, add its file name to that resume's `projects` list in `content/resumes.yaml`.
 Order matters there: a resume that runs past one page gets slightly smaller type, then loses projects from the end.
 
@@ -24,7 +24,7 @@ Add a collection in `src/content.config.ts`, copy `src/pages/notes/` and rename,
 ## Commands
     npm run dev        # site at localhost:4321
     npm run resumes    # regenerate MASTER.md and the five PDFs in public/resume/ (needs Microsoft Edge), and check they parse
-    npm run images     # responsive AVIF/WebP versions of public/img/ and their sizes in src/data/images.json
+    npm run images     # responsive AVIF/WebP versions of public/img/ (and img/demo/) and their sizes in src/data/images.json
     npm run og         # 1200x630 link-preview cards per project (public/img/og/), shown when a project page is shared
     npm run build      # static site into dist/
 
