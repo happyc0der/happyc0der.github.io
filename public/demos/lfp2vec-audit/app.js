@@ -196,6 +196,16 @@ function prepSpectra() {
   };
   SPEC = { ibl, allen, ratio, nearest };
   state.spec.i = nearest(500);
+
+  // How close "close" is below 100 Hz, over the same points the readout can land on.
+  const low = ibl.pts.filter(([f]) => f >= 0.99 && f <= 100.5).map(([f]) => ratio(f));
+  const lo = Math.min(...low), hi = Math.max(...low);
+  const factor = Math.max(hi, 1 / lo);
+  $('#spec-lede').replaceChildren(
+    'Each lab’s mean power spectrum, divided by its own value at 10 Hz. ',
+    `From 1 to 100 Hz Allen is ${lo.toFixed(2)}× to ${hi.toFixed(2)}× IBL (within ${factor.toFixed(1)}×); above IBL’s 300 Hz band-pass corner it keeps power IBL’s pipeline removes. `,
+    'Drag or tap the chart, or focus it and use the arrow keys.',
+  );
 }
 
 function renderSpectra() {
@@ -214,7 +224,9 @@ function renderSpectra() {
   const X = (f) => m.l + (Math.log10(f) - Math.log10(fMin)) / (Math.log10(fMax) - Math.log10(fMin)) * pw;
   const Y = (v) => m.t + (eHi - Math.log10(v)) / (eHi - eLo) * ph;
 
-  const root = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, host);
+  // touch-action has no effect on SVG child elements, so it goes on the outer <svg>: a sideways
+  // drag scrubs the readout and a vertical one still scrolls the page.
+  const root = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'touch-action: pan-y' }, host);
   const g = svg('g', {
     class: 'focusable', tabindex: 0, role: 'slider',
     'aria-label': 'Frequency readout for the spectra chart',
@@ -255,7 +267,7 @@ function renderSpectra() {
   const dotA = svg('circle', { r: 4.5, fill: css('--allen'), stroke: css('--bg'), 'stroke-width': 2 }, g);
   const label = svg('text', { y: m.t - (narrow ? 10 : 14), fill: css('--text'), 'font-size': 12, 'font-weight': 600 }, g);
 
-  const overlay = svg('rect', { x: m.l, y: m.t, width: pw, height: ph, fill: 'transparent', style: 'touch-action: pan-y; cursor: crosshair' }, g);
+  const overlay = svg('rect', { x: m.l, y: m.t, width: pw, height: ph, fill: 'transparent', style: 'cursor: crosshair' }, g);
 
   const update = () => {
     const i = state.spec.i;
@@ -287,7 +299,11 @@ function renderSpectra() {
     state.spec.i = SPEC.nearest(Math.min(Math.max(f, 1), fMax));
     update();
   };
-  overlay.addEventListener('pointerdown', pick);
+  overlay.addEventListener('pointerdown', (e) => {
+    // Keep the drag when the finger or mouse strays past the plot edge.
+    try { overlay.setPointerCapture(e.pointerId); } catch { /* not capturable; the drag still works inside the plot */ }
+    pick(e);
+  });
   overlay.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons) pick(e); });
   g.addEventListener('keydown', (e) => {
     const n = ibl.pts.length;
@@ -346,9 +362,14 @@ function renderProbes() {
   );
 
   const used = [...new Set(truth + pred)].map(Number).sort();
+  // The repo scores these runs on its four-class view, which leaves CA2 out before scoring.
+  const ex = P.excluded;
+  const exNote = `${ex.classes.join(', ')} excluded (four-class view; ` +
+    (ex.channels ? `${ex.channels} ${P.test} channels)` : `none in ${P.test})`);
+  const absent = D.classes.filter((c, k) => !used.includes(k) && !ex.classes.includes(c));
   $('#probe-legend').replaceChildren(
     ...used.map((c) => h('span', {}, h('i', { class: 'key', style: `background:${classColor(c)}` }), D.classes[c])),
-    h('span', { class: 'muted', text: `y: µm from probe tip · ${D.classes.filter((_, c) => !used.includes(c)).join(', ')} not present` }));
+    h('span', { class: 'muted', text: `y: µm from probe tip · ${exNote}${absent.length ? ` · ${absent.join(', ')} not present` : ''}` }));
 
   // chart
   const host = $('#probe-chart');
@@ -433,7 +454,12 @@ function renderProbes() {
       h('h2', { text: `${DIR_LABEL[st.dir]} · seed ${st.seed}` }),
       h('div', { class: 'big' }, pct(pc[top] / N), h('small', { text: `of ${int(N)} ${P.test} channels predicted ${D.classes[top]}` })),
       h('p', {}, 'Balanced accuracy ', h('b', { text: row.balanced_accuracy.toFixed(2) }), ` (chance ${row.chance.toFixed(2)}); raw `, h('b', { text: row.raw_accuracy.toFixed(2) }), ` against a majority rate of ${row.majority.toFixed(2)}.`),
-      h('p', {}, 'Per chunk, before post-processing: ', h('b', { text: pct(chunk.predicted[ctop] / chunk.n_chunks) }), ` of ${int(chunk.n_chunks)} predicted ${D.classes[ctop]}, at a mean confidence of `, h('b', { text: cal.cross_lab.mean_confidence_before.toFixed(2) }), '.'),
+      chunk.n_chunks_all > chunk.n_chunks
+        ? h('p', {}, 'Per chunk, before post-processing: ', h('b', { text: pct(chunk.predicted[ctop] / chunk.n_chunks) }),
+          ` of ${int(chunk.n_chunks)} predicted ${D.classes[ctop]} (${ex.classes.join(', ')} excluded); mean confidence `,
+          h('b', { text: cal.cross_lab.mean_confidence_before.toFixed(2) }), ` over all ${int(cal.cross_lab.n_samples)}.`)
+        : h('p', {}, 'Per chunk, before post-processing: ', h('b', { text: pct(chunk.predicted[ctop] / chunk.n_chunks) }),
+          ` of ${int(chunk.n_chunks)} predicted ${D.classes[ctop]}, at a mean confidence of `, h('b', { text: cal.cross_lab.mean_confidence_before.toFixed(2) }), '.'),
     ),
     h('div', { class: 'card' },
       h('h2', { text: 'Channels per region' }),
@@ -490,6 +516,10 @@ function renderTransfer() {
   $('#transfer-lede').textContent = margin
     ? 'Margin: raw accuracy minus the test lab’s majority-class rate, the paper’s cross-lab metric. Dots are seeds, the tick is their mean, the dashed line is the published margin. Post-processed adds the paper’s per-channel vote and neighbour smoothing.'
     : 'Balanced accuracy: the mean recall over the regions the test lab contains. The paper gives its cross-lab result only as raw accuracy, so there is no published line. Post-processed adds the paper’s per-channel vote and neighbour smoothing.';
+  $('#transfer-note').textContent = margin
+    ? 'The paper does not say whether its published margins are post-processed (DEVIATIONS D14). The README sets them beside post-processed results, which is the view this chart opens on.'
+    : '';
+  $('#transfer-note').hidden = !margin;
   $('#transfer-controls').replaceChildren(
     seg('Metric', [{ value: 'margin', label: 'Margin', title: 'Raw accuracy minus the majority-class rate' }, { value: 'balanced', label: 'Balanced', title: 'Balanced accuracy' }], st.metric, (v) => { st.metric = v; renderTransfer(); }),
     seg('Stage', [{ value: 'raw', label: 'Per chunk', title: 'Each three-second chunk on its own' }, { value: 'spatial', label: 'Post-processed', title: 'The paper’s per-channel vote and neighbour smoothing' }], st.stage, (v) => { st.stage = v; renderTransfer(); }),
@@ -572,19 +602,25 @@ function renderTransfer() {
     });
   });
 
-  // within a lab
+  // Within a lab. Always per chunk, whatever the Stage switch says: the paper's 0.68 is its
+  // number before post-processing, and the README compares 0.74 ± 0.07 with it, like with like.
   const loso = D.runs.filter((r) => r.kind === 'loso');
-  const lv = loso.map((r) => r.stages[st.stage].chunk.balanced_accuracy);
+  const lv = loso.map((r) => r.stages.raw.chunk.balanced_accuracy);
+  const lvPost = loso.map((r) => r.stages.spatial.chunk.balanced_accuracy);
   const pub = D.published.within.within_ibl;
-  const ch = loso.map((r) => r.stages[st.stage].chunk.chance);
+  const ch = loso.map((r) => r.stages.raw.chunk.chance);
   const chanceRange = Math.min(...ch) === Math.max(...ch) ? Math.min(...ch).toFixed(2) : `${Math.min(...ch).toFixed(2)} to ${Math.max(...ch).toFixed(2)}`;
+  const below = lv.filter((v) => v < pub).length;
   const side = $('#transfer-side');
   const mini = h('div', { class: 'chart' });
   side.replaceChildren(
     h('div', { class: 'card' },
-      h('h2', { text: 'Within one lab, for scale' }),
+      h('h2', { text: 'Within one lab, per chunk' }),
       h('div', { class: 'big' }, `${mean(lv).toFixed(2)} ± ${sd(lv).toFixed(2)}`, h('small', { text: `balanced accuracy, ${loso.length} held-out IBL sessions` })),
-      h('p', {}, 'The paper reports ', h('b', { text: pub.toFixed(2) }), ' (its Figure 2a). Chance is ', h('b', { text: chanceRange }), ', set by how many regions a session has.'),
+      h('p', {}, 'The paper reports ', h('b', { text: pub.toFixed(2) }), ' before post-processing (Figure 2a); ',
+        below ? `${below === 1 ? 'one session' : `${below} sessions`}, at ${lv.filter((v) => v < pub).map((v) => v.toFixed(2)).join(', ')}, ${below === 1 ? 'is' : 'are'} below it. ` : `all ${loso.length} sessions are above it. `,
+        'Chance is ', h('b', { text: chanceRange }), '.'),
+      h('p', {}, 'Post-processed: ', h('b', { text: `${mean(lvPost).toFixed(2)} ± ${sd(lvPost).toFixed(2)}` }), '. The Stage switch does not change this card.'),
       mini,
     ),
     readingCard(),
@@ -593,7 +629,7 @@ function renderTransfer() {
   const MW = Math.max(220, mini.clientWidth), MH = 58;
   const mlo = Math.min(...lv, pub) - 0.05, mhi = Math.max(...lv, pub) + 0.05;
   const MX = (v) => 8 + (v - mlo) / (mhi - mlo) * (MW - 16);
-  const ms = svg('svg', { width: MW, height: MH, viewBox: `0 0 ${MW} ${MH}`, role: 'img', 'aria-label': `${loso.length} sessions between ${Math.min(...lv).toFixed(2)} and ${Math.max(...lv).toFixed(2)}; the paper reports ${pub.toFixed(2)}.` }, mini);
+  const ms = svg('svg', { width: MW, height: MH, viewBox: `0 0 ${MW} ${MH}`, role: 'img', 'aria-label': `Per chunk, ${loso.length} sessions between ${Math.min(...lv).toFixed(2)} and ${Math.max(...lv).toFixed(2)}; the paper reports ${pub.toFixed(2)} before post-processing.` }, mini);
   svg('line', { x1: 8, x2: MW - 8, y1: 26, y2: 26, stroke: css('--line') }, ms);
   svg('line', { x1: MX(pub), x2: MX(pub), y1: 10, y2: 40, stroke: css('--accent-hi'), 'stroke-dasharray': '4 3', 'stroke-width': 1.5 }, ms);
   axisText(ms, MX(pub), 54, `paper ${pub.toFixed(2)}`, { 'text-anchor': 'middle', fill: css('--accent-hi'), 'font-size': 10.5 });
@@ -601,7 +637,7 @@ function renderTransfer() {
   loso.forEach((r, k) => {
     svg('circle', { cx: MX(lv[k]), cy: 26, r: 5, fill: css('--accent'), 'fill-opacity': 0.75, stroke: css('--surface'), 'stroke-width': 2 }, ms);
     const hit = svg('circle', { cx: MX(lv[k]), cy: 26, r: 12, fill: 'transparent' }, ms);
-    hover(hit, () => [`${lv[k].toFixed(3)} · session ${r.session}`, r.file.split('/').pop()]);
+    hover(hit, () => [`${lv[k].toFixed(3)} per chunk · session ${r.session}`, `${lvPost[k].toFixed(3)} post-processed`, r.file.split('/').pop()]);
   });
 
   // the table view of every dot
@@ -624,13 +660,14 @@ function renderTransfer() {
 
 // ---------------------------------------------------------------- calibration
 
-function reliability(host, title, block, when) {
+function reliability(host, title, block, when, included = null) {
   const rel = block[`reliability_${when}`];
   const ece = block[`ece_${when}`];
   const wrap = h('div', {});
   wrap.appendChild(h('div', { class: 'calib-head' },
     h('h3', { text: title }),
-    h('span', { class: 'chip' }, 'ECE ', h('b', { text: ece.toFixed(2) }), ` · ${int(block.n_samples)} chunks`)));
+    h('span', { class: 'chip', title: included ? included.title : null },
+      'ECE ', h('b', { text: ece.toFixed(2) }), ` · ${int(block.n_samples)} chunks${included ? ` incl. ${included.label}` : ''}`)));
   const box = h('div', { class: 'chart' });
   wrap.appendChild(box);
   host.appendChild(wrap);
@@ -687,8 +724,19 @@ function renderCalib() {
   const host = $('#calib-charts');
   host.replaceChildren();
   const [train, test] = DIR_LABEL[st.dir].split(' → ');
+  // Calibration scores every test chunk, so it counts the chunks the four-class view on the
+  // Probes tab leaves out (Allen's CA2); the chip says so and its title gives the detail.
+  const P = D.probes[st.dir];
+  const extra = C.cross_lab.n_samples - D.chunks[tag].n_chunks;
+  // The other direction tests on every probe of this direction's training lab.
+  const trainHas = D.probes[Object.keys(DIR_LABEL).find((d) => d !== st.dir)].excluded.channels > 0;
+  const cls = P.excluded.classes.join(', ');
+  const included = extra > 0 ? {
+    label: cls,
+    title: `All ${int(C.cross_lab.n_samples)} ${test} chunks, including the ${int(extra)} from ${P.excluded.channels} ${cls} channels that the four-class view on the Probes tab leaves out.${trainHas ? '' : ` ${train} has no ${cls} channels, so the model never saw that class in training.`}`,
+  } : null;
   reliability(host, `In lab: held-out ${train} session`, C.in_lab, st.when);
-  reliability(host, `Across labs: every ${test} probe`, C.cross_lab, st.when);
+  reliability(host, `Across labs: every ${test} probe`, C.cross_lab, st.when, included);
   const o = C.cross_lab_oracle;
   $('#calib-side').replaceChildren(
     h('div', { class: 'card' },
@@ -699,6 +747,7 @@ function renderCalib() {
         h('tr', {}, h('td', { text: 'across labs' }), h('td', { text: C.cross_lab.ece_before.toFixed(2) }), h('td', { text: C.cross_lab.ece_after.toFixed(2) })),
       ),
       h('p', {}, 'Accuracy across labs is ', h('b', { text: C.cross_lab.accuracy.toFixed(2) }), ' at a mean confidence of ', h('b', { text: C.cross_lab[`mean_confidence_${st.when}`].toFixed(2) }), st.when === 'after' ? ' with the in-lab temperature.' : ' with no temperature.'),
+      included ? h('p', { class: 'note' }, `These ${int(C.cross_lab.n_samples)} chunks include ${included.label}’s ${int(extra)}, which the Probes tab leaves out.`) : null,
     ),
     h('div', { class: 'card' },
       h('h2', { text: 'The temperature it would need' }),
