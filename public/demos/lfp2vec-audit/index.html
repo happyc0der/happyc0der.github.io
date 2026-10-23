@@ -26,7 +26,6 @@
   body { overflow-x: hidden; }
   .app { max-width: 1400px; margin: 0 auto; padding: 14px 16px 12px; }
   .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px; margin-bottom: 14px; }
-  h1 { font: 650 clamp(17px, 2.1vw, 22px)/1.2 var(--sans); letter-spacing: -0.015em; margin: 4px 0 0; }
   .tabs { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: var(--surface); max-width: 100%; overflow-x: auto; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tabs [role="tab"] { flex: none; background: none; border: 0; border-radius: var(--radius-pill); color: var(--muted); padding: 8px 13px; font: 500 12px/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }
@@ -70,7 +69,7 @@
   .linekey { display: inline-block; width: 14px; height: 2px; border-radius: 1px; margin-right: 6px; vertical-align: 3px; }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 12px/1.4 var(--mono); color: var(--text-2); margin: 2px 0 8px; }
   .note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
-  .chip { display: inline-block; padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid var(--line); font: 500 11.5px/1.5 var(--mono); color: var(--text-2); }
+  .chip { display: inline-block; padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid var(--line); font: 500 12px/1.5 var(--mono); color: var(--text-2); }
   .chip b { color: var(--text); font-weight: 600; }
   .calib-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
   @media (min-width: 560px) { .calib-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -79,7 +78,7 @@
 
   .focusable:focus { outline: none; }
   .focusable:focus-visible .plot-frame { stroke: var(--accent); stroke-width: 2; }
-  .tip { position: fixed; z-index: 10; pointer-events: none; max-width: 260px; padding: 7px 9px; border-radius: 8px; background: #221e2f; border: 1px solid var(--axis); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); font: 11.5px/1.45 var(--mono); color: var(--text-2); }
+  .tip { position: fixed; z-index: 10; pointer-events: none; max-width: 260px; padding: 7px 9px; border-radius: 8px; background: #221e2f; border: 1px solid var(--axis); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); font: 12px/1.45 var(--mono); color: var(--text-2); }
   .tip b { color: var(--text); font-weight: 600; }
   .tip[hidden] { display: none; }
   .loading { padding: 40px 0; }
@@ -87,7 +86,7 @@
   .cell { transition: fill 0.15s; }
   .demo-foot a { color: var(--text-2); }
   .values { margin-top: 8px; }
-  .values summary { cursor: pointer; font: 500 11.5px/1.6 var(--mono); color: var(--muted); width: max-content; max-width: 100%; }
+  .values summary { cursor: pointer; font: 500 12px/1.6 var(--mono); color: var(--muted); width: max-content; max-width: 100%; }
   .values summary:hover { color: var(--text); }
   .values .scroll-x { overflow-x: auto; margin-top: 6px; }
   .values table { min-width: 520px; }
@@ -96,7 +95,7 @@
 </head>
 <body>
 <main class="app">
-  <header class="top">
+  <header class="top demo-top">
     <div>
       <div class="label">LFP2Vec audit &middot; the repo's saved results</div>
       <h1>Where cross-lab transfer breaks, and the 100&nbsp;Hz fix</h1>

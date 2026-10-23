@@ -2,10 +2,10 @@
 body { overflow-x: hidden; }
 .wrap { max-width: 1400px; margin: 0 auto; padding: 14px 16px 18px; }
 .top { margin-bottom: 12px; }
-.top h1 { margin: 2px 0 0; font: 700 clamp(19px, 2.4vw, 26px)/1.15 var(--sans); letter-spacing: -0.02em; }
+.top h1 { margin: 2px 0 0; }
 code { font-family: var(--mono); font-size: 0.95em; color: var(--text-2); }
 .note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
-.note.mono { font: 11.5px/1.5 var(--mono); }
+.note.mono { font: 12px/1.5 var(--mono); }
 .firewall { color: var(--text-2); }
 [hidden] { display: none !important; }
 
@@ -14,7 +14,6 @@ code { font-family: var(--mono); font-size: 0.95em; color: var(--text-2); }
 .poster-img { width: auto; height: min(420px, calc(100vh - 170px)); min-height: 260px; aspect-ratio: 720 / 750; border-radius: 8px; border: 1px solid var(--line); opacity: 0.9; }
 .poster-inner { position: relative; z-index: 1; display: grid; justify-items: start; text-align: left; gap: 14px; max-width: 520px; }
 .poster-title { margin: 0; font: 600 clamp(16px, 2vw, 20px)/1.35 var(--sans); color: var(--text); }
-.btn.big { padding: 13px 24px; font-size: 15px; }
 .poster .size { max-width: 520px; margin: 0; }
 
 /* Tabs */

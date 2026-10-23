@@ -15,7 +15,7 @@
   button { font-family: inherit; }
   .wrap { max-width: 1240px; margin: 0 auto; }
 
-  .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+  .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
   .tabs { display: inline-flex; gap: 2px; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 3px; background: var(--surface); }
   .tabs button { background: none; border: 0; border-radius: var(--radius-pill); color: var(--muted); padding: 7px 11px; font: 500 11px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
   .tabs button:hover { color: var(--text); }
@@ -23,8 +23,6 @@
 
   /* Poster */
   .poster { min-height: 420px; align-content: center; }
-  .poster h1 { font-size: clamp(24px, 4.4vw, 38px); line-height: 1.1; }
-  .poster h1 em { font-style: italic; color: var(--accent-hi); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
   .poster .lede { max-width: 560px; color: var(--text-2); margin: 0 auto; }
   .poster .goldens { font: 11px/1.6 var(--mono); color: var(--muted); max-width: 560px; margin: 0 auto; word-break: break-all; }
   .poster .goldens b { color: var(--accent); font-weight: 500; }
@@ -35,7 +33,7 @@
   .note { font-size: 13px; color: var(--muted); }
   .btn.small { padding: 7px 12px; font-size: 12px; }
   .seg button { padding: 7px 10px; }
-  .k { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .k { font: 500 11px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   .ok { color: var(--good); }
   .bad { color: var(--danger); }
   code, .hash { font-family: var(--mono); font-size: 12px; }
@@ -53,7 +51,7 @@
   .hrow { border-top: 1px solid var(--line); padding: 5px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; gap: 2px 10px; }
   .hrow .what { font-size: 12.5px; line-height: 1.35; }
   .hrow .mark { grid-column: 3; grid-row: 1; font: 600 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
-  .hrow .val { font: 11.5px/1.45 var(--mono); color: var(--text-2); white-space: nowrap; }
+  .hrow .val { font: 12px/1.45 var(--mono); color: var(--text-2); white-space: nowrap; }
   .hrow.long .what, .hrow.mismatch .what { grid-column: 1 / 3; }
   .hrow.long .val, .hrow .val.pair { grid-column: 1 / -1; white-space: normal; overflow-wrap: anywhere; min-width: 0; }
   .hrow .val .k { display: inline-block; width: 7.2em; }
@@ -74,21 +72,21 @@
   .side { display: grid; gap: 12px; align-content: start; }
   .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin: 0; }
   .stats div { min-width: 0; }
-  .stats dt { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .stats dt { font: 500 11px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   .stats dd { margin: 2px 0 0; font: 13px/1.35 var(--mono); color: var(--text); overflow-wrap: anywhere; }
   .stats .wide { grid-column: 1 / -1; }
   .spark { width: 100%; height: 44px; display: block; }
   .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
   .swatches button { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
   .swatches button[aria-pressed="true"] { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg) inset; }
-  .readout { font: 11.5px/1.5 var(--mono); color: var(--muted); min-height: 3em; }
+  .readout { font: 12px/1.5 var(--mono); color: var(--muted); min-height: 3em; }
 
   /* Lockstep */
   .verdict { font-size: 17px; font-weight: 600; }
   .log-wrap { overflow-x: auto; max-width: 100%; }
-  table.log { width: 100%; border-collapse: collapse; font: 11.5px/1.5 var(--mono); }
-  @media (max-width: 520px) { table.log { font-size: 10.5px; } table.log td, table.log th { padding: 3px 4px; } }
-  table.log th { text-align: left; font-weight: 500; color: var(--muted); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  table.log { width: 100%; border-collapse: collapse; font: 12px/1.5 var(--mono); }
+  @media (max-width: 520px) { table.log { font-size: 11px; } table.log td, table.log th { padding: 3px 4px; } }
+  table.log th { text-align: left; font-weight: 500; color: var(--muted); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 6px; border-bottom: 1px solid var(--line); }
   table.log td { padding: 3px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   table.log tr.diff td { color: var(--danger); }
   table.log tr.inj td:first-child::after { content: ' +1'; color: var(--accent); }
@@ -137,7 +135,7 @@
   @media (max-width: 520px) {
     body { padding: 12px 16px 10px; }
     .top { margin-bottom: 10px; gap: 8px 16px; }
-    .tabs button { padding: 7px 9px; font-size: 10.5px; }
+    .tabs button { padding: 7px 9px; font-size: 11px; }
     .seg button { padding: 7px 8px; font-size: 11px; }
     .poster { min-height: 300px; }
     .summary { margin-bottom: 8px; }
@@ -150,7 +148,7 @@
     .stats dd { font-size: 12px; }
     .moves { max-height: 62px; }
     .modlog { height: 58px; }
-    .demo-foot { font-size: 10.5px; margin-top: 12px; }
+    .demo-foot { font-size: 11px; margin-top: 12px; }
   }
 </style>
 </head>
@@ -169,8 +167,11 @@
 </svg>
 
 <main class="wrap" id="app">
-  <header class="top">
-    <p class="label">Atlas · C++23 engine, compiled to WebAssembly</p>
+  <header class="top demo-top">
+    <div>
+      <p class="label">Atlas · C++23 engine, compiled to WebAssembly</p>
+      <h1 id="poster-title">Atlas, <em>in your browser</em></h1>
+    </div>
     <div class="tabs" role="tablist" aria-label="Demo sections" id="tabs" hidden>
       <button role="tab" id="tab-hashes" aria-controls="p-hashes" aria-selected="true" data-tab="hashes">Hashes</button>
       <button role="tab" id="tab-lab" aria-controls="p-lab" aria-selected="false" tabindex="-1" data-tab="lab">Lab</button>
@@ -180,10 +181,9 @@
   </header>
 
   <section class="poster" id="poster" aria-labelledby="poster-title">
-    <h1 id="poster-title">Atlas, <em>in your browser</em></h1>
     <p class="lede">The engine's deterministic simulation kernel, the lab's million-cell world and the chess rules, compiled from the two repositories with em++. Start runs the three golden scenarios here and compares their hashes with the values recorded natively.</p>
     <p class="goldens">recorded: <b>0xAA82430DE2321AFF</b> · <b>0x1514CC4B3F41D18E</b> · <b>0xBAEC29542FFBAA76</b></p>
-    <button class="btn primary" id="start" type="button">Start</button>
+    <button class="btn primary big" id="start" type="button">Start</button>
     <p class="size">about 420 KB of WebAssembly and an 8 KB mod · single-threaded</p>
     <div class="progress" id="progress" hidden><i id="progress-bar"></i></div>
     <p class="status" id="load-status" role="status" aria-live="polite"></p>

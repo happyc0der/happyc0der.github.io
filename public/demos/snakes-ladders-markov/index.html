@@ -17,7 +17,6 @@
   body { padding: 14px; }
   .wrap { max-width: 1280px; margin: 0 auto; }
   h1, h2, h3, p { margin: 0; }
-  h1 { font-size: clamp(17px, 2.1vw, 21px); font-weight: 650; line-height: 1.25; letter-spacing: -0.01em; }
   h2 { font-size: 14px; font-weight: 620; }
   code, .mono { font-family: var(--mono); }
   code { font-size: 0.92em; color: var(--accent-hi); }
@@ -41,7 +40,6 @@
   .poster p { max-width: 60ch; color: var(--text-2); font-size: 13.5px; }
   .poster .progress { margin: 2px auto 0; }
   .poster[data-state="idle"] .progress, .poster[data-state="idle"] .status { visibility: hidden; }
-  .poster .btn.primary { font-size: 14px; padding: 11px 20px; }
   .btn[aria-disabled="true"] { opacity: 0.6; cursor: progress; }
 
   /* App layout: board on the left, numbers on the right; one column under 900 px. */
@@ -93,7 +91,7 @@
   .tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; align-content: start; min-width: 0; }
   .tile strong { font: 680 clamp(18px, 2.3vw, 24px)/1.1 var(--mono); color: var(--text); letter-spacing: -0.02em; overflow-wrap: anywhere; }
   .tile strong.small { font-size: clamp(14px, 1.7vw, 17px); }
-  .tile .sub { font: 10.5px/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .tile .sub { font: 11px/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
 
   .note { font: 12px/1.5 var(--sans); color: var(--text-2); padding: 9px 12px; border-radius: var(--radius); border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
   .note code { color: var(--warn); }
@@ -141,7 +139,7 @@
 </head>
 <body>
 <main class="wrap">
-  <header class="top">
+  <header class="top demo-top">
     <div>
       <p class="label">Snakes and Ladders &middot; a 101-state Markov chain</p>
       <h1>Exact game length for any die, from the repo&rsquo;s <code>model.py</code> in your browser</h1>
@@ -151,7 +149,7 @@
   <section class="poster" id="poster" data-state="idle" aria-labelledby="poster-title">
     <h2 id="poster-title">Run the model</h2>
     <p>Starts Python in this page (Pyodide 0.29.5 with NumPy), imports the repo&rsquo;s <code>model.py</code> and <code>simulation.py</code> unmodified, and builds the 101&times;101 transition matrix. Then change the die from d1 to d24, scrub through turns, sample games from the chain, roll real dice with <code>simulation.py</code>, and run the repo&rsquo;s tests.</p>
-    <button class="btn primary" id="start" type="button">Start Python</button>
+    <button class="btn primary big" id="start" type="button">Start Python</button>
     <p class="size">About 8.1&nbsp;MB from cdn.jsdelivr.net, cached after the first run. The optional test run adds about 1.6&nbsp;MB.</p>
     <div class="progress" aria-hidden="true"><i id="bar"></i></div>
     <p class="status" id="load-status" role="status" aria-live="polite"></p>

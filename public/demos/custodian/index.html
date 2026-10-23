@@ -13,14 +13,12 @@
   body { padding: 12px 16px; }
   .small { font-size: 12px; }
   code { font: 12px/1.4 var(--mono); color: var(--accent-hi); }
-  h1 { margin: 0; font-size: clamp(26px, 5vw, 40px); letter-spacing: -0.03em; line-height: 1.05; }
-  h1 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; color: var(--accent); }
 
   /* Poster */
   .poster { min-height: min(560px, calc(100vh - 110px)); align-content: center; }
   .poster p { margin: 0; max-width: 58ch; color: var(--text-2); }
   .poster ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 640px; }
-  .poster li { font: 11.5px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 6px 10px; background: rgba(11, 10, 16, 0.4); }
+  .poster li { font: 12px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 6px 10px; background: rgba(11, 10, 16, 0.4); }
 
   /* App shell */
   #app { display: flex; flex-direction: column; gap: 10px; }
@@ -134,9 +132,11 @@
 </style>
 </head>
 <body>
-<div id="poster" class="poster">
+<header class="demo-top">
   <p class="label">Live demo · runs entirely in this tab</p>
   <h1>Custodian, <em>in your browser</em></h1>
+</header>
+<div id="poster" class="poster">
   <p>The repo's MCP server, recall sweeper and matcher start in this page, add a sample household through <code>add_item</code>, and check it against the CPSC, NHTSA and openFDA responses recorded in the repo's test fixtures, served by a stand-in for the feeds written for this demo. Anything the recordings don't cover gets an empty or not-found answer, so it shows no recalls here, whatever the live feeds say. The repo's Preact MCP App draws each tool result on an Echo Show style screen.</p>
   <ul aria-label="What runs">
     <li>MCP server + client in the page</li>
@@ -144,7 +144,7 @@
     <li>sweeper + MiniSearch matcher</li>
     <li>recorded feeds, no outside requests</li>
   </ul>
-  <button type="button" class="btn primary" id="start">Start the server</button>
+  <button type="button" class="btn primary big" id="start">Start the server</button>
   <p class="size" id="size-note">Downloads about 1.2 MB (about 320 KB compressed) from this site. No live feeds, no sign-in, no model.</p>
   <div class="progress" id="progress" hidden><i></i></div>
   <p class="status" id="status" role="status" aria-live="polite"></p>

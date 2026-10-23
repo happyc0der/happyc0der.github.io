@@ -11,7 +11,7 @@
 </head>
 <body>
 <main class="wrap">
-  <header class="top">
+  <header class="top demo-top">
     <div>
       <p class="label">Live demo · one-time-pad allocation</p>
       <h1>You are the network.</h1>
@@ -25,7 +25,7 @@
 
   <section class="poster" id="poster" aria-labelledby="poster-title">
     <div class="strip" id="posterStrip" aria-hidden="true"></div>
-    <button class="btn primary" id="start" type="button" hidden>Start Python</button>
+    <button class="btn primary big" id="start" type="button" hidden>Start Python</button>
     <p class="lede" id="poster-title">Five parties share a pool of one-time pads, and no pad may ever be used twice. You send their messages and choose which undelivered one the network hands over next. The repo's own protocol code picks every pad, and each one is checked against every pad used before it.</p>
     <p class="size">Downloads Pyodide 0.29.5 from cdn.jsdelivr.net, about 5.3 MB compressed, once; your browser caches it. The test job in the CI tab adds pytest, about 1.6 MB more.</p>
     <div class="progress" id="bar" hidden><i></i></div>
