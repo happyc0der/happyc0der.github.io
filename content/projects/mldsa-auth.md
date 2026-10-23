@@ -4,6 +4,7 @@ blurb: Post-quantum mutual authentication and session protocol in C11, with a lo
 repo: https://github.com/happyc0der/mldsa-auth
 demo_embed: /demos/mldsa-auth/
 demo_label: "The repo's own C11 handshake and record layer (src/protocol and src/crypto with liboqs 0.16.0 and libsodium 1.0.22), compiled to WebAssembly with its pinned Emscripten 6.0.9 and driven by a small published shim, plus its unchanged test_handshake.c and test_session.c; both parties run in this tab and every timing is measured in your browser."
+demo_kind: "C11 handshake compiled to WebAssembly"
 demo_height: 860
 year: 2026
 order: 1

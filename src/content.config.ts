@@ -13,6 +13,8 @@ const projects = defineCollection({
     demo_embed: z.string().optional(),     // e.g. /demos/<slug>/
     demo_label: z.string().optional(),     // one sentence saying exactly what runs (shown under the demo)
     demo_height: z.number().optional(),    // iframe height in px, default 640
+    demo_kind: z.string().optional(),      // six words or fewer from demo_label, for the home page's demo rows
+    demo_poster: z.string().optional(),    // a screenshot of the running demo, /img/demo/<slug>.jpg (npm run images)
     image: z.string().optional(),
     year: z.number(),
     order: z.number().default(99),

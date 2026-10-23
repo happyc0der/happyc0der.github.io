@@ -5,6 +5,7 @@ repo: https://github.com/happyc0der/ephys-mcp
 image: /img/ephys-mcp.png
 demo_embed: /demos/ephys-mcp/
 demo_label: "ephys-mcp v0.5.1's Python source, byte-identical to the tag, running in Pyodide on its synthetic motor-cortex source: you call 20 of its 24 tool functions directly (no MCP transport, no LLM; spike sorting, DANDI file listing and the live-stream tools are off), with demo stand-ins for the MCP SDK and httpx, a capture module in place of plots.py so figures are SVG drawn from the arrays its plot tools produce, and one np.repeat shim for 32-bit WebAssembly; every number is computed in your browser on simulated data."
+demo_kind: "v0.5.1's Python source in Pyodide"
 demo_height: 760
 year: 2026
 order: 13

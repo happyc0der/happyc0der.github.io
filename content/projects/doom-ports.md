@@ -6,6 +6,7 @@ image: /img/doom-ports.png
 demo: https://apps.garmin.com/apps/f81aaa08-71a6-4bc2-8faa-716f37a8ad44
 demo_embed: /demos/doom-ports/
 demo_label: "DOOMCE's unmodified src/main.c, the same C file that builds the calculator program, compiled to WebAssembly through a browser version of the repo's SDL2 host harness; it runs at your browser's speed under a frame cap, not on an emulated eZ80, and the watch port is not included."
+demo_kind: "Unmodified src/main.c compiled to WebAssembly"
 demo_height: 700
 year: 2026
 order: 4
