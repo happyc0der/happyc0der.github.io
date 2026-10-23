@@ -1,0 +1,12 @@
+{
+  "name": "gtnh-agent-browser-demo-verify",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "description": "Reference run of the demo entry in Node with the real better-sqlite3 and the GTNH knowledge base, to diff against the browser bundle.",
+  "devDependencies": {
+    "better-sqlite3": "13.0.3",
+    "esbuild": "0.28.2",
+    "zod": "4.6.5"
+  }
+}
