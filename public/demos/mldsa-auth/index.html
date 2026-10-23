@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mldsa-auth handshake demo</title>
+<meta name="description" content="mldsa-auth's C11 handshake and record layer compiled to WebAssembly; both parties run in this tab.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  /* No overscroll-behavior: contain anywhere. Wheel and touch scrolling that
+     the demo cannot use must chain to the project page around the iframe. */
+  [hidden] { display: none !important; }
+  body { padding: 16px; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px; margin-bottom: 8px; }
+  h1 { margin: 0; font: 650 clamp(17px, 2.2vw, 22px)/1.25 var(--sans); letter-spacing: -0.02em; }
+  h1 span { color: var(--accent-hi); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Poster */
+  .poster { min-height: 440px; }
+  .nw { white-space: nowrap; }
+  .poster h2 { margin: 0; font: 650 clamp(18px, 3vw, 26px)/1.2 var(--sans); letter-spacing: -0.02em; max-width: 30ch; }
+  .poster p { margin: 0; color: var(--text-2); max-width: 58ch; }
+  .poster .flow { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font: 12px/1 var(--mono); color: var(--muted); }
+  .poster .flow b { color: var(--text); font-weight: 500; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 6px 10px; background: var(--surface-2); }
+  .poster .loading { display: grid; justify-items: center; gap: 8px; width: 100%; }
+  .poster .progress > i.indet { width: 30%; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+  .tab { background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted);
+         padding: 9px 12px; font: 500 12px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+  .tab:hover { color: var(--text-2); }
+  .tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+  [role="tabpanel"][hidden] { display: none; }
+
+  /* Radio chips */
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { padding: 0; margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chip span { display: inline-block; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--radius-pill);
+               background: var(--surface); color: var(--text-2); font: 500 12.5px/1.2 var(--sans); cursor: pointer; }
+  .chip input:hover + span { border-color: var(--accent); }
+  .chip input:checked + span { background: rgba(167, 139, 250, 0.16); border-color: var(--accent); color: var(--text); }
+  .chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chip.danger input:checked + span { background: rgba(244, 63, 94, 0.12); border-color: var(--danger); }
+  select, input[type="text"] { background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: 13px/1.2 var(--sans); }
+  select:focus-visible, input[type="text"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; margin-bottom: 10px; }
+  .controls .grow { flex: 1 1 420px; min-width: 0; }
+  .field-pick { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .field-pick[hidden] { display: none; }
+
+  /* Parties + timeline share one 3-column grid */
+  .grid3 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr); gap: 6px 10px; align-items: center; }
+  .parties { margin-bottom: 8px; }
+  .party { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; font: 11.5px/1.45 var(--mono); color: var(--muted); }
+  .party b { display: block; font: 600 13px/1.3 var(--sans); color: var(--text); }
+  .party .k { color: var(--text-2); }
+  .party.b { grid-column: 3; }
+  .wire-head { grid-column: 2; text-align: center; }
+  .tl { display: grid; gap: 4px; }
+  .tl .row { min-height: 0; }
+  .tl .row.in { animation: rise 0.28s ease-out both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .act { grid-column: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; font: 11.5px/1.35 var(--mono); min-width: 0; }
+  .act.b { grid-column: 3; }
+  .act.bad { border-color: rgba(244, 63, 94, 0.6); }
+  .act .l1 { display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+  .act .who { color: #140f24; background: var(--accent); border-radius: 4px; padding: 0 5px; font-weight: 700; }
+  .act.b .who { background: var(--accent-hi); }
+  .act .fn { color: var(--text-2); overflow-wrap: anywhere; }
+  .act .ms { margin-left: auto; color: var(--muted); }
+  .act .l2 { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+  .st-ok { color: var(--accent-hi); }
+  .st-bad { color: var(--danger); font-weight: 600; }
+  .lane { grid-column: 2; grid-row: 1; min-width: 0; font: 11.5px/1.35 var(--mono); }
+  .row { grid-auto-flow: dense; }
+  .lane .lbl { display: flex; justify-content: space-between; gap: 8px; color: var(--text); }
+  .lane .lbl .dir { color: var(--muted); }
+  .arrow { position: relative; height: 2px; margin: 4px 6px; background: var(--line); }
+  .arrow::after { content: ""; position: absolute; top: -4px; border: 5px solid transparent; }
+  .arrow.to-b::after { right: -6px; border-left-color: var(--accent); border-right: 0; }
+  .arrow.to-a::after { left: -6px; border-right-color: var(--accent); border-left: 0; }
+  .arrow .pkt { position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent-deep); }
+  .arrow.to-b .pkt { left: calc(100% - 8px); animation: fly-b 0.55s ease-out both; }
+  .arrow.to-a .pkt { left: 0; animation: fly-a 0.55s ease-out both; }
+  @keyframes fly-b { from { left: 0; } to { left: calc(100% - 8px); } }
+  @keyframes fly-a { from { left: calc(100% - 8px); } to { left: 0; } }
+  .hex { color: var(--muted); font-size: 10.5px; overflow-wrap: anywhere; }
+  .tamper { border: 1px solid rgba(244, 63, 94, 0.6); background: rgba(244, 63, 94, 0.08); color: #fda4af; border-radius: 8px; padding: 5px 9px; }
+
+  .summary { margin-top: 8px; padding: 9px 12px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); font-size: 13.5px; }
+  .summary.bad { border-left-color: var(--danger); }
+  .summary p { margin: 0 0 4px; }
+  .summary p:last-child { margin-bottom: 0; }
+  .summary .mono { font-size: 12px; color: var(--text-2); }
+
+  /* Records */
+  .rec-controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: end; margin: 10px 0 12px; }
+  .rec-controls label.txt { display: grid; gap: 6px; min-width: 0; }
+  .rec-controls input[type="text"] { width: 100%; }
+  .sessline { font: 12px/1.5 var(--mono); color: var(--muted); margin-bottom: 4px; }
+  .sessline b { color: var(--text); font-weight: 500; }
+  .reclog { display: grid; gap: 8px; }
+  .recard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; font: 12px/1.45 var(--mono); }
+  .recard.in { animation: rise 0.28s ease-out both; }
+  .recard .t { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; color: var(--text); margin-bottom: 6px; }
+  .bytes { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .bytes span { border: 1px solid var(--line); border-radius: 5px; padding: 2px 6px; color: var(--text-2); background: var(--surface-2); overflow-wrap: anywhere; }
+  .bytes span i { font-style: normal; color: var(--muted); margin-right: 6px; }
+  .bytes .ct { flex: 1 1 200px; }
+  .bytes .flip { border-color: var(--danger); }
+  .recard .res { color: var(--text-2); }
+
+  /* Benchmark */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; }
+  .tile .v { font: 650 22px/1.2 var(--sans); letter-spacing: -0.01em; }
+  .tile .v small { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .benchgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .spark { position: relative; }
+  .spark svg { display: block; max-width: 100%; }
+  .tip { position: absolute; pointer-events: none; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 7px; font: 11px/1.3 var(--mono); color: var(--text); white-space: nowrap; transform: translate(-50%, -110%); }
+  .tip[hidden] { display: none; }
+  .phases { display: grid; gap: 5px; font: 11.5px/1.3 var(--mono); }
+  .ph { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 6.5ch; gap: 8px; align-items: center; }
+  .ph .n { color: var(--text-2); overflow-wrap: anywhere; }
+  .ph .n em { font-style: normal; color: var(--muted); }
+  .ph .bar { height: 12px; }
+  .ph .bar i { display: block; height: 100%; min-width: 2px; background: var(--accent); border-radius: 0 4px 4px 0; }
+  .ph .v { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+  .ref { margin-top: 12px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; font-size: 13px; color: var(--text-2); }
+  .ref b { color: var(--text); }
+
+  /* Tests */
+  .testout { margin: 10px 0 0; height: 300px; overflow: auto; background: #08070c; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font: 11.5px/1.5 var(--mono); color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .testout .f { color: var(--danger); }
+  .counts { font: 13px/1.5 var(--mono); color: var(--text); margin-top: 8px; min-height: 1.5em; }
+
+  .btnrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; max-width: 80ch; }
+  .demo-foot a { color: var(--accent); }
+
+  @media (max-width: 719px) {
+    body { padding: 12px; }
+    .grid3 { grid-template-columns: minmax(0, 1fr); }
+    .act, .act.b, .lane, .party.b { grid-column: 1; }
+    .lane { grid-row: auto; padding: 0 4px; }
+    .parties { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .party.b { grid-column: 2; }
+    .wire-head { display: none; }
+    .tab { padding: 9px 9px; letter-spacing: 0.03em; }
+    .rec-controls { grid-template-columns: minmax(0, 1fr); }
+    .benchgrid { grid-template-columns: minmax(0, 1fr); }
+    .testout { height: 260px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .arrow .pkt { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>mldsa-auth <span>post-quantum handshake</span>, both sides in this tab</h1>
+    <div class="label">C11 &rarr; WebAssembly &middot; runs in your browser</div>
+  </header>
+
+  <section id="poster" class="poster" aria-labelledby="poster-h">
+    <h2 id="poster-h">Two parties authenticate with <span class="nw">ML-DSA-65</span> and agree a key from X25519 and <span class="nw">ML-KEM-768</span>.</h2>
+    <div class="flow" aria-hidden="true"><b>ClientHello</b><b>ServerHello + sig_B</b><b>ClientAuth + sig_A</b><b>ChaCha20-Poly1305 records</b></div>
+    <p>The repo's own handshake and record-layer C code, compiled to WebAssembly, plays Device A and Server B. Run it, break it on purpose, and time it on your machine.</p>
+    <div class="btnrow" style="justify-content:center">
+      <button id="start" class="btn primary" type="button">Start the demo</button>
+    </div>
+    <noscript><p class="error">This demo needs JavaScript and WebAssembly.</p></noscript>
+    <div class="size" id="poster-size">Downloads about 0.17 MB of WebAssembly, then generates three ML-DSA-65 keypairs.</div>
+    <div class="loading" id="loading" hidden>
+      <div class="progress" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" id="prog"><i id="prog-bar"></i></div>
+      <div class="status" id="load-status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="app" hidden>
+    <div class="tabs" role="tablist" aria-label="Demo sections">
+      <button class="tab" role="tab" id="t-hs" aria-controls="p-hs" aria-selected="true">Handshake</button>
+      <button class="tab" role="tab" id="t-rec" aria-controls="p-rec" aria-selected="false" tabindex="-1">Records</button>
+      <button class="tab" role="tab" id="t-bench" aria-controls="p-bench" aria-selected="false" tabindex="-1">Bench</button>
+      <button class="tab" role="tab" id="t-tests" aria-controls="p-tests" aria-selected="false" tabindex="-1">Tests</button>
+    </div>
+
+    <!-- Handshake -->
+    <div role="tabpanel" id="p-hs" aria-labelledby="t-hs">
+      <div class="controls">
+        <fieldset class="grow">
+          <legend class="label">What happens on the wire</legend>
+          <div class="chips" id="modes">
+            <label class="chip"><input type="radio" name="mode" value="0" checked><span>Honest run</span></label>
+            <label class="chip danger"><input type="radio" name="mode" value="1"><span>Flip a ServerHello bit</span></label>
+            <label class="chip danger"><input type="radio" name="mode" value="2"><span>A pinned the wrong server key</span></label>
+            <label class="chip danger"><input type="radio" name="mode" value="3"><span>B has no pin for A</span></label>
+            <label class="chip danger"><input type="radio" name="mode" value="4"><span>Forged ClientAuth first</span></label>
+          </div>
+          <div class="field-pick" id="field-pick" hidden>
+            <label class="label" for="field">Byte in</label>
+            <select id="field">
+              <option value="-1">any field (random byte)</option>
+              <option value="0">message type</option>
+              <option value="2">server id</option>
+              <option value="3">X25519 ephemeral key</option>
+              <option value="4">ML-KEM-768 ciphertext</option>
+              <option value="5">nonce</option>
+              <option value="6">session-id echo</option>
+              <option value="7">signature length</option>
+              <option value="8">ML-DSA-65 signature</option>
+            </select>
+          </div>
+        </fieldset>
+        <button id="run-hs" class="btn primary" type="button">Run handshake</button>
+      </div>
+
+      <div class="grid3 parties" id="parties" aria-label="The two parties">
+        <div class="party a"><b>Device A &middot; initiator</b><span id="pa"></span></div>
+        <div class="wire-head label">on the wire</div>
+        <div class="party b"><b>Server B &middot; responder</b><span id="pb"></span></div>
+      </div>
+      <div class="tl" id="timeline" aria-live="polite"></div>
+      <div id="hs-summary"></div>
+    </div>
+
+    <!-- Records -->
+    <div role="tabpanel" id="p-rec" aria-labelledby="t-rec" hidden>
+      <div class="sessline" id="sessline"></div>
+      <div class="rec-controls">
+        <fieldset>
+          <legend class="label">Direction</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="dir" value="0" checked><span>A &rarr; B</span></label>
+            <label class="chip"><input type="radio" name="dir" value="1"><span>B &rarr; A</span></label>
+          </div>
+        </fieldset>
+        <label class="txt"><span class="label">Message</span>
+          <input type="text" id="msg" maxlength="2000" value="hello from device-a" autocomplete="off" spellcheck="false">
+        </label>
+        <button id="send" class="btn primary" type="button">Seal and send</button>
+      </div>
+      <fieldset style="margin-bottom:12px">
+        <legend class="label">In transit</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="rattack" value="0" checked><span>Deliver it</span></label>
+          <label class="chip danger"><input type="radio" name="rattack" value="1"><span>Flip one bit</span></label>
+          <label class="chip danger"><input type="radio" name="rattack" value="2"><span>Deliver it twice</span></label>
+          <label class="chip danger"><input type="radio" name="rattack" value="3"><span>Lose it, send the next</span></label>
+        </div>
+      </fieldset>
+      <div class="reclog" id="reclog" aria-live="polite"></div>
+    </div>
+
+    <!-- Benchmark -->
+    <div role="tabpanel" id="p-bench" aria-labelledby="t-bench" hidden>
+      <div class="btnrow">
+        <button id="run-bench" class="btn primary" type="button">Run 100 handshakes</button>
+        <button id="run-rbench" class="btn" type="button">Seal and open 64 KiB records for 1 s</button>
+        <span class="status" id="bench-status" aria-live="polite"></span>
+      </div>
+      <div id="bench-out"></div>
+      <div class="ref" id="bench-ref">
+        <b>Native reference, from the repo's README:</b> 0.45 ms median handshake and 736 MiB/s record sealing at 64 KiB, in process on an Apple M4 Pro
+        (clang -O3, liboqs's NEON code). The numbers here come from a different build on your machine: liboqs's portable C compiled to WebAssembly,
+        with no SIMD, run by your browser. They sit side by side for context, not as a like-for-like comparison.
+      </div>
+    </div>
+
+    <!-- Tests -->
+    <div role="tabpanel" id="p-tests" aria-labelledby="t-tests" hidden>
+      <div class="btnrow">
+        <button class="btn primary" type="button" data-suite="0">Run tests/test_handshake.c</button>
+        <button class="btn" type="button" data-suite="1">Run tests/test_session.c</button>
+        <span class="status" id="tests-status" aria-live="polite"></span>
+      </div>
+      <p class="note">Two of the repo's test files, compiled unchanged into a second WebAssembly module (about 0.3 MB, fetched on the first press). In the repo each file is one CTest test; the lines below are its individual checks.</p>
+      <div class="counts" id="counts"></div>
+      <pre class="testout" id="testout" tabindex="0" aria-label="Test output"></pre>
+    </div>
+  </section>
+
+  <footer class="demo-foot">
+    <span>What runs: mldsa-auth's <code>src/protocol</code> and <code>src/crypto</code> (C11), with liboqs 0.16.0 and libsodium 1.0.22, compiled to WebAssembly with the repo's pinned Emscripten 6.0.9. Both parties run in a Web Worker in this tab; every timing is measured in your browser.</span>
+    <span>Source: <a href="https://github.com/happyc0der/mldsa-auth/tree/7cb873100a4a165552e485018a4055cca789df48" target="_blank" rel="noopener">happyc0der/mldsa-auth @ 7cb8731</a></span>
+    <span>Demo shim: <a href="src/handshake_demo.c" target="_blank">src/handshake_demo.c</a> &middot; <a href="BUILD.md" target="_blank">BUILD.md</a></span>
+    <span>Licence: GPL-3.0. The .wasm files combine mldsa-auth (GPL-3.0), liboqs (MIT) and libsodium (ISC), so they are covered by the GPL; the source is linked above.</span>
+  </footer>
+</div>
+<!-- ?v= is a build tag: bump it whenever any file in this folder changes (BUILD.md). -->
+<script type="module" src="app.js?v=60180d1b"></script>
+</body>
+</html>
