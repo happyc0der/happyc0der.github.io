@@ -62,8 +62,9 @@ namespace sim = atlas::sim;
 namespace lab = atlas::lab;
 namespace chess = atlas::chess;
 
-// Output slots JavaScript reads after a call: 64-bit values and one string.
+// Output slots JavaScript reads after a call: 64-bit values, doubles and one string.
 std::array<std::uint64_t, 32> g_u64{};
+std::array<double, 8> g_f64{};
 std::string g_text;
 
 const bool kMainThreadMarked = [] {
@@ -426,6 +427,7 @@ std::array<std::uint8_t, 96> g_board{};
 extern "C" {
 
 EMSCRIPTEN_KEEPALIVE std::uint64_t* web_u64() { return g_u64.data(); }
+EMSCRIPTEN_KEEPALIVE double* web_f64() { return g_f64.data(); }
 EMSCRIPTEN_KEEPALIVE const char* web_text() { return g_text.c_str(); }
 EMSCRIPTEN_KEEPALIVE int web_text_len() { return static_cast<int>(g_text.size()); }
 EMSCRIPTEN_KEEPALIVE std::uint8_t* web_alloc(int bytes) {
@@ -557,34 +559,67 @@ EMSCRIPTEN_KEEPALIVE int lab_paint(int cx, int cy, int radius, int colour) {
     return accepted;
 }
 
-/// bench_simulation.cpp's "simulation/tick" at one size: a fresh world, seed 11, no per-system
-/// hashes, `warmup` untimed steps and then the median of `iterations` timed ones, in ms.
-EMSCRIPTEN_KEEPALIVE double lab_bench(std::uint32_t side, std::uint32_t chunk, int iterations, int warmup) {
+/// bench_simulation.cpp's "simulation/tick" scenario at one size: a fresh world, seed 11, no
+/// per-system hashes, `warmup` untimed steps.
+///
+/// The native harness times every tick on its own. A page served without cross-origin isolation
+/// (GitHub Pages cannot send those headers) gets performance.now(), and so emscripten_get_now(),
+/// rounded to 100 us or coarser, which is longer than a whole tick of the smaller worlds. So the
+/// ticks are timed in batches, with one pair of clock reads per batch: the batch length doubles
+/// until a single batch takes at least `target_ms` (those ticks are extra warm-up), then
+/// `batches` batches of that length are timed. Returns the median of the batch means, in ms per
+/// tick. f64[1] and f64[2] are the lowest and highest batch mean, u64[1] the ticks per batch and
+/// u64[3] every tick stepped including warm-up.
+EMSCRIPTEN_KEEPALIVE double lab_bench(std::uint32_t side, std::uint32_t chunk, int warmup, int batches,
+                                      double target_ms) {
     auto bench = make_lab({.width = side, .height = side, .chunk_size = chunk, .seed = 11}, 11, false);
     if (!bench) {
         return -1.0;
     }
-    for (int i = 0; i < warmup; ++i) {
-        if (!bench->kernel->step()) {
-            return -1.0;
-        }
-    }
-    std::vector<double> samples;
-    for (int i = 0; i < iterations; ++i) {
+    std::uint64_t stepped = 0;
+    const auto run = [&](std::uint64_t ticks) -> std::optional<double> {
         const double t0 = emscripten_get_now();
-        const auto report = bench->kernel->step();
-        samples.push_back(emscripten_get_now() - t0);
-        if (!report) {
-            set_error(report.error());
+        for (std::uint64_t i = 0; i < ticks; ++i) {
+            const auto report = bench->kernel->step();
+            if (!report) {
+                set_error(report.error());
+                return std::nullopt;
+            }
+            g_u64[0] = report->state_hash;
+        }
+        stepped += ticks;
+        return emscripten_get_now() - t0;
+    };
+    if (!run(static_cast<std::uint64_t>(std::max(warmup, 0)))) {
+        return -1.0;
+    }
+    std::uint64_t per_batch = 1;
+    for (;;) {
+        const auto ms = run(per_batch);
+        if (!ms) {
             return -1.0;
         }
-        g_u64[0] = report->state_hash;
+        if (*ms >= target_ms || per_batch >= (1ULL << 20)) {
+            break;
+        }
+        per_batch *= 2;
     }
-    std::ranges::sort(samples);
-    const std::size_t n = samples.size();
-    g_u64[1] = static_cast<std::uint64_t>(samples.front() * 1000.0);
-    g_u64[2] = static_cast<std::uint64_t>(samples.back() * 1000.0);
-    return n % 2 == 1 ? samples[n / 2] : (samples[(n / 2) - 1] + samples[n / 2]) / 2.0;
+    std::vector<double> means;
+    for (int b = 0; b < std::max(batches, 1); ++b) {
+        const auto ms = run(per_batch);
+        if (!ms) {
+            return -1.0;
+        }
+        means.push_back(*ms / static_cast<double>(per_batch));
+    }
+    std::ranges::sort(means);
+    const std::size_t n = means.size();
+    g_f64[1] = means.front();
+    g_f64[2] = means.back();
+    g_u64[1] = per_batch;
+    g_u64[2] = n;
+    g_u64[3] = stepped;
+    return n % 2 == 1 ? means[n / 2] : (means[(n / 2) - 1] + means[n / 2]) / 2.0;
 }
 
 // ---------------------------------------------------------------- lockstep
@@ -782,16 +817,38 @@ EMSCRIPTEN_KEEPALIVE int chess_end_tick(int has_person, int from, int to, int pr
     return n;
 }
 
-/// perft from a FEN at the scratch pointer. Nodes in u64[0]; returns milliseconds.
-EMSCRIPTEN_KEEPALIVE double chess_perft(const char* fen, int len, int depth) {
+/// perft from a FEN at the scratch pointer. Nodes of one run in u64[0]; returns ms per run.
+///
+/// As in lab_bench, the browser's clock may be too coarse to time one shallow perft, so runs
+/// are timed in batches with one pair of clock reads: the batch doubles until it takes at least
+/// `target_ms`, and that batch's time is divided by its runs. u64[1] is the runs in it. Every
+/// run's count is added up and checked, so a run cannot be skipped unnoticed.
+EMSCRIPTEN_KEEPALIVE double chess_perft(const char* fen, int len, int depth, double target_ms) {
     auto position = chess::parse_fen(std::string_view(fen, static_cast<std::size_t>(len)));
     if (!position) {
         set_error(position.error());
         return -1.0;
     }
-    const double t0 = emscripten_get_now();
-    g_u64[0] = chess::perft(*position, std::clamp(depth, 1, 6));
-    return emscripten_get_now() - t0;
+    const int d = std::clamp(depth, 1, 6);
+    std::uint64_t nodes = 0;
+    for (std::uint64_t runs = 1;; runs *= 2) {
+        std::uint64_t total = 0;
+        const double t0 = emscripten_get_now();
+        for (std::uint64_t i = 0; i < runs; ++i) {
+            total += chess::perft(*position, d);
+        }
+        const double ms = emscripten_get_now() - t0;
+        nodes = total / runs;
+        if (nodes * runs != total) {
+            g_text = "perft runs disagreed";
+            return -1.0;
+        }
+        if (ms >= target_ms || runs >= (1ULL << 24)) {
+            g_u64[0] = nodes;
+            g_u64[1] = runs;
+            return ms / static_cast<double>(runs);
+        }
+    }
 }
 
 // ---------------------------------------------------------------- mod host, simulation side

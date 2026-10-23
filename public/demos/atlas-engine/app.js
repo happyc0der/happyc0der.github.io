@@ -8,18 +8,57 @@ import { ModHostStandIn } from './modhost.js';
 
 const $ = (id) => document.getElementById(id);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const narrow = window.matchMedia('(max-width: 520px)');
 
 let A = null;           // the Emscripten module
 let modBytes = null;    // chess_opponent.wasm
 let modSha = '';
 
 const u64 = () => new BigUint64Array(A.HEAPU8.buffer, A._web_u64(), 32);
+const f64 = () => new Float64Array(A.HEAPU8.buffer, A._web_f64(), 8);
 const utf8 = new TextDecoder();
 const text = () => utf8.decode(A.HEAPU8.slice(A._web_text(), A._web_text() + A._web_text_len()));
 const hex = (v) => '0x' + BigInt.asUintN(64, BigInt(v)).toString(16).toUpperCase().padStart(16, '0');
 const kb = (n) => `${Math.round(n / 1024)} KB`;
-const fmtMs = (ms) => (ms < 0.1 ? `${(ms * 1000).toFixed(1)} µs` : ms < 1 ? `${Math.round(ms * 1000)} µs` : ms < 10 ? `${ms.toFixed(2)} ms` : `${ms.toFixed(1)} ms`);
+const fmtMs = (ms) => (ms < 0.001 ? `${(ms * 1000).toFixed(2)} µs` : ms < 0.1 ? `${(ms * 1000).toFixed(1)} µs` : ms < 1 ? `${Math.round(ms * 1000)} µs` : ms < 10 ? `${ms.toFixed(2)} ms` : `${ms.toFixed(1)} ms`);
 const nf = new Intl.NumberFormat('en-US');
+
+// ------------------------------------------------------------------------------- the clock
+
+// The wasm's emscripten_get_now() is performance.now(). A page without cross-origin isolation,
+// which GitHub Pages cannot provide, gets that clock rounded: to 100 µs in Chromium, and as much
+// as 1 ms elsewhere. The page measures the step once and never reports a time finer than it.
+// A single tick is printed as a figure only when it spans at least RESOLVE steps (an error under
+// a tenth); the benchmark and perft time batches of at least a hundred steps (under 2%), see
+// lab_bench and chess_perft in build/atlas_web.cpp; anything shorter is shown with its error.
+const RESOLVE = 20;
+let clockStep = 0.1;
+
+function measureClockStep() {
+  let best = Infinity;
+  for (let k = 0; k < 12; k++) {
+    const a = performance.now();
+    let b = a;
+    while (b === a) b = performance.now();
+    best = Math.min(best, b - a);
+  }
+  // b - a is a difference of rounded doubles (0.09999… for 100 µs); keep three figures.
+  return Number(best.toPrecision(3));
+}
+
+const clockText = () => `${fmtMs(clockStep)} steps${self.crossOriginIsolated ? '' : ' (no cross-origin isolation)'}`;
+// How long each timed batch must last, in ms: a hundred clock steps, between 20 and 100 ms.
+const batchTarget = () => Math.min(100, Math.max(20, 100 * clockStep));
+
+// One measured interval, said no more finely than the clock allows. Each reading can be off by
+// up to a step (Chromium rounds to the step above or below at a random point), so a difference
+// of two readings is good to two steps.
+function fmtSpan(ms) {
+  const err = 2 * clockStep;
+  if (ms < err) return `under ${fmtMs(err)}`;
+  if (ms < RESOLVE * clockStep) return `${fmtMs(ms)} ± ${fmtMs(err)}`;
+  return fmtMs(ms);
+}
 
 function fatal(message) {
   const box = $('fatal');
@@ -222,7 +261,7 @@ function runGoldens() {
     h.textContent = g.title;
     const took = document.createElement('span');
     took.className = 'took';
-    took.textContent = fmtMs(ms);
+    took.textContent = fmtSpan(ms);
     h.append(took);
     const d = document.createElement('p');
     d.className = 'desc';
@@ -247,17 +286,7 @@ function runGoldens() {
         const x = g.extra(o);
         total++;
         if (!x.ok) bad++;
-        const row = document.createElement('div');
-        row.className = `hrow${x.ok ? '' : ' mismatch'}`;
-        row.innerHTML = '<span class="what"></span><span class="mark"></span><span class="val"></span><span class="val"></span>';
-        row.children[0].textContent = 'final position (FEN) and checkmate';
-        row.children[1].textContent = x.ok ? 'match' : 'MISMATCH';
-        row.children[1].className = `mark ${x.ok ? 'ok' : 'bad'}`;
-        row.children[2].innerHTML = '<span class="k">recorded</span>';
-        row.children[2].append(x.want);
-        row.children[3].innerHTML = '<span class="k">wasm32</span>';
-        row.children[3].append(`${x.fen}${x.mate ? ', white mates' : ', NOT MATE'}`);
-        card.append(row);
+        card.append(hashRow('final position (FEN), white mates', x.want, `${x.fen}${x.mate ? '' : ', NOT MATE'}`, x.ok, true));
       }
     }
     const src = document.createElement('p');
@@ -270,42 +299,60 @@ function runGoldens() {
     ? `All ${total} checks match the values recorded natively.`
     : `${bad} of ${total} checks differ from the recorded values on wasm32.`;
   $('h-summary').className = bad === 0 ? 'ok' : 'bad';
-  $('h-time').textContent = `computed in this browser in ${fmtMs(elapsed)}`;
+  $('h-time').textContent = `computed in this browser in ${fmtSpan(elapsed)} (clock steps: ${fmtMs(clockStep)})`;
   A._web_build_info();
-  $('h-build').textContent = `Build: ${text()}. Hashes are the engine's own (atlas::Hasher, hash version 2), computed by the wasm, not by this page.`;
+  $('h-build').textContent = `Build: ${text()}. Rows show the recorded value; "match" means this wasm32 build computed the same with the engine's atlas::Hasher (hash version 2). A mismatch shows both.`;
 }
 
-function hashRow(what, want, got, ok) {
+// A match prints the one value both sides agree on; a mismatch prints the two that differ.
+function hashRow(what, want, got, ok, long = false) {
   const row = document.createElement('div');
-  row.className = `hrow${ok ? '' : ' mismatch'}`;
+  row.className = `hrow${ok ? '' : ' mismatch'}${long ? ' long' : ''}`;
   const w = document.createElement('span');
   w.className = 'what';
   w.textContent = what;
   const mark = document.createElement('span');
   mark.className = `mark ${ok ? 'ok' : 'bad'}`;
   mark.textContent = ok ? 'match' : 'MISMATCH';
-  const a = document.createElement('span');
-  a.className = 'val';
-  a.innerHTML = '<span class="k">recorded</span>';
-  a.append(hex(want));
-  const b = document.createElement('span');
-  b.className = 'val';
-  b.innerHTML = '<span class="k">wasm32</span>';
-  b.append(hex(got));
-  row.append(w, mark, a, b);
+  const show = (v) => (typeof v === 'string' ? v : hex(v));
+  if (ok) {
+    const v = document.createElement('span');
+    v.className = 'val';
+    v.textContent = show(want);
+    row.append(w, v, mark);
+  } else {
+    const a = document.createElement('span');
+    a.className = 'val pair';
+    a.innerHTML = '<span class="k">recorded</span>';
+    a.append(show(want));
+    const b = document.createElement('span');
+    b.className = 'val pair';
+    b.innerHTML = '<span class="k">wasm32</span>';
+    b.append(show(got));
+    row.append(w, mark, a, b);
+  }
   return row;
 }
 
 // ------------------------------------------------------------------------------- lab
 
-// benchmarks/baselines/mac16-7-appleclang-relwithdebinfo.json, "simulation/tick" medians, and
-// for a million cells the M8 table in docs/PERFORMANCE.md. Apple M4 Pro, AppleClang 21.
+// Recorded native medians, all from atlas-engine benchmarks/baselines/
+// mac16-7-appleclang-relwithdebinfo.json (Apple M4 Pro, AppleClang 21, RelWithDebInfo), the
+// bench_simulation.cpp run whose scenario the Benchmark button repeats: "simulation/tick" for one
+// thread (median_ns 16125, 161167, 1675209) and "simulation/tick_parallel" workers=4 (743333).
+// docs/PERFORMANCE.md's M8 table, which the project page quotes, is a separate run of the
+// million-cell tick: 1.650 ms with no pool, 694 µs on 4 workers. The page names both.
+const NATIVE_SRC = 'benchmarks/baselines/mac16-7-appleclang-relwithdebinfo.json';
 const NATIVE = {
-  100: { chunk: 10, line: '16.1 µs on one thread' },
-  320: { chunk: 32, line: '161 µs on one thread' },
-  // docs/PERFORMANCE.md's M8 table, measured separately: 1.650 ms with no pool, 694 µs on 4.
-  1024: { chunk: 32, line: '1.675 ms on one thread, 743 µs on 4 workers' },
+  100: { chunk: 10, iterations: 200, line: '16.1 µs on one thread' },
+  320: { chunk: 32, iterations: 60, line: '161 µs on one thread' },
+  1024: { chunk: 32, iterations: 12, line: '1.675 ms on one thread, 743 µs on 4 workers' },
 };
+const M8_NOTE = 'The M8 table in docs/PERFORMANCE.md, quoted on the project page, is a separate run: 1.650 ms with no pool, 694 µs on 4 workers.';
+
+function benchIntro() {
+  $('lab-bench-out').textContent = `Native figures: atlas-engine ${NATIVE_SRC} (Apple M4 Pro).${lab.size === 1024 ? ` ${M8_NOTE}` : ''} Benchmark repeats its tick scenario here.`;
+}
 
 const lab = {
   ready: false, size: 1024, mode: 1, playing: false, colour: 1, samples: [],
@@ -338,9 +385,14 @@ function createLab(size) {
   $('lab-hash').textContent = hex(u64()[0]);
   $('lab-tick').textContent = '0';
   $('lab-ms').textContent = '–';
-  $('lab-readout').textContent = `Generated ${nf.format(size * size)} cells in ${fmtMs(made)}. Hover or tap the map to read a cell from the tables.`;
+  $('lab-readout').textContent = `Generated ${nf.format(size * size)} cells in ${fmtSpan(made)}. Hover or tap the map to read a cell from the tables.`;
+  benchIntro();
   drawSpark();
 }
+
+// The live figure times each tick on its own, so it is shown only when a tick spans enough
+// clock steps to be measured; otherwise the page says so and points at the batched benchmark.
+const liveTimed = (ms) => ms >= RESOLVE * clockStep;
 
 function setLabPlaying(on) {
   lab.playing = on;
@@ -357,7 +409,10 @@ function labTick() {
   $('lab-tick').textContent = nf.format(Number(o[1]) + 1);
   $('lab-hash').textContent = hex(o[0]);
   const recent = lab.samples.slice(-60).sort((a, b) => a - b);
-  $('lab-ms').textContent = `${fmtMs(recent[recent.length >> 1])} median of ${recent.length}`;
+  const median = recent[recent.length >> 1];
+  $('lab-ms').textContent = liveTimed(median)
+    ? `${fmtMs(median)} median of ${recent.length}`
+    : `too short to time one tick on this clock (${fmtMs(clockStep)} steps); use Benchmark`;
 }
 
 function labFrame() {
@@ -389,6 +444,15 @@ function drawSpark() {
   g.strokeStyle = '#262233';
   g.lineWidth = 1;
   g.beginPath(); g.moveTo(0, h - 0.5); g.lineTo(w, h - 0.5); g.stroke();
+  const sorted = s.slice().sort((a, b) => a - b);
+  const timed = s.length > 0 && liveTimed(sorted[sorted.length >> 1]);
+  g.fillStyle = '#8f8aa3';
+  g.font = '10px ui-monospace, Menlo, monospace';
+  if (s.length && !timed) {
+    // A line of whole clock steps would draw the clock, not the tick.
+    g.fillText(`not drawn: one tick is under ${RESOLVE} clock steps`, 2, 11);
+    return;
+  }
   if (s.length > 1) {
     g.strokeStyle = '#a78bfa';
     g.lineWidth = 1.5;
@@ -400,8 +464,6 @@ function drawSpark() {
     });
     g.stroke();
   }
-  g.fillStyle = '#8f8aa3';
-  g.font = '10px ui-monospace, Menlo, monospace';
   g.fillText(s.length ? `step ms, last ${s.length} ticks (max ${fmtMs(Math.max(...s))})` : 'step ms per tick', 2, 11);
 }
 
@@ -463,21 +525,26 @@ function wireLab() {
   $('lab-play').addEventListener('click', () => setLabPlaying(!lab.playing));
   $('lab-stepbtn').addEventListener('click', () => { setLabPlaying(false); labTick(); renderLab(); drawSpark(); });
   wireSeg('lab-mode', (v) => { lab.mode = Number(v); renderLab(); });
-  wireSeg('lab-size', (v) => { createLab(Number(v)); renderLab(); $('lab-bench-out').textContent = 'The tick scenario of bench_simulation.cpp: a fresh world, seed 11, median after two warm-up ticks.'; });
+  wireSeg('lab-size', (v) => { createLab(Number(v)); renderLab(); });
   $('lab-bench').addEventListener('click', () => {
     const out = $('lab-bench-out');
     const wasPlaying = lab.playing;
     setLabPlaying(false);
     out.textContent = 'Running…';
     setTimeout(() => {
-      const iterations = { 100: 200, 320: 60, 1024: 12 }[lab.size];
-      const median = A._lab_bench(lab.size, NATIVE[lab.size].chunk, iterations, 2);
-      if (median < 0) { out.textContent = `Failed: ${text()}`; return; }
+      const native = NATIVE[lab.size];
+      const batches = 7;
+      const perTick = A._lab_bench(lab.size, native.chunk, 2, batches, batchTarget());
+      if (perTick < 0) { out.textContent = `Failed: ${text()}`; return; }
       const o = u64();
+      const f = f64();
+      const perBatch = Number(o[1]);
       out.innerHTML = '';
       const strong = document.createElement('strong');
-      strong.textContent = `${fmtMs(median)} median`;
-      out.append(strong, ` over ${iterations} ticks in this browser (min ${fmtMs(Number(o[1]) / 1000)}, max ${fmtMs(Number(o[2]) / 1000)}), one thread. Recorded native, same scenario: ${NATIVE[lab.size].line}.`);
+      strong.textContent = `${fmtMs(perTick)} a tick`;
+      out.append(strong,
+        ` in this browser, one thread: the median of ${batches} batches of ${nf.format(perBatch)} ticks (batch means ${fmtMs(f[1])} to ${fmtMs(f[2])}), each batch timed as a whole on a clock that counts in ${clockText()}.`,
+        ` Recorded native, same scenario: ${native.line}, the median of ${native.iterations} ticks each timed alone (${NATIVE_SRC}, Apple M4 Pro).${lab.size === 1024 ? ` ${M8_NOTE}` : ''}`);
       if (wasPlaying) setLabPlaying(true);
     }, 30);
   });
@@ -581,7 +648,8 @@ function lockTick() {
   if (r === 0) lock.agree++;
   if (r === 1) lock.diverged = { tick: row.tick, desc: text() };
   lock.rows.unshift(row);
-  if (lock.rows.length > 12) lock.rows.pop();
+  // Fewer rows on a phone, so the tab fits the frame there too.
+  while (lock.rows.length > (narrow.matches ? 7 : 12)) lock.rows.pop();
 }
 
 function lockFrame() {
@@ -987,15 +1055,19 @@ function buildPerft() {
       const bytes = new TextEncoder().encode(fen);
       const p = A._web_alloc(bytes.length);
       A.HEAPU8.set(bytes, p);
-      const ms = A._chess_perft(p, bytes.length, depth);
+      const ms = A._chess_perft(p, bytes.length, depth, batchTarget());
       if (ms < 0) { out.textContent = `Failed: ${text()}`; return; }
       const nodes = Number(u64()[0]);
+      const runs = Number(u64()[1]);
       const ok = nodes === counts[depth - 1];
       out.innerHTML = '';
       const s = document.createElement('strong');
       s.className = ok ? 'ok' : 'bad';
       s.textContent = `${nf.format(nodes)} nodes, ${ok ? 'matches' : 'DIFFERS FROM'} the expected ${nf.format(counts[depth - 1])}`;
-      out.append(s, ` · ${name}, depth ${depth}, ${fmtMs(ms)} in this browser (${nf.format(Math.round(nodes / Math.max(ms, 0.001) / 1000))} k nodes/ms). Native reference: depth 3 from the start in 172 µs (macOS release, M22).`);
+      const rate = nodes / ms / 1000;
+      out.append(s,
+        ` · ${name}, depth ${depth}: ${fmtMs(ms)} a run in this browser, ${runs === 1 ? 'one run' : `the mean of ${nf.format(runs)} runs`} timed as a whole on a clock that counts in ${fmtMs(clockStep)} steps (${rate >= 10 ? Math.round(rate) : rate.toFixed(1)} M nodes/s).`,
+        ' Native reference: depth 3 from the start in 172 µs (macOS release, docs/PERFORMANCE.md, M22).');
     }, 30);
   });
 }
@@ -1025,6 +1097,7 @@ async function start() {
   };
   try {
     A = await loadAtlas(status);
+    clockStep = measureClockStep();
     status('Running the golden scenarios', 1);
     $('poster').hidden = true;
     $('tabs').hidden = false;

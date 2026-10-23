@@ -48,10 +48,14 @@
   .scenario h3 { font-size: 15px; display: flex; justify-content: space-between; gap: 8px; }
   .scenario h3 .took { font: 400 11px/1.9 var(--mono); color: var(--muted); }
   .scenario .desc { font-size: 12.5px; color: var(--text-2); margin: 2px 0 8px; }
-  .hrow { border-top: 1px solid var(--line); padding: 6px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
-  .hrow .what { font-size: 12.5px; }
-  .hrow .mark { font: 600 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; align-self: center; grid-row: span 3; }
-  .hrow .val { font: 11.5px/1.45 var(--mono); color: var(--text-2); overflow-wrap: anywhere; min-width: 0; }
+  /* A matching row is one line: what, the value both sides agree on, the mark. A mismatch, or a
+     value too long for the line, goes underneath; a mismatch prints both values. */
+  .hrow { border-top: 1px solid var(--line); padding: 5px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; gap: 2px 10px; }
+  .hrow .what { font-size: 12.5px; line-height: 1.35; }
+  .hrow .mark { grid-column: 3; grid-row: 1; font: 600 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+  .hrow .val { font: 11.5px/1.45 var(--mono); color: var(--text-2); white-space: nowrap; }
+  .hrow.long .what, .hrow.mismatch .what { grid-column: 1 / 3; }
+  .hrow.long .val, .hrow .val.pair { grid-column: 1 / -1; white-space: normal; overflow-wrap: anywhere; min-width: 0; }
   .hrow .val .k { display: inline-block; width: 7.2em; }
   .hrow.mismatch { background: rgba(244, 63, 94, 0.08); }
   .scenario .src { margin-top: 6px; font: 11px/1.5 var(--mono); color: var(--muted); }
@@ -127,11 +131,26 @@
   .error-box { color: var(--danger); font: 12px/1.5 var(--mono); }
 
   .demo-foot a { color: var(--accent); }
+  .demo-foot code { font-size: inherit; }
+  /* Phones: the frame is as tall as on a desktop but much narrower, so trim the spacing and the
+     scrolling lists to keep each tab close to one frame high. */
   @media (max-width: 520px) {
     body { padding: 12px 16px 10px; }
+    .top { margin-bottom: 10px; gap: 8px 16px; }
     .tabs button { padding: 7px 9px; font-size: 10.5px; }
     .seg button { padding: 7px 8px; font-size: 11px; }
     .poster { min-height: 300px; }
+    .summary { margin-bottom: 8px; }
+    .summary strong { font-size: 16px; }
+    .scenarios { gap: 8px; }
+    .scenario { padding: 9px 12px; }
+    .scenario .desc { margin-bottom: 4px; }
+    .two-col { gap: 12px; }
+    .side { gap: 10px; }
+    .stats dd { font-size: 12px; }
+    .moves { max-height: 62px; }
+    .modlog { height: 58px; }
+    .demo-foot { font-size: 10.5px; margin-top: 12px; }
   }
 </style>
 </head>
@@ -217,7 +236,7 @@
         </div>
         <p class="readout" id="lab-readout">Hover or tap the map to read a cell from the tables.</p>
         <div class="row"><button class="btn small" id="lab-bench" type="button">Benchmark this size</button></div>
-        <p class="note" id="lab-bench-out">The tick scenario of bench_simulation.cpp: a fresh world, seed 11, median after two warm-up ticks.</p>
+        <p class="note" id="lab-bench-out">Benchmark repeats bench_simulation.cpp’s tick scenario (a fresh world, seed 11, two warm-up ticks), timing ticks in batches.</p>
       </div>
     </div>
   </section>
@@ -282,7 +301,7 @@
             <select id="pf-depth" aria-label="Depth"></select>
             <button class="btn small" id="pf-run" type="button">Run</button>
           </div>
-          <p class="note" id="pf-out" style="margin-top:8px">Positions and expected counts from sim/tests/test_perft.cpp. Native reference: depth 3 from the start, 172 µs (macOS release, docs/PERFORMANCE.md, M22).</p>
+          <p class="note" id="pf-out" style="margin-top:8px">Positions and expected counts from sim/tests/test_perft.cpp. Shallow counts are timed over many runs, since this browser’s clock is coarse. Native reference: depth 3 from the start, 172 µs (macOS release, docs/PERFORMANCE.md, M22).</p>
         </details>
       </div>
     </div>
@@ -291,8 +310,8 @@
   <p class="error-box" id="fatal" role="alert" hidden></p>
 
   <footer class="demo-foot">
-    <span>Runs Atlas's own C++23 kernel, lab simulation and chess rules, compiled with Emscripten 6.0.9 and run single-threaded (no worker pool). The chess opponent is the committed <code>chess_opponent.wasm</code>, run by the browser behind this page's JavaScript stand-in for the engine's WAMR mod host, without WAMR's per-tick instruction budget. The board, map and charts are drawn by this page, not the SDL_GPU renderer; the map palettes are ported from <code>apps/lab/view</code>.</span>
-    <span>Source: <a href="https://github.com/happyc0der/atlas-engine/tree/0232309e5b92174992e33b898d0409fccab1aba6" target="_blank" rel="noopener">atlas-engine @ 0232309</a> and <a href="https://github.com/happyc0der/atlas-chess/tree/3a543e0133256d66342e05e903270242e31f5669" target="_blank" rel="noopener">atlas-chess @ 3a543e0</a>; this page's glue and build script: <a href="build/atlas_web.cpp" target="_blank" rel="noopener">build/</a>. Licence: GPL-3.0-or-later.</span>
+    <span>Atlas's own C++23 kernel, lab simulation and chess rules, built with Emscripten 6.0.9 and run on one thread. The chess opponent is the committed <code>chess_opponent.wasm</code> behind this page's JavaScript stand-in for the WAMR mod host, with no per-tick instruction budget. Drawn by this page (map palettes ported from <code>apps/lab/view</code>), not the SDL_GPU renderer.</span>
+    <span>Source: <a href="https://github.com/happyc0der/atlas-engine/tree/0232309e5b92174992e33b898d0409fccab1aba6" target="_blank" rel="noopener">atlas-engine @ 0232309</a> · <a href="https://github.com/happyc0der/atlas-chess/tree/3a543e0133256d66342e05e903270242e31f5669" target="_blank" rel="noopener">atlas-chess @ 3a543e0</a> · glue: <a href="build/atlas_web.cpp" target="_blank" rel="noopener">build/</a> · GPL-3.0-or-later</span>
   </footer>
 </main>
 <noscript><p style="padding:16px">This demo needs JavaScript and WebAssembly.</p></noscript>
