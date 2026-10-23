@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas engine demo</title>
+<meta name="description" content="Atlas's C++23 deterministic simulation, lab world and chess rules compiled to WebAssembly, with the repos' golden hashes checked in your browser.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  [hidden] { display: none !important; }
+  body { padding: 14px 16px 12px; }
+  h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  button { font-family: inherit; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+
+  .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+  .tabs { display: inline-flex; gap: 2px; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 3px; background: var(--surface); }
+  .tabs button { background: none; border: 0; border-radius: var(--radius-pill); color: var(--muted); padding: 7px 11px; font: 500 11px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+  .tabs button:hover { color: var(--text); }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: #140f24; }
+
+  /* Poster */
+  .poster { min-height: 420px; align-content: center; }
+  .poster h1 { font-size: clamp(24px, 4.4vw, 38px); line-height: 1.1; }
+  .poster h1 em { font-style: italic; color: var(--accent-hi); font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+  .poster .lede { max-width: 560px; color: var(--text-2); margin: 0 auto; }
+  .poster .goldens { font: 11px/1.6 var(--mono); color: var(--muted); max-width: 560px; margin: 0 auto; word-break: break-all; }
+  .poster .goldens b { color: var(--accent); font-weight: 500; }
+  .poster .progress[hidden] { display: none; }
+
+  .panel-body[hidden] { display: none; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .note { font-size: 13px; color: var(--muted); }
+  .btn.small { padding: 7px 12px; font-size: 12px; }
+  .seg button { padding: 7px 10px; }
+  .k { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .ok { color: var(--good); }
+  .bad { color: var(--danger); }
+  code, .hash { font-family: var(--mono); font-size: 12px; }
+
+  /* Hashes */
+  .summary { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .summary strong { font-size: 18px; font-weight: 600; }
+  .scenarios { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  .scenario { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 11px 14px; }
+  .scenario h3 { font-size: 15px; display: flex; justify-content: space-between; gap: 8px; }
+  .scenario h3 .took { font: 400 11px/1.9 var(--mono); color: var(--muted); }
+  .scenario .desc { font-size: 12.5px; color: var(--text-2); margin: 2px 0 8px; }
+  .hrow { border-top: 1px solid var(--line); padding: 6px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
+  .hrow .what { font-size: 12.5px; }
+  .hrow .mark { font: 600 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; align-self: center; grid-row: span 3; }
+  .hrow .val { font: 11.5px/1.45 var(--mono); color: var(--text-2); overflow-wrap: anywhere; min-width: 0; }
+  .hrow .val .k { display: inline-block; width: 7.2em; }
+  .hrow.mismatch { background: rgba(244, 63, 94, 0.08); }
+  .scenario .src { margin-top: 6px; font: 11px/1.5 var(--mono); color: var(--muted); }
+  .meta-line { margin-top: 10px; font: 11px/1.5 var(--mono); color: var(--muted); }
+
+  /* Lab */
+  .two-col { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 760px) {
+    .two-col { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+    .two-col.media { grid-template-columns: max(260px, min(560px, calc(100vh - 220px), calc(100% - 324px))) minmax(300px, 1fr); }
+  }
+  /* Sized to the iframe: the map and the board never need the frame to scroll on a wide screen. */
+  .map-wrap, .board-wrap { position: relative; width: 100%; max-width: max(260px, min(560px, calc(100vh - 220px))); margin: 0 auto; }
+  .map-wrap canvas { display: block; width: 100%; aspect-ratio: 1; image-rendering: pixelated; border-radius: 6px; background: var(--surface); touch-action: pan-x pan-y pinch-zoom; cursor: crosshair; }
+  .brush { position: absolute; border: 1px solid #fff; box-shadow: 0 0 0 1px #000; pointer-events: none; display: none; }
+  .side { display: grid; gap: 12px; align-content: start; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin: 0; }
+  .stats div { min-width: 0; }
+  .stats dt { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .stats dd { margin: 2px 0 0; font: 13px/1.35 var(--mono); color: var(--text); overflow-wrap: anywhere; }
+  .stats .wide { grid-column: 1 / -1; }
+  .spark { width: 100%; height: 44px; display: block; }
+  .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+  .swatches button { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+  .swatches button[aria-pressed="true"] { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg) inset; }
+  .readout { font: 11.5px/1.5 var(--mono); color: var(--muted); min-height: 3em; }
+
+  /* Lockstep */
+  .verdict { font-size: 17px; font-weight: 600; }
+  .log-wrap { overflow-x: auto; max-width: 100%; }
+  table.log { width: 100%; border-collapse: collapse; font: 11.5px/1.5 var(--mono); }
+  @media (max-width: 520px) { table.log { font-size: 10.5px; } table.log td, table.log th { padding: 3px 4px; } }
+  table.log th { text-align: left; font-weight: 500; color: var(--muted); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  table.log td { padding: 3px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.log tr.diff td { color: var(--danger); }
+  table.log tr.inj td:first-child::after { content: ' +1'; color: var(--accent); }
+  .desc-box { border: 1px solid var(--danger); background: rgba(244, 63, 94, 0.07); border-radius: var(--radius); padding: 10px 12px; font: 12px/1.5 var(--mono); color: var(--text); overflow-wrap: anywhere; }
+  .desc-box[hidden] { display: none; }
+
+  /* Chess */
+  .board { display: grid; grid-template-columns: repeat(8, 1fr); width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+  .sq { position: relative; border: 0; padding: 0; margin: 0; aspect-ratio: 1; cursor: pointer; display: grid; place-items: center; }
+  .sq.l { background: #3a3350; }
+  .sq.d { background: #241f33; }
+  .sq svg { width: 88%; height: 88%; pointer-events: none; }
+  .pw { fill: #f3f1fa; stroke: #15121e; stroke-width: 1.3; stroke-linejoin: round; --pc-cut: #15121e; }
+  .pb { fill: #15121e; stroke: #c4b5fd; stroke-width: 1.6; stroke-linejoin: round; --pc-cut: #c4b5fd; }
+  .sq.last { box-shadow: inset 0 0 0 100px rgba(167, 139, 250, 0.20); }
+  .sq.sel { box-shadow: inset 0 0 0 3px var(--accent-hi); }
+  .sq.check { background: radial-gradient(closest-side, rgba(244, 63, 94, 0.85), rgba(244, 63, 94, 0.15) 75%, transparent); }
+  .sq.dest::after { content: ''; position: absolute; width: 26%; height: 26%; border-radius: 50%; background: rgba(196, 181, 253, 0.55); }
+  .sq.dest.cap::after { width: 84%; height: 84%; background: none; border: 3px solid rgba(196, 181, 253, 0.6); box-sizing: border-box; }
+  .sq:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: -3px; z-index: 1; }
+  .coord { position: absolute; font: 600 9px/1 var(--mono); color: rgba(231, 229, 238, 0.45); pointer-events: none; }
+  .coord.f { right: 3px; bottom: 2px; }
+  .coord.r { left: 3px; top: 3px; }
+  .promo { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(11, 10, 16, 0.72); }
+  .promo[hidden] { display: none; }
+  .promo .choices { display: flex; gap: 8px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }
+  .promo button { width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--line); background: #3a3350; cursor: pointer; padding: 4px; }
+  .promo button svg { width: 100%; height: 100%; }
+  .status-line { font-size: 15px; font-weight: 600; min-height: 1.5em; }
+  .moves { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; font: 12px/1.6 var(--mono); color: var(--text-2); max-height: 98px; overflow: auto; }
+  .moves li { width: 50%; min-width: 9.5em; white-space: nowrap; }
+  .moves .n { display: inline-block; width: 2.6em; color: var(--muted); }
+  .moves .m { color: var(--accent-hi); }
+  .modlog { font: 11px/1.5 var(--mono); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; height: 76px; overflow: auto; white-space: pre-wrap; }
+  details.perft { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; background: var(--surface); }
+  details.perft summary { cursor: pointer; font-weight: 600; font-size: 13.5px; }
+  details.perft .row { margin-top: 8px; }
+  select { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: 12px var(--mono); max-width: 100%; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .error-box { color: var(--danger); font: 12px/1.5 var(--mono); }
+
+  .demo-foot a { color: var(--accent); }
+  @media (max-width: 520px) {
+    body { padding: 12px 16px 10px; }
+    .tabs button { padding: 7px 9px; font-size: 10.5px; }
+    .seg button { padding: 7px 8px; font-size: 11px; }
+    .poster { min-height: 300px; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <!-- Pieces drawn for this demo: simple silhouettes on a 45-unit square. -->
+  <defs>
+    <g id="pc-base"><rect x="11" y="35" width="23" height="4.5" rx="1.6"/></g>
+    <symbol id="pc-p" viewBox="0 0 45 45"><use href="#pc-base"/><circle cx="22.5" cy="14.5" r="5.2"/><path d="M16.5 35c0-6.5 2-11 6-13.5 4 2.5 6 7 6 13.5z"/></symbol>
+    <symbol id="pc-r" viewBox="0 0 45 45"><use href="#pc-base"/><path d="M15 35l1.6-16h11.8L30 35z"/><path d="M13 10h4v3h3v-3h5v3h3v-3h4v9H13z"/></symbol>
+    <symbol id="pc-b" viewBox="0 0 45 45"><use href="#pc-base"/><circle cx="22.5" cy="7.2" r="2.3"/><path d="M22.5 9.5c-5.6 4.4-7.6 9.4-6.6 13.6.8 3.4 3.7 5.4 6.6 5.4s5.8-2 6.6-5.4c1-4.2-1-9.2-6.6-13.6z"/><path d="M16 29h13v3H16zM17.5 32h10l2.5 3H15z"/><path d="M25.2 13.5l-5 6.2" style="fill:none;stroke:var(--pc-cut);stroke-width:1.8"/></symbol>
+    <symbol id="pc-n" viewBox="0 0 45 45"><use href="#pc-base"/><path d="M14.5 35c0-7 2.5-11 6.3-13.6-2.7-.4-5.6.7-8.2 2.9-1.4-3-.6-7 2.4-10.1 1.5-2.6 3.8-4.6 6.5-5.4l1.2-3.3 2.2 3.4c6.5 1.8 10.2 9.2 9.4 26.1z"/><circle cx="19.6" cy="14.6" r="1.4" style="fill:var(--pc-cut);stroke:none"/></symbol>
+    <symbol id="pc-q" viewBox="0 0 45 45"><use href="#pc-base"/><path d="M14 31L10 14.5l5 7.5 1.5-12 3 10.5 3-12.5 3 12.5 3-10.5 1.5 12 5-7.5L31 31z"/><circle cx="10" cy="13.6" r="2"/><circle cx="16.5" cy="9.2" r="2"/><circle cx="22.5" cy="7.2" r="2"/><circle cx="28.5" cy="9.2" r="2"/><circle cx="35" cy="13.6" r="2"/><rect x="14" y="31" width="17" height="4" rx="1"/></symbol>
+    <symbol id="pc-k" viewBox="0 0 45 45"><use href="#pc-base"/><path d="M21.2 5h2.6v4h3.7v2.6h-3.7V17h-2.6v-5.4h-3.7V9h3.7z"/><path d="M14 32c-2.2-5.6-1.3-11 2.8-13 2.4-1.2 4.4-.3 5.7 1.8 1.3-2.1 3.3-3 5.7-1.8 4.1 2 5 7.4 2.8 13z"/><rect x="14" y="31.5" width="17" height="3.5" rx="1"/></symbol>
+  </defs>
+</svg>
+
+<main class="wrap" id="app">
+  <header class="top">
+    <p class="label">Atlas · C++23 engine, compiled to WebAssembly</p>
+    <div class="tabs" role="tablist" aria-label="Demo sections" id="tabs" hidden>
+      <button role="tab" id="tab-hashes" aria-controls="p-hashes" aria-selected="true" data-tab="hashes">Hashes</button>
+      <button role="tab" id="tab-lab" aria-controls="p-lab" aria-selected="false" tabindex="-1" data-tab="lab">Lab</button>
+      <button role="tab" id="tab-lock" aria-controls="p-lock" aria-selected="false" tabindex="-1" data-tab="lock">Lockstep</button>
+      <button role="tab" id="tab-chess" aria-controls="p-chess" aria-selected="false" tabindex="-1" data-tab="chess">Chess</button>
+    </div>
+  </header>
+
+  <section class="poster" id="poster" aria-labelledby="poster-title">
+    <h1 id="poster-title">Atlas, <em>in your browser</em></h1>
+    <p class="lede">The engine's deterministic simulation kernel, the lab's million-cell world and the chess rules, compiled from the two repositories with em++. Start runs the three golden scenarios here and compares their hashes with the values recorded natively.</p>
+    <p class="goldens">recorded: <b>0xAA82430DE2321AFF</b> · <b>0x1514CC4B3F41D18E</b> · <b>0xBAEC29542FFBAA76</b></p>
+    <button class="btn primary" id="start" type="button">Start</button>
+    <p class="size">about 420 KB of WebAssembly and an 8 KB mod · single-threaded</p>
+    <div class="progress" id="progress" hidden><i id="progress-bar"></i></div>
+    <p class="status" id="load-status" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- Hashes -->
+  <section class="panel-body" id="p-hashes" role="tabpanel" aria-labelledby="tab-hashes" hidden>
+    <div class="summary">
+      <div role="status" aria-live="polite"><strong id="h-summary">Running…</strong> <span class="note" id="h-time"></span></div>
+      <button class="btn small" id="h-run" type="button">Run again</button>
+    </div>
+    <div class="scenarios" id="h-scenarios"></div>
+    <p class="meta-line" id="h-build"></p>
+  </section>
+
+  <!-- Lab -->
+  <section class="panel-body" id="p-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+    <div class="two-col media">
+      <div class="map-wrap" id="lab-wrap">
+        <canvas id="lab-canvas" width="1024" height="1024" tabindex="0" aria-label="Lab world map. Click, drag or press Enter to paint colour_index commands; arrow keys move the brush."></canvas>
+        <div class="brush" id="lab-brush"></div>
+      </div>
+      <div class="side">
+        <div class="row">
+          <button class="btn primary small" id="lab-play" type="button">Play</button>
+          <button class="btn small" id="lab-stepbtn" type="button">Step</button>
+          <div class="seg" id="lab-size" role="group" aria-label="World size">
+            <button type="button" data-v="100" aria-pressed="false">100²</button>
+            <button type="button" data-v="320" aria-pressed="false">320²</button>
+            <button type="button" data-v="1024" aria-pressed="true">1024²</button>
+          </div>
+        </div>
+        <div class="seg" id="lab-mode" role="group" aria-label="Map mode">
+          <button type="button" data-v="0" aria-pressed="false">Region</button>
+          <button type="button" data-v="1" aria-pressed="true">Owner</button>
+          <button type="button" data-v="2" aria-pressed="false">Population</button>
+          <button type="button" data-v="3" aria-pressed="false">Colour</button>
+        </div>
+        <dl class="stats">
+          <div><dt>Tick</dt><dd id="lab-tick">0</dd></div>
+          <div><dt>Cells</dt><dd id="lab-cells">–</dd></div>
+          <div class="wide"><dt>State hash</dt><dd id="lab-hash">–</dd></div>
+          <div><dt>Step, this browser</dt><dd id="lab-ms">–</dd></div>
+          <div><dt>Recorded native</dt><dd id="lab-native">–</dd></div>
+        </dl>
+        <canvas class="spark" id="lab-spark" aria-hidden="true"></canvas>
+        <div>
+          <p class="k" style="margin-bottom:6px">Paint colour_index (one command per cell)</p>
+          <div class="swatches" id="lab-swatches" role="group" aria-label="Paint colour"></div>
+        </div>
+        <p class="readout" id="lab-readout">Hover or tap the map to read a cell from the tables.</p>
+        <div class="row"><button class="btn small" id="lab-bench" type="button">Benchmark this size</button></div>
+        <p class="note" id="lab-bench-out">The tick scenario of bench_simulation.cpp: a fresh world, seed 11, median after two warm-up ticks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lockstep -->
+  <section class="panel-body" id="p-lock" role="tabpanel" aria-labelledby="tab-lock" hidden>
+    <div class="two-col">
+      <div class="side">
+        <p class="note">Two 320×320 lab worlds in this page, each with its own kernel, fed the same two synthetic set_color_index commands every tick. Their state hashes are compared after every tick, the check lockstep peers make. Inject gives peer B one extra command.</p>
+        <div class="row">
+          <button class="btn primary small" id="ls-play" type="button">Run</button>
+          <button class="btn small" id="ls-stepbtn" type="button">Step</button>
+          <button class="btn small" id="ls-inject" type="button">Inject a command into B</button>
+          <button class="btn small" id="ls-reset" type="button">Reset</button>
+        </div>
+        <p class="verdict" id="ls-verdict" role="status" aria-live="polite">Not started</p>
+        <div class="desc-box" id="ls-desc" hidden></div>
+      </div>
+      <div>
+        <div class="log-wrap">
+          <table class="log" aria-label="Per-tick state hashes">
+            <thead><tr><th>Tick</th><th>Peer A</th><th>Peer B</th><th><span class="visually-hidden">Same</span></th></tr></thead>
+            <tbody id="ls-log"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chess -->
+  <section class="panel-body" id="p-chess" role="tabpanel" aria-labelledby="tab-chess" hidden>
+    <div class="two-col media">
+      <div class="board-wrap">
+        <div class="board" id="board" role="group" aria-label="Chess board"></div>
+        <div class="promo" id="promo" hidden><div class="choices" id="promo-choices" role="group" aria-label="Promote to"></div></div>
+      </div>
+      <div class="side">
+        <div class="seg" id="ch-mode" role="group" aria-label="Who plays">
+          <button type="button" data-v="1" aria-pressed="true" aria-label="You play white, the mod plays black">Play white</button>
+          <button type="button" data-v="0" aria-pressed="false" aria-label="You play black, the mod plays white">Play black</button>
+          <button type="button" data-v="-1" aria-pressed="false" aria-label="Two people at one screen, no mod">Two players</button>
+          <button type="button" data-v="2" aria-pressed="false" aria-label="The mod plays both sides">Mod vs mod</button>
+        </div>
+        <div class="row">
+          <button class="btn small" id="ch-new" type="button">New game</button>
+          <button class="btn small" id="ch-opera" type="button">Replay the Opera Game</button>
+          <button class="btn small" id="ch-pause" type="button" hidden>Pause</button>
+          <button class="btn small" id="ch-step" type="button" hidden>Next ply</button>
+        </div>
+        <p class="status-line" id="ch-status" role="status" aria-live="polite"></p>
+        <dl class="stats">
+          <div><dt>Tick</dt><dd id="ch-tick">0</dd></div>
+          <div><dt>Mod</dt><dd id="ch-mod">–</dd></div>
+          <div class="wide"><dt>World hash</dt><dd id="ch-hash">–</dd></div>
+        </dl>
+        <ol class="moves" id="ch-moves" aria-label="Moves"></ol>
+        <div class="modlog" id="ch-log" aria-label="Mod log"></div>
+        <details class="perft" id="perft">
+          <summary>Perft: count every legal line to a depth</summary>
+          <div class="row">
+            <select id="pf-pos" aria-label="Position"></select>
+            <select id="pf-depth" aria-label="Depth"></select>
+            <button class="btn small" id="pf-run" type="button">Run</button>
+          </div>
+          <p class="note" id="pf-out" style="margin-top:8px">Positions and expected counts from sim/tests/test_perft.cpp. Native reference: depth 3 from the start, 172 µs (macOS release, docs/PERFORMANCE.md, M22).</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <p class="error-box" id="fatal" role="alert" hidden></p>
+
+  <footer class="demo-foot">
+    <span>Runs Atlas's own C++23 kernel, lab simulation and chess rules, compiled with Emscripten 6.0.9 and run single-threaded (no worker pool). The chess opponent is the committed <code>chess_opponent.wasm</code>, run by the browser behind this page's JavaScript stand-in for the engine's WAMR mod host, without WAMR's per-tick instruction budget. The board, map and charts are drawn by this page, not the SDL_GPU renderer; the map palettes are ported from <code>apps/lab/view</code>.</span>
+    <span>Source: <a href="https://github.com/happyc0der/atlas-engine/tree/0232309e5b92174992e33b898d0409fccab1aba6" target="_blank" rel="noopener">atlas-engine @ 0232309</a> and <a href="https://github.com/happyc0der/atlas-chess/tree/3a543e0133256d66342e05e903270242e31f5669" target="_blank" rel="noopener">atlas-chess @ 3a543e0</a>; this page's glue and build script: <a href="build/atlas_web.cpp" target="_blank" rel="noopener">build/</a>. Licence: GPL-3.0-or-later.</span>
+  </footer>
+</main>
+<noscript><p style="padding:16px">This demo needs JavaScript and WebAssembly.</p></noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>
