@@ -1,47 +1,43 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
 import ProjectRow from '../../components/ProjectRow.astro';
 import { tagNames } from '../../lib';
 
 const projects = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
-const featured = projects.filter((p) => p.data.featured);
-const rest = projects.filter((p) => !p.data.featured);
 const count = (tag: string) => projects.filter((p) => p.data.tags.includes(tag)).length;
 ---
 <Base title="Projects" description={`${projects.length} projects: systems, cryptography, machine learning, data and quant work, with code and measured results.`}>
-  <h1 class="page-title">Projects</h1>
-  <p class="muted lead">{projects.length} things I have built or taken apart. Each page says what I did, what it measured, and what did not work.</p>
-  <div class="chips" role="toolbar" aria-label="Filter by area">
-    <button class="chip" data-filter="all" aria-pressed="true">all <span>{projects.length}</span></button>
-    {Object.entries(tagNames).map(([tag, name]) => <button class="chip" data-filter={tag} aria-pressed="false">{name} <span>{count(tag)}</span></button>)}
+  <div class="wrap page-top">
+    <p class="label">Index · {projects.length} projects</p>
+    <h1 class="page-title" data-split="chars" data-intro>Projects</h1>
+    <p class="lead" data-reveal-intro>{projects.length} things I have built or taken apart. Each page says what I did, what it measured, and what did not work.</p>
+    <div class="plist-bar" data-reveal-intro>
+      <div class="chips" role="toolbar" aria-label="Filter by area">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">all <span>{projects.length}</span></button>
+        {Object.entries(tagNames).map(([tag, name]) => <button class="chip" type="button" data-filter={tag} aria-pressed="false">{name} <span>{count(tag)}</span></button>)}
+      </div>
+      <p class="mono muted plist-shown" aria-live="polite"><span data-shown>{projects.length}</span> shown</p>
+    </div>
+    <ol class="plist">{projects.map((p, i) => <ProjectRow project={p} index={i} />)}</ol>
   </div>
-
-  <section class="pgroup" data-group>
-    <div class="section-head"><h2>Featured</h2></div>
-    <div class="grid">{featured.map((p, i) => <ProjectCard project={p} thumb eager={i < 3} />)}</div>
-  </section>
-
-  <section class="pgroup" data-group>
-    <div class="section-head"><h2>More projects</h2><span class="mono muted" data-shown></span></div>
-    <div class="plist">{rest.map((p) => <ProjectRow project={p} />)}</div>
-  </section>
 </Base>
 
 <script>
-  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  // Area filters. Without JS the chips are hidden and every project is listed.
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip[data-filter]');
   const items = document.querySelectorAll<HTMLElement>('[data-tags]');
-  const groups = document.querySelectorAll<HTMLElement>('[data-group]');
+  const shown = document.querySelector<HTMLElement>('[data-shown]');
   const apply = (filter: string) => {
+    if (filter !== 'all' && ![...chips].some((c) => c.dataset.filter === filter)) filter = 'all';
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
-    items.forEach((el) => (el.hidden = filter !== 'all' && !el.dataset.tags!.split(' ').includes(filter)));
-    groups.forEach((g) => {
-      const shown = g.querySelectorAll('[data-tags]:not([hidden])').length;
-      g.hidden = shown === 0;
-      const label = g.querySelector<HTMLElement>('[data-shown]');
-      if (label) label.textContent = `${shown}`;
+    let n = 0;
+    items.forEach((el) => {
+      el.hidden = filter !== 'all' && !el.dataset.tags!.split(' ').includes(filter);
+      if (!el.hidden) n++;
     });
+    if (shown) shown.textContent = String(n);
+    dispatchEvent(new Event('kr:layout'));
   };
   chips.forEach((c) => c.addEventListener('click', () => {
     history.replaceState(null, '', c.dataset.filter === 'all' ? location.pathname : `#${c.dataset.filter}`);

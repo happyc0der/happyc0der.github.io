@@ -1,17 +1,23 @@
 ---
-import { tagNames, badge } from '../lib';
-const { project } = Astro.props;
+// One row of /projects/: number, title and blurb, year or status, areas. On a desktop with motion, hovering
+// floats the screenshot (data-thumb) or the headline number (data-thumb-text) beside the cursor.
+import Icon from './Icon.astro';
+import { tagNames, badge, hue, pad } from '../lib';
+const { project, index } = Astro.props;
 const d = project.data;
 const b = badge(d);
+const base = d.image?.replace(/^\/img\/(.+)\.[^.]+$/, '$1');
 ---
-<a class="prow" href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
-  <div class="prow-main">
-    <h3>{d.title}</h3>
-    <p>{d.blurb}</p>
-  </div>
-  <div class="prow-meta">
-    <span class:list={['mono', b.live ? 'pill' : 'muted']}>{b.text}</span>
-    <span class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</span>
-    {d.stats[0] && <span class="mono stat-line">{d.stats[0]}</span>}
-  </div>
-</a>
+<li class="prow-item" data-tags={d.tags.join(' ')}>
+  <a class="prow" href={`/projects/${project.id}/`} data-label={d.title} data-cursor={d.demo_embed ? 'Demo' : 'Open'}
+    data-thumb={base ? `/img/thumb/${base}-800.webp` : undefined} data-thumb-text={base ? undefined : d.stats[0] ?? d.title} style={`--hue: ${hue(index)}`}>
+    <span class="prow-num mono">{pad(index + 1)}</span>
+    <div class="prow-main">
+      <h2 class="prow-title">{d.title}</h2>
+      <p class="prow-blurb">{d.blurb}</p>
+    </div>
+    <span class="prow-year mono">{b.live ? <span class="pill">{b.text}</span> : b.text}</span>
+    <span class="prow-tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</span>
+    <span class="prow-arrow" aria-hidden="true"><Icon name="out" /></span>
+  </a>
+</li>
