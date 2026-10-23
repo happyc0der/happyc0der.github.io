@@ -8,6 +8,9 @@ order: 19
 featured: false
 stack: [Python, NumPy, SymPy, Flask, pytest]
 tags: [sec, swe]
+demo_embed: /demos/hawk-signature-study/
+demo_label: "The repo's hawk_crypto package (vendored hawk-py with the six fixes in PATCHES.md) and its pytest suite, unmodified, running in Pyodide in your browser; keys, signatures and timings come from your device, and Hawk is broken, so this is a teaching demo only."
+demo_height: 900
 stats: ["13-page report", "6 fixes to hawk-py", "~300x faster verify"]
 bullets:
   - "Study of Hawk, the hash-and-sign lattice signature scheme withdrawn from NIST's Additional Digital Signatures process on 29 July 2026, for CS-UY 3943 Post-Quantum Cryptography at NYU Tandon: a 13-page report on the algorithms, parameters and security reductions, a talk, and a Flask server exposing key generation, signing and verification over a JSON API with a demo page."

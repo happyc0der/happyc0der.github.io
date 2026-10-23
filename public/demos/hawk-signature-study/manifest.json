@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/happyc0der/hawk-signature-study",
+  "commit": "61a3dfab6fb056ae2f42e577fcda12c53d65835f",
+  "files": [
+    "hawk_crypto/__init__.py",
+    "hawk_crypto/codec.py",
+    "hawk_crypto/keygen.py",
+    "hawk_crypto/ntrugen/__init__.py",
+    "hawk_crypto/ntrugen/common.py",
+    "hawk_crypto/ntrugen/fft.py",
+    "hawk_crypto/ntrugen/fft_constants.py",
+    "hawk_crypto/ntrugen/ntrugen_hawk.py",
+    "hawk_crypto/params.py",
+    "hawk_crypto/poly.py",
+    "hawk_crypto/rngcontext.py",
+    "hawk_crypto/sign.py",
+    "hawk_crypto/verify.py",
+    "tests/test_hawk.py"
+  ]
+}
