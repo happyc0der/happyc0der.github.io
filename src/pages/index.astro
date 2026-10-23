@@ -7,6 +7,7 @@ import SectionHead from '../components/SectionHead.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
 import Stats from '../components/Stats.astro';
+import SkillGroup from '../components/home/SkillGroup.astro';
 import { profile, competitions, hue, pad, resultShort, sentences, skillChips } from '../lib';
 import { commitStats, publicStats, hasStats } from '../stats';
 
@@ -37,12 +38,12 @@ const lead: string | undefined = profile.about_lead;
 const examples = lead ? sentences(profile.about).filter((x) => !lead.includes(x)) : [];
 
 // Skills, display only (the resumes read the same lists): up to eight chips a group, a name once across groups,
-// the first five groups in profile.yaml order on show and the others, plus every group's extra chips, under "More".
+// the first five groups in profile.yaml order on show and the others under "More"; a group's chips past eight
+// open from its own "+N more".
 const skillNames: Record<string, string> = { languages: 'Languages', systems: 'Systems', ml: 'Machine learning', ai: 'AI and agents', data: 'Data', security: 'Security', testing: 'Testing', quant: 'Quant', tools: 'Tools' };
 const SHOWN = 5;
 const chipGroups = skillChips(profile.skills, Object.keys(profile.skills));
 const skillsShown = chipGroups.slice(0, SHOWN), skillsMore = chipGroups.slice(SHOWN);
-const skillsExtra = chipGroups.flatMap((g) => g.more);
 
 // Every course on the transcripts, once. profile.yaml groups them by resume track, not by school.
 const courses = [...new Set(Object.values(profile.coursework as Record<string, string[]>).flat())];
@@ -68,31 +69,11 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
           </div>
         ))}
       </dl>
-      <div class="skills">
-        {skillsShown.map((g) => (
-          <div class="skill-group" data-reveal>
-            <h3 class="label quiet">{skillNames[g.key] ?? g.key}</h3>
-            <ul class="tags skill-list">{g.shown.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
-          </div>
-        ))}
-      </div>
-      {(skillsMore.length > 0 || skillsExtra.length > 0) && (
+      <div class="skills">{skillsShown.map((g) => <SkillGroup group={g} name={skillNames[g.key] ?? g.key} reveal />)}</div>
+      {skillsMore.length > 0 && (
         <details class="skills-more" data-reveal>
-          <summary><span class="label quiet">More</span><span class="skills-more-names">{[...skillsMore.map((g) => skillNames[g.key] ?? g.key), skillsExtra.length > 0 && 'and the rest of each list'].filter(Boolean).join(', ')}</span><span class="acc-icon" aria-hidden="true"><Icon name="plus" /></span></summary>
-          <div class="skills">
-            {skillsMore.map((g) => (
-              <div class="skill-group">
-                <h3 class="label quiet">{skillNames[g.key] ?? g.key}</h3>
-                <ul class="tags skill-list">{g.shown.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
-              </div>
-            ))}
-            {skillsExtra.length > 0 && (
-              <div class="skill-group skill-group-wide">
-                <h3 class="label quiet">Also</h3>
-                <ul class="tags skill-list">{skillsExtra.map((c) => <li class="tag" title={c.detail || undefined}>{c.name}{c.detail && <span class="sr-only"> ({c.detail})</span>}</li>)}</ul>
-              </div>
-            )}
-          </div>
+          <summary><span class="label quiet">More</span><span class="skills-more-names">{skillsMore.map((g) => skillNames[g.key] ?? g.key).join(', ')}</span><span class="acc-icon" aria-hidden="true"><Icon name="plus" /></span></summary>
+          <div class="skills">{skillsMore.map((g) => <SkillGroup group={g} name={skillNames[g.key] ?? g.key} />)}</div>
         </details>
       )}
     </div>
