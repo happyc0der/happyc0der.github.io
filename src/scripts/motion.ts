@@ -22,12 +22,14 @@ export function start() {
 
   smoothScroll();
   links();
+  // The pin goes first: triggers made after it are measured with its spacer in place, so reveals
+  // further down fire where they appear rather than a pin's length early.
+  workTrack();
   const intro = prepareSplits();
   scrubs();
   reveals();
   marquee();
   ticker();
-  workTrack();
   parallax();
   progressFallback();
   if (mouse) { cursor(); magnetic(); floatingThumbs(); }
