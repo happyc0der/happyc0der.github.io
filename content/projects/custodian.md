@@ -2,6 +2,9 @@
 title: Custodian
 blurb: "Household inventory that watches CPSC, NHTSA and FDA recalls, served as an MCP server with its own OAuth 2.1 server for Alexa+ and Claude."
 repo: https://github.com/happyc0der/custodian
+demo_embed: /demos/custodian/
+demo_label: "The repo's TypeScript (MCP server and tools, recall sweeper, matcher, feed parsers and Preact MCP App) bundled with esbuild and run in your browser over an in-memory MCP transport, answering from the CPSC, NHTSA and openFDA responses recorded in its test fixtures; no live feeds, OAuth or Bedrock."
+demo_height: 760
 image: /img/custodian.png
 year: 2026
 order: 7
