@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="../_shared/demo.css">
 <style>
   [hidden] { display: none !important; }
-  html { overscroll-behavior: contain; }
   body { padding: 12px 16px; }
   .small { font-size: 12px; }
   code { font: 12px/1.4 var(--mono); color: var(--accent-hi); }
@@ -25,9 +24,11 @@
 
   /* App shell */
   #app { display: flex; flex-direction: column; gap: 10px; }
+  #app:focus { outline: none; }
   .topbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
   .tb-left { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-  .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  #sweep-note { min-width: 0; max-width: 44ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2); flex: none; }
   .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .stage, .side { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -41,6 +42,7 @@
   }
   .device-screen { height: 460px; border-radius: 9px; overflow: hidden; background: var(--bg); }
   .device-screen iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+  .device-screen.scaled iframe { transform-origin: 0 0; }
   .device.full { position: fixed; inset: 0; z-index: 10; border-radius: 0; padding: 8px; display: flex; flex-direction: column; }
   .device.full .device-screen { flex: 1; height: auto; }
   .exit-full { position: absolute; right: 16px; bottom: 16px; }
@@ -77,6 +79,7 @@
   .badge { font: 11px/1 var(--mono); padding: 5px 7px; border-radius: var(--radius-pill); white-space: nowrap; }
   .badge.ok { color: var(--good); border: 1px solid rgba(74, 222, 128, 0.35); }
   .badge.bad { color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.45); }
+  .badge.none { color: var(--muted); border: 1px dashed var(--line); }
 
   .mitem { padding: 10px 0; border-top: 1px solid var(--line); }
   .mitem:first-child { border-top: 0; padding-top: 0; }
@@ -104,10 +107,17 @@
   .reqs li { overflow-wrap: anywhere; }
   .st { padding: 1px 5px; border-radius: 4px; }
   .st.ok { color: var(--good); }
+  .st.standin { color: var(--accent-hi); }
   .st.miss { color: #fda4af; }
   .sweeplog li { font-size: 11.5px; color: var(--text-2); overflow-wrap: anywhere; }
   .pass { color: var(--good); font: 11px var(--mono); }
   .fail { color: var(--danger); font: 11px var(--mono); }
+
+  /* Phones: a thinner bezel that reaches 6 px from the edges, so the scaled screen stays legible. */
+  @media (max-width: 480px) {
+    .device { margin: 0 -10px; padding: 4px; border-radius: 14px; }
+    .device-screen { border-radius: 10px; }
+  }
 
   @media (min-width: 980px) {
     body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -127,7 +137,7 @@
 <div id="poster" class="poster">
   <p class="label">Live demo · runs entirely in this tab</p>
   <h1>Custodian, <em>in your browser</em></h1>
-  <p>The repo's MCP server, recall sweeper and matcher start in this page, add a sample household through <code>add_item</code>, and check it against the CPSC, NHTSA and openFDA responses recorded in the repo's test fixtures. The repo's Preact MCP App draws each tool result on an Echo Show style screen.</p>
+  <p>The repo's MCP server, recall sweeper and matcher start in this page, add a sample household through <code>add_item</code>, and check it against the CPSC, NHTSA and openFDA responses recorded in the repo's test fixtures, served by a stand-in for the feeds written for this demo. Anything the recordings don't cover gets an empty or not-found answer, so it shows no recalls here, whatever the live feeds say. The repo's Preact MCP App draws each tool result on an Echo Show style screen.</p>
   <ul aria-label="What runs">
     <li>MCP server + client in the page</li>
     <li>10 tools, 5 views</li>
@@ -140,10 +150,10 @@
   <p class="status" id="status" role="status" aria-live="polite"></p>
   <noscript><p class="error">This demo needs JavaScript: it runs the server in the page.</p></noscript>
 </div>
-<div id="app" hidden></div>
+<div id="app" hidden tabindex="-1" role="region" aria-label="Custodian running in this tab"></div>
 <footer class="demo-foot">
-  <span>Runs: the repo's TypeScript (MCP server and tools, sweeper, matcher, feed parsers, <code>:memory:</code> store, Preact MCP App) bundled with esbuild, answering from recorded fixture responses. Bedrock and OAuth are off; the server speaks to an MCP client in the page instead of over HTTP.</span>
-  <span>Source: <a href="https://github.com/happyc0der/custodian/tree/e53c104706e388e42b9a058a0a59d065cfe00074" target="_blank" rel="noopener">happyc0der/custodian @ e53c104</a> · GPL-3.0-or-later; the demo glue and exact build steps are in <a href="https://github.com/happyc0der/happyc0der.github.io/tree/main/public/demos/custodian" target="_blank" rel="noopener">BUILD.md and build-src/</a>.</span>
+  <span>Runs: the repo's TypeScript (MCP server and tools, sweeper, matcher, feed parsers, <code>:memory:</code> store, Preact MCP App) bundled with esbuild. A stand-in fetch written for the demo answers the feed clients from the repo's recorded fixture responses: CPSC name searches filter the recorded records, openFDA recordings are picked by query word, and requests with no recording get an empty or 404 answer. Bedrock and OAuth are off; the server speaks to an MCP client in the page instead of over HTTP.</span>
+  <span>Source: <a href="https://github.com/happyc0der/custodian/tree/e53c104706e388e42b9a058a0a59d065cfe00074" target="_blank" rel="noopener">happyc0der/custodian @ e53c104</a> · GPL-3.0-or-later; the demo glue and exact build steps are in <a href="https://github.com/happyc0der/happyc0der.github.io/tree/main/public/demos/custodian" target="_blank" rel="noopener">BUILD.md and build-src/</a>; bundled npm packages and their licenses: <a href="THIRD_PARTY_NOTICES.txt" target="_blank" rel="noopener">THIRD_PARTY_NOTICES.txt</a>.</span>
 </footer>
 <script type="module">
   const $ = (id) => document.getElementById(id);
@@ -163,6 +173,8 @@
       await mod.mount($('app'), setStatus, () => {
         $('poster').hidden = true;
         $('app').hidden = false;
+        // The Start button just disappeared; keep keyboard focus at the start of the running demo.
+        $('app').focus({ preventScroll: true });
       });
     } catch (err) {
       console.error(err);

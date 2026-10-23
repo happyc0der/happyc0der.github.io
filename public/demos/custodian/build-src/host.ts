@@ -80,6 +80,17 @@ const HOST_STYLE_VARIABLES = {
 const VIEW_CSP =
   "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:";
 
+/**
+ * The repo's app is laid out for Echo Show sized screens and host panels. Below about 420 px its
+ * maintenance rows run out of room (the item and date wrap one word per line and the Done button
+ * is clipped), so on a narrow phone the device screen is drawn 440 px wide and scaled down to fit,
+ * like a picture of the device. The app is told the 440 px size it is drawn at.
+ */
+const MIN_SCREEN_WIDTH = 440;
+
+const vehicleKey = (make: string, model: string, year: string | number) =>
+  `${make.trim().toLowerCase()}|${model.trim().toLowerCase()}|${String(year).trim()}`;
+
 const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const fmtMs = (ms: number) => (ms < 10 ? ms.toFixed(1) : Math.round(ms).toString());
@@ -162,7 +173,7 @@ const TEMPLATE = `
       <ul class="checks" id="checks"></ul>
     </div>
     <div class="panel-body" data-panel="feeds" hidden>
-      <p class="note">Every request the repo's source clients made, and which recorded response answered it. Nothing leaves this page.</p>
+      <p class="note">Every request the repo's source clients made, and what answered it: a recorded response (green), a stand-in written for the demo over the recordings (purple), or, with no recording, an empty or 404 answer made up by the demo (pink). Nothing leaves this page.</p>
       <h3 class="label">Feed requests</h3>
       <ol class="reqs" id="reqs"></ol>
       <h3 class="label">Sweeper log</h3>
@@ -176,6 +187,8 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
   const requests: RequestLogEntry[] = [];
   const calls: ToolCallRecord[] = [];
   const modelNotes: string[] = [];
+  /** Vehicles whose NHTSA lookup had no recording and was answered empty (see fixtures.ts). */
+  const unrecordedVehicles = new Set<string>();
   let renderQueued = false;
   let mounted = false;
   const queueRender = () => {
@@ -195,6 +208,11 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
       },
       onRequest: (e) => {
         requests.push(e);
+        const u = new URL(e.url);
+        if (e.kind === 'none' && u.pathname === '/recalls/recallsByVehicle')
+          unrecordedVehicles.add(
+            vehicleKey(u.searchParams.get('make') ?? '', u.searchParams.get('model') ?? '', u.searchParams.get('modelYear') ?? ''),
+          );
         queueRender();
       },
       onToolCall: (c) => {
@@ -231,10 +249,25 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
     if (s) void showScreen(s);
   });
 
-  const dims = () => ({
-    width: Math.round(deviceScreen.clientWidth),
-    height: Math.round(deviceScreen.clientHeight),
-  });
+  const screenScale = () => {
+    const w = deviceScreen.clientWidth;
+    return w > 0 && w < MIN_SCREEN_WIDTH ? w / MIN_SCREEN_WIDTH : 1;
+  };
+  const dims = () => {
+    const k = screenScale();
+    return {
+      width: Math.round(deviceScreen.clientWidth / k),
+      height: Math.round(deviceScreen.clientHeight / k),
+    };
+  };
+  /** Draws the app at no less than MIN_SCREEN_WIDTH and scales it down to the device screen. */
+  function fitFrame(iframe: HTMLIFrameElement) {
+    const k = screenScale();
+    deviceScreen.classList.toggle('scaled', k < 1);
+    iframe.style.width = k < 1 ? `${deviceScreen.clientWidth / k}px` : '';
+    iframe.style.height = k < 1 ? `${deviceScreen.clientHeight / k}px` : '';
+    iframe.style.transform = k < 1 ? `scale(${k})` : '';
+  }
 
   function hostContext(screen: Screen): McpUiHostContext {
     return {
@@ -259,6 +292,7 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
     device.classList.toggle('full', on);
     exitFull.hidden = !on;
     if (current) {
+      fitFrame(current.iframe);
       current.ctx = { ...current.ctx, displayMode: on ? 'fullscreen' : 'inline', containerDimensions: dims() };
       current.bridge.setHostContext(current.ctx);
     }
@@ -285,6 +319,7 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
     iframe.setAttribute('sandbox', 'allow-scripts');
     iframe.srcdoc = html;
     deviceScreen.appendChild(iframe);
+    fitFrame(iframe);
 
     const ctx = hostContext(screen);
     const bridge = new AppBridge(null, HOST_INFO, HOST_CAPS, { hostContext: ctx });
@@ -347,6 +382,7 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
 
   new ResizeObserver(() => {
     if (!current) return;
+    fitFrame(current.iframe);
     current.ctx = { ...current.ctx, containerDimensions: dims() };
     current.bridge.setHostContext(current.ctx);
   }).observe(deviceScreen);
@@ -400,6 +436,7 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
 
   async function addItem(args: Record<string, unknown>): Promise<boolean> {
     const replyEl = $('add-reply');
+    const reqsBefore = requests.length;
     try {
       const rec = await engine.call('add_item', args, 'host');
       showReply(rec);
@@ -412,7 +449,12 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
       replyEl.textContent = `add_item answered in ${fmtMs(rec.ms)} ms. Targeted sweep running…`;
       await engine.settle();
       const last = [...sweepLines].reverse().find((l) => l.startsWith(`${String(args.name)}:`));
-      replyEl.textContent = `add_item answered in ${fmtMs(rec.ms)} ms; the targeted sweep ran after the answer${last ? ` (${last.split(': ').pop()})` : ''}.`;
+      const unrecorded = requests.slice(reqsBefore).filter((r) => r.kind === 'none').length;
+      replyEl.textContent =
+        `add_item answered in ${fmtMs(rec.ms)} ms; the targeted sweep ran after the answer${last ? ` (${last.split(': ').pop()})` : ''}.` +
+        (unrecorded
+          ? ` ${unrecorded === 1 ? 'One feed request' : `${unrecorded} feed requests`} had no recording and got an empty or not-found answer, so this says nothing about the live feeds (see Feeds).`
+          : '');
       await afterChange();
       return true;
     } catch (err) {
@@ -443,7 +485,10 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
       $('sweep-note').textContent = `full sweep took ${fmtMs(ms)} ms`;
       await afterChange();
     } catch (err) {
-      $('sweep-note').textContent = `sweep failed: ${(err as Error).message}`;
+      // Full text goes to the sweeper log; the top bar keeps a short note so it does not reflow.
+      sweepLines.push(`full sweep failed: ${(err as Error).message}`);
+      queueRender();
+      $('sweep-note').textContent = 'sweep failed (Feeds tab has the error)';
     } finally {
       btn.disabled = false;
     }
@@ -463,17 +508,25 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
     for (const it of items) {
       const li = document.createElement('li');
       const n = open.get(it.id) ?? 0;
+      const noRecording =
+        !!it.vehicle && unrecordedVehicles.has(vehicleKey(it.vehicle.make, it.vehicle.model, it.vehicle.year));
       const meta = [
         it.category,
         it.brand,
         it.model,
         it.vehicle ? `${it.vehicle.year} ${it.vehicle.make} ${it.vehicle.model}` : '',
         it.purchased_on ? `bought ${it.purchased_on}` : '',
+        noRecording ? 'no NHTSA recording for this vehicle, answered empty' : '',
       ]
         .filter(Boolean)
         .join(' · ');
+      const badge = n
+        ? `<span class="badge bad">${n} open</span>`
+        : noRecording
+          ? '<span class="badge none" title="The demo has no recorded NHTSA response for this vehicle">no recording</span>'
+          : '<span class="badge ok" title="No open match against the recorded feeds">0 open</span>';
       li.innerHTML = `<div class="it-main"><b>${esc(it.name)}${it.quantity > 1 ? ` ×${it.quantity}` : ''}</b><span class="mono muted small">${esc(meta)}</span></div>
-        <span class="badge ${n ? 'bad' : 'ok'}">${n ? `${n} open` : 'clear'}</span>`;
+        ${badge}`;
       const rm = document.createElement('button');
       rm.type = 'button';
       rm.className = 'btn small';
@@ -530,7 +583,7 @@ export async function mount(root: HTMLElement, onStatus: Status, reveal: () => v
     $('reqs').innerHTML = [...requests]
       .reverse()
       .map(
-        (r) => `<li class="small"><span class="mono st ${r.status === 200 ? 'ok' : 'miss'}">${r.status}</span> <span class="mono url">${esc(shortUrl(r.url))}</span><div class="muted small">→ ${esc(r.served)}</div></li>`,
+        (r) => `<li class="small"><span class="mono st ${r.kind === 'recording' ? 'ok' : r.kind === 'search' ? 'standin' : 'miss'}">${r.status}</span> <span class="mono url">${esc(shortUrl(r.url))}</span><div class="muted small">→ ${esc(r.served)}</div></li>`,
       )
       .join('');
     $('sweeplog').innerHTML = sweepLines.map((l) => `<li>${esc(l)}</li>`).join('');
