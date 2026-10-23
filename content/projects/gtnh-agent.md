@@ -2,6 +2,9 @@
 title: gtnh-agent
 blurb: "Safety-first agent that plays the Minecraft modpack GregTech: New Horizons on a private server: a local model decides and plans, and code checks every action before it runs and verifies it after."
 repo: https://github.com/happyc0der/gtnh-agent
+demo_embed: /demos/gtnh-agent/
+demo_label: "The repo's TypeScript agent loop, safety policy, router, mock planner and verifier, bundled for the browser and run against its own mock world and 36 scenarios with SQLite via sql.js; no model and no Minecraft server are involved, and the scenarios' item and machine names are placeholders."
+demo_height: 760
 year: 2026
 order: 12.5
 featured: false

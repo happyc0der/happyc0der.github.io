@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gtnh-agent cycle demo</title>
+<meta name="description" content="The gtnh-agent repo's TypeScript agent loop, safety policy and verifier, running in the browser against its own mock Minecraft world and scenarios.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main id="root">
+  <!-- Poster: nothing heavy downloads until the visitor presses Start. -->
+  <section class="poster" id="poster" aria-labelledby="poster-title">
+    <p class="label">gtnh-agent · live demo</p>
+    <h1 id="poster-title">One safety-checked agent cycle, in your browser</h1>
+    <p class="lede">The repo's own TypeScript agent loop runs here against its mock Minecraft world: observe, check the state, decide, validate, execute, verify, log to SQLite. No model and no server: the rule-based router decides and the mock planner serves its fixture plans.</p>
+    <ol class="mini-pipe" aria-label="The stages of one cycle">
+      <li>Observe</li><li>Trust</li><li>Decide</li><li>Plan</li><li>Propose</li><li>Validate</li><li>Execute</li><li>Verify</li><li>Log</li>
+    </ol>
+    <button class="btn primary big" id="start" type="button">Start the agent</button>
+    <p class="size" id="size">Downloads about 1.6 MB (0.6 MB compressed): the agent bundle and SQLite compiled to WebAssembly.</p>
+    <div class="progress" id="progress" hidden><i></i></div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="app" id="app" hidden>
+    <header class="bar">
+      <div class="bar-l">
+        <p class="label">gtnh-agent · mock world · <span id="cycle-count">0 cycles</span></p>
+        <p class="note">No LLM: decisions come from the rule-based router, plans from the mock planner. Scenario item and machine names are placeholders, not verified GTNH identifiers.</p>
+      </div>
+      <div class="bar-r">
+        <div class="seg" role="group" aria-label="World between cycles" id="mode">
+          <button type="button" data-mode="kept" aria-pressed="true" title="One mock world per scenario, carried from cycle to cycle">World kept</button>
+          <button type="button" data-mode="fresh" aria-pressed="false" title="A fresh mock world every cycle, as pnpm agent:once --scenario does">Rebuilt each cycle</button>
+        </div>
+        <button class="btn" type="button" id="selftest">Run the repo's scenario test</button>
+        <button class="btn" type="button" id="reset" title="New empty database and fresh worlds">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <nav class="col scen" aria-label="Scenarios">
+        <label class="label" for="scen-select">Scenario <span class="muted" id="scen-n"></span></label>
+        <select id="scen-select" class="scen-select"></select>
+        <div class="scen-list" id="scen-list" role="listbox" aria-label="Scenarios" tabindex="0"></div>
+      </nav>
+
+      <section class="col mid" aria-label="Cycle">
+        <div class="panel scen-head">
+          <p class="scen-name mono" id="scen-name"></p>
+          <p class="scen-desc" id="scen-desc"></p>
+          <p class="scen-expect mono muted" id="scen-expect"></p>
+          <div class="runrow">
+            <button class="btn primary" type="button" id="run">Run one cycle</button>
+            <button class="btn" type="button" id="run5" title="Five cycles in a row">×5</button>
+            <span class="human" id="human"></span>
+          </div>
+          <p class="try muted">Try: <button type="button" class="link" data-try="action-fails">action-fails</button> three times, <button type="button" class="link" data-try="planner-needs-approval">planner-needs-approval</button> then Approve, <button type="button" class="link" data-try="hungry-no-food-cow">hungry-no-food-cow</button> ×5.</p>
+        </div>
+        <div class="summary" id="summary" aria-live="polite"><span class="muted">Run a cycle to see each stage, read back from the event log.</span></div>
+        <ol class="stages" id="stages" aria-label="Stages of the last cycle"></ol>
+      </section>
+
+      <aside class="col side" aria-label="World and history">
+        <div class="panel world">
+          <div class="world-head">
+            <p class="label">Mock world · top-down</p>
+            <div class="seg small" role="group" aria-label="World view" id="view">
+              <button type="button" data-view="before" aria-pressed="false">Before</button>
+              <button type="button" data-view="after" aria-pressed="true">After</button>
+            </div>
+          </div>
+          <svg id="map" viewBox="0 0 320 220" role="img" aria-labelledby="map-cap"></svg>
+          <p class="map-cap mono" id="map-cap"></p>
+          <p class="legend mono"><i class="k-p"></i>player <i class="k-h"></i>home <i class="k-b"></i>block <i class="k-x"></i>chest/machine <i class="k-d"></i>danger <i class="k-m"></i>animal <i class="k-t"></i>action target</p>
+        </div>
+        <div class="panel hist">
+          <p class="label">Cycles on this database</p>
+          <ol class="history" id="history"></ol>
+          <p class="db mono muted" id="db"></p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="overlay" id="test-panel" role="dialog" aria-modal="true" aria-labelledby="test-title" hidden>
+      <div class="panel test">
+        <div class="test-head">
+          <h2 id="test-title">The repo's scenario test, in this browser</h2>
+          <button class="btn" type="button" id="test-close">Close</button>
+        </div>
+        <p class="muted small-t">Mirrors tests/app/loop/agent-loop.test.ts: every scenario once on a fresh database, checking decision, action and status against the scenario's own <code>expect</code>; then the escalation test (action-fails four times on one database).</p>
+        <p class="mono" id="test-sum"></p>
+        <div class="test-scroll"><table class="test-table mono"><thead><tr><th>scenario</th><th>expected</th><th>got</th><th></th></tr></thead><tbody id="test-rows"></tbody></table></div>
+        <p class="mono small-t" id="test-esc"></p>
+        <p class="muted small-t" id="test-fs"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="demo-foot" id="foot">
+    <span>Runs: the repo's TypeScript src/ (agent loop, safety policy, router, mock planner, executor, verifier, MockMinecraftClient, scenarios) bundled with esbuild; SQLite is sql.js (WebAssembly) behind a small better-sqlite3 shim. Nothing here contacts a model or a Minecraft server.</span>
+    <span>Source: <a href="https://github.com/happyc0der/gtnh-agent/tree/e178a35c2d1c5dbac23b176483336dafd6caec29" target="_blank" rel="noopener">happyc0der/gtnh-agent @ e178a35</a> · <a href="BUILD.md" target="_blank" rel="noopener">how this is built</a></span>
+    <span>Licence: GPL-3.0-or-later (agent.js is the repo's code; the build script and shims are in build/, see BUILD.md). sql.js: MIT. The GTNH knowledge base and quest book are not included.</span>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
