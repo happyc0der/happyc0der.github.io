@@ -343,7 +343,7 @@ function ticker() {
     }
     setTimeout(step, 2400);
   };
-  setTimeout(step, 2600);
+  setTimeout(step, 3600);
 }
 
 // ---------------------------------------------------------------- selected work

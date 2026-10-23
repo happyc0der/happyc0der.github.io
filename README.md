@@ -6,6 +6,7 @@ Site and resumes, both built from `content/`.
 Copy any file in `content/projects/`, change the frontmatter, write a few lines. It shows up on the site.
 `bullets` are for the site; `resume_bullets` (optional, about 20 words each) are what the PDFs use.
 For a picture, put it in `public/img/`, set `image: /img/<file>` and run `npm run images` (AVIF, WebP and card crops; the build stops if you forget).
+For a demo that runs on the site, put a self-contained page in `public/demos/<slug>/` (relative URLs only) and set `demo_embed: /demos/<slug>/`, `demo_label` (one sentence saying exactly what runs) and optionally `demo_height` (default 640). The project page gets a click-to-load demo and the home page a "Live demos" section; `demo` stays the external live link.
 To put it on a resume, add its file name to that resume's `projects` list in `content/resumes.yaml`.
 Order matters there: a resume that runs past one page gets slightly smaller type, then loses projects from the end.
 
@@ -18,7 +19,7 @@ Drop a markdown file in `content/notes/` with `title` and `date`. The Notes link
 Add a collection in `src/content.config.ts`, copy `src/pages/notes/` and rename, add a nav entry in `src/layouts/Base.astro`.
 
 ## Change the look
-`src/styles/tokens.css`.
+`src/styles/tokens.css`. Motion (smooth scroll, reveals, cursor, page wipe) is all in `src/scripts/motion.ts`; the page is complete without it, and it never loads for reduced-motion visitors.
 
 ## Commands
     npm run dev        # site at localhost:4321

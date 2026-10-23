@@ -6,8 +6,7 @@
 /* Split headings stay invisible until motion.ts has wrapped their words (and letters) in masks. */
 .motion [data-split]:not(.is-split) { visibility: hidden; }
 .sw { display: inline-block; vertical-align: top; overflow: clip; padding: 0.14em 0.08em 0.2em; margin: -0.14em -0.08em -0.2em; }
-.swi, .sc { display: inline-block; will-change: transform; }
-.is-split.is-done .swi, .is-split.is-done .sc { will-change: auto; }
+.swi, .sc { display: inline-block; }   /* no will-change: a layer per word would cost more than it saves */
 
 /* Blocks that rise in as they scroll into view; --d staggers a batch. */
 .motion :is([data-reveal], [data-reveal-intro]):not(.is-in) { opacity: 0; }
