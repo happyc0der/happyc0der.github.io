@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLOCKWAVE live demo</title>
+<meta name="description" content="BLOCKWAVE's engine, renderer and agent environments running in the browser on Pyodide, with the pretrained agents' policies in NumPy.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <p class="label">BLOCKWAVE · live, in your browser</p>
+    <h1>An agent that never sees the score</h1>
+  </header>
+
+  <!-- Nothing heavy loads until the visitor presses Start. -->
+  <section class="poster" id="poster" aria-labelledby="poster-title">
+    <img class="poster-img" src="poster.jpg" alt="" width="720" height="750">
+    <div class="poster-inner">
+      <h2 id="poster-title" class="poster-title">Watch the pretrained agent play, see what the pixel agent sees, or play it yourself.</h2>
+      <button class="btn primary big" id="start" type="button">Start the demo</button>
+      <p class="size">Downloads about 12.5 MB the first time: 8.1 MB of Python 3.13 and NumPy (Pyodide 0.29.5, from jsDelivr, cached by your browser afterwards), 4 MB of policy weights and 170 KB of the repo's Python. The pixel agent's 6.8 MB loads only if you open its tab.</p>
+      <div class="progress" id="progress" hidden><i></i></div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="app" id="app" hidden>
+    <div class="tabs" role="tablist" aria-label="Demo views">
+      <button role="tab" id="tab-watch" aria-controls="panel-watch" aria-selected="true" type="button"><span class="long">Watch the agent</span><span class="short">Watch</span></button>
+      <button role="tab" id="tab-pixel" aria-controls="panel-pixel" aria-selected="false" tabindex="-1" type="button"><span class="long">What the pixel agent sees</span><span class="short">Pixel agent's view</span></button>
+      <button role="tab" id="tab-play" aria-controls="panel-play" aria-selected="false" tabindex="-1" type="button">Play</button>
+    </div>
+
+    <!-- Tab 1: the 150M-step board-state agent. -->
+    <div class="panel-grid" role="tabpanel" id="panel-watch" aria-labelledby="tab-watch">
+      <div class="stage">
+        <canvas id="cv-watch" width="720" height="750" role="img" aria-label="The agent's game, drawn by the repo's compositor"></canvas>
+        <div class="overlay" id="ov-watch" hidden></div>
+      </div>
+      <aside class="side">
+        <div class="controls">
+          <button class="btn" id="w-pause" type="button" aria-pressed="false">Pause</button>
+          <button class="btn" id="w-step" type="button" disabled>Step</button>
+          <div class="seg" role="group" aria-label="Speed, as a multiple of the agent's 5 decisions per second" id="w-speed">
+            <button type="button" data-v="1" aria-pressed="true">1×</button>
+            <button type="button" data-v="2" aria-pressed="false">2×</button>
+            <button type="button" data-v="4" aria-pressed="false">4×</button>
+            <button type="button" data-v="8" aria-pressed="false">8×</button>
+          </div>
+          <div class="seg" role="group" aria-label="Visual profile" id="w-look">
+            <button type="button" data-v="arcade" aria-pressed="true">arcade</button>
+            <button type="button" data-v="flat" aria-pressed="false">flat</button>
+          </div>
+        </div>
+        <dl class="counters">
+          <div><dt>decisions</dt><dd id="w-dec">0</dd></div>
+          <div><dt>pieces</dt><dd id="w-pieces">0</dd></div>
+          <div><dt>lines</dt><dd id="w-lines">0</dd></div>
+          <div><dt>games done</dt><dd id="w-games">0</dd></div>
+        </dl>
+        <div class="block">
+          <p class="label">Its policy right now <span class="muted" id="w-act"></span></p>
+          <ol class="probs" id="w-probs"></ol>
+        </div>
+        <div class="block">
+          <p class="label">Empowerment reward per placement <span class="muted" id="w-rew"></span></p>
+          <canvas class="spark" id="w-spark" width="600" height="96" role="img" aria-label="Sparkline of the reward the agent optimizes"></canvas>
+          <p class="note">What it was trained to maximize: how many distinct boards its next two pieces can still reach, minus the same count on an empty board. Zero while the board has room, negative as options run out. A top-out is charged about −607 (marked red): zero control for every placement the dead game would have had.</p>
+        </div>
+        <p class="note firewall">It acts on two 24×10 grids (locked cells, active piece) and the next two pieces. Score, lines and level are in the picture for you; none of them reach the agent.</p>
+        <p class="note mono" id="w-parity"></p>
+        <p class="note mono" id="w-perf"></p>
+      </aside>
+    </div>
+
+    <!-- Tab 2: the 50M-step pixel agent, loaded on demand. -->
+    <div class="panel-grid" role="tabpanel" id="panel-pixel" aria-labelledby="tab-pixel" hidden>
+      <div class="pixel-gate" id="p-gate">
+        <p>The pixel agent sees only an 88×88 grey crop of the screen with the score panel blanked, four frames at a time. Its policy is a 1.7M-parameter conv net; its weights are another 6.8 MB.</p>
+        <button class="btn primary" id="p-load" type="button">Load the pixel agent (6.8 MB)</button>
+        <div class="progress" id="p-progress" hidden><i></i></div>
+        <p class="status" id="p-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="pixel-views" id="p-views" hidden>
+        <figure class="pv">
+          <figcaption class="label">What it sees: 88×88, grey, stats blanked</figcaption>
+          <canvas id="cv-crop" width="88" height="88" role="img" aria-label="The 88 by 88 crop the pixel agent acts on"></canvas>
+          <div class="stack" aria-hidden="true">
+            <canvas width="88" height="88"></canvas><canvas width="88" height="88"></canvas><canvas width="88" height="88"></canvas><canvas width="88" height="88"></canvas>
+          </div>
+          <p class="note">The last four crops, oldest first: the stack its policy reads each decision.</p>
+        </figure>
+        <figure class="pv human">
+          <figcaption class="label">The same game, drawn for people</figcaption>
+          <div class="stage small">
+            <canvas id="cv-pixel" width="720" height="750" role="img" aria-label="The pixel agent's game at human size"></canvas>
+            <div class="overlay" id="ov-pixel" hidden></div>
+          </div>
+        </figure>
+        <div class="side">
+          <div class="controls">
+            <button class="btn" id="p-pause" type="button" aria-pressed="false">Pause</button>
+            <button class="btn" id="p-step" type="button" disabled>Step</button>
+            <div class="seg" role="group" aria-label="Speed" id="p-speed">
+              <button type="button" data-v="1" aria-pressed="true">1×</button>
+              <button type="button" data-v="2" aria-pressed="false">2×</button>
+              <button type="button" data-v="4" aria-pressed="false">4×</button>
+            </div>
+          </div>
+          <dl class="counters">
+            <div><dt>decisions</dt><dd id="p-dec">0</dd></div>
+            <div><dt>pieces</dt><dd id="p-pieces">0</dd></div>
+            <div><dt>lines</dt><dd id="p-lines">0</dd></div>
+            <div><dt>games done</dt><dd id="p-games">0</dd></div>
+          </dl>
+          <div class="block">
+            <p class="label">Its policy right now <span class="muted" id="p-act"></span></p>
+            <ol class="probs" id="p-probs"></ol>
+          </div>
+          <p class="note mono" id="p-parity"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: the visitor plays the same engine. -->
+    <div class="panel-grid" role="tabpanel" id="panel-play" aria-labelledby="tab-play" hidden>
+      <div class="stage" id="play-stage">
+        <canvas id="cv-play" width="720" height="750" role="img" aria-label="Your game"></canvas>
+        <button class="overlay clickable" id="ov-play" type="button">Click or tap to play</button>
+      </div>
+      <aside class="side">
+        <dl class="counters">
+          <div><dt>score</dt><dd id="g-score">0</dd></div>
+          <div><dt>lines</dt><dd id="g-lines">0</dd></div>
+          <div><dt>level</dt><dd id="g-level">1</dd></div>
+          <div><dt>pieces</dt><dd id="g-pieces">0</dd></div>
+        </dl>
+        <div class="pad" id="pad" aria-label="Touch controls">
+          <button type="button" data-k="K_LEFT" aria-label="Left">◀</button>
+          <button type="button" data-k="K_DOWN" aria-label="Soft drop">▼</button>
+          <button type="button" data-k="K_RIGHT" aria-label="Right">▶</button>
+          <button type="button" data-k="K_UP" aria-label="Rotate clockwise">↻</button>
+          <button type="button" data-k="K_c" class="txt" aria-label="Hold">hold</button>
+          <button type="button" data-k="K_z" aria-label="Rotate counter-clockwise">↺</button>
+          <button type="button" data-k="K_SPACE" class="wide txt" aria-label="Hard drop">hard drop</button>
+        </div>
+        <p class="note keys"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>↓</kbd> soft drop · <kbd>Space</kbd> hard drop · <kbd>↑</kbd>/<kbd>X</kbd> rotate · <kbd>Z</kbd>/<kbd>Ctrl</kbd> rotate back · <kbd>C</kbd>/<kbd>Shift</kbd> hold · <kbd>P</kbd>/<kbd>Esc</kbd> pause</p>
+        <p class="note">The repo's engine at its own 240 Hz fixed timestep, with its own DAS/ARR handler (133 ms / 10 ms). Sound, screen shake and particles live in the pygame app and are not here.</p>
+        <p class="note mono" id="g-perf"></p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="results" aria-labelledby="res-title">
+    <h2 id="res-title" class="label">Lines per piece on held-out seeds, from the README</h2>
+    <ul class="bars" id="bars">
+      <li><span class="bn">never hard-drops ("drift")</span><span class="bt"><i style="--v:0.0018"></i></span><span class="bv">0.0018</span></li>
+      <li><span class="bn">pixel agent, 50M steps (pretrained/)</span><span class="bt"><i style="--v:0.0941"></i></span><span class="bv">0.0941</span></li>
+      <li><span class="bn">board-state agent, 150M steps (pretrained/)</span><span class="bt"><i style="--v:0.1629"></i></span><span class="bv">0.1629</span></li>
+      <li><span class="bn">scripted heuristic</span><span class="bt"><i style="--v:0.393"></i></span><span class="bv">0.393</span></li>
+      <li class="live" id="bar-live" hidden><span class="bn">board-state agent, this page</span><span class="bt"><i style="--v:0"></i></span><span class="bv"></span></li>
+    </ul>
+    <p class="note">The four grey rows are the README's results table (complete games, seeds never used in training; 0.4 is the ceiling). They were not measured here. Each run is one seed, and a second seed of a pixel configuration scored 42% differently, so small gaps are not results. The purple row, once a game finishes, is the agent on this page.</p>
+  </section>
+
+  <footer class="demo-foot">
+    <span>Runs: BLOCKWAVE's engine, compositor, input handler and agent environments with the live empowerment reward, unchanged Python and NumPy from the repo, on Pyodide 0.29.5. The policy forward pass is a NumPy re-implementation of <code>agents/nets.py</code>, using weights exported once from <code>pretrained/</code>.</span>
+    <span>Source: <a href="https://github.com/happyc0der/blockwave/tree/7fcee415fd0e6c5e3eb90da2ef9bef5dd41a7eda" target="_blank" rel="noopener">happyc0der/blockwave @ 7fcee41</a> · <a href="py/manifest.json" target="_blank">files this page runs</a></span>
+    <span>GPL-3.0-or-later (<a href="py/LICENSE" target="_blank">licence text</a>). The repo's Python is served here unmodified, beside the demo's own glue code in <code>py/demo/</code>.</span>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
