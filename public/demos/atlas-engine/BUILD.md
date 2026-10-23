@@ -16,7 +16,7 @@ No submodules, vcpkg packages, SDL, ENet or WAMR are needed. The compiled module
 ## Files
 
 - `atlas.wasm`, `atlas.mjs`: the engine build, produced by `build/build.sh`.
-- `build/atlas_web.cpp`: the demo's entry points into the engine. It runs the three golden scenarios exactly as their tests do, drives the lab, lockstep and chess views through the engine's `Kernel`, and provides the simulation side of the mod host (command types, submit, the seeded random streams and the views, mirroring `engine/script/src/mod_host.cpp`). The lab's map palettes are ported here from `apps/lab/view/src/cell_field.cpp`, because the view library links SDL_GPU and cannot be compiled for the browser.
+- `build/atlas_web.cpp`: the demo's entry points into the engine. It runs the three golden scenarios exactly as their tests do, drives the lab, lockstep and chess views through the engine's `Kernel`, and provides the simulation side of the mod host (command types, submit, the seeded random streams and the views, mirroring `engine/script/src/mod_host.cpp`). The lab's map palettes are ported here from `apps/lab/view/src/cell_field.cpp`, because the view library links SDL_GPU and cannot be compiled for the browser. Its benchmark and perft entry points time batches rather than single runs; see "Timing in the browser" below.
 - `chess_opponent.wasm`: copied byte for byte from atlas-chess.
 - `modhost.js`: the JavaScript stand-in for WAMR. It enforces the import list, the required exports, the per-tick log budget and the call context. It does not enforce WAMR's per-tick instruction budget (10,000,000) or its own memory and stack ceilings.
 - `app.js`, `index.html`: the page.
@@ -41,7 +41,7 @@ node public/demos/atlas-engine/build/check-goldens.mjs public/demos/atlas-engine
 node public/demos/atlas-engine/build/check-mod.mjs public/demos/atlas-engine
 ```
 
-`build.sh` fills `engine/core/src/build_info.cpp.in` the way `engine/core/CMakeLists.txt` does, with the clone's own commit, its dirty flag and its commit date. It compiles every source with `em++ -std=c++23 -O3 -DNDEBUG -DATLAS_TRACY_ENABLED=0 -ffp-contract=off`, and uses `-ffile-prefix-map` to keep local paths out of the binary. It then links with `-sMODULARIZE -sEXPORT_ES6 -sALLOW_MEMORY_GROWTH -sFILESYSTEM=0` and no `-pthread`. The output depends only on the sources and the toolchain: two builds from checkouts at different paths gave the same `atlas.wasm` (422,969 bytes, sha256 `23d985716e6eaedd43195143d9412fb0dce7b567d92c823d553b1a79ec410096`).
+`build.sh` fills `engine/core/src/build_info.cpp.in` the way `engine/core/CMakeLists.txt` does, with the clone's own commit, its dirty flag and its commit date. It compiles every source with `em++ -std=c++23 -O3 -DNDEBUG -DATLAS_TRACY_ENABLED=0 -ffp-contract=off`, and uses `-ffile-prefix-map` to keep local paths out of the binary. It then links with `-sMODULARIZE -sEXPORT_ES6 -sALLOW_MEMORY_GROWTH -sFILESYSTEM=0` and no `-pthread`. The output depends only on the sources and the toolchain: two builds from checkouts at different paths gave the same `atlas.wasm` (423,218 bytes, sha256 `6e4aba43616e7cec7487471416bd03c6948d3fa1614409c8d3802d4c7b954e68`).
 
 ## What the checks said for this build (2026-10-23)
 
@@ -63,12 +63,26 @@ match    opera final FEN, white mates   1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2
 
 The page shows the same golden comparison live. If a hash ever differs, the Hashes tab marks it `MISMATCH` in red and the summary counts it.
 
+## Timing in the browser
+
+The wasm reads the clock through `emscripten_get_now()`, which is `performance.now()`. GitHub Pages cannot send the cross-origin-isolation headers, so browsers round that clock: Chromium and Edge to 100 µs steps, others to as much as 1 ms. A whole tick of the 100² world (16 µs natively) is shorter than one step, so timing ticks one at a time, as `bench_simulation.cpp` does natively, would print the clock's step instead of the tick.
+
+So the page measures the clock's step when it starts and works within it:
+
+- **Benchmark** (`lab_bench`) builds the `bench_simulation.cpp` tick scenario (a fresh world, seed 11, two warm-up ticks) and times ticks in batches, one pair of clock reads per batch. The batch length doubles until one batch lasts at least 100 clock steps (20 ms on a 100 µs clock, 100 ms on a 1 ms clock), and then seven batches of that length are timed. It reports the median of the batch means. The native baseline is the median of single ticks, so the page states both methods next to each other.
+- **Perft** (`chess_perft`) repeats the count, doubling the runs until a batch lasts as long, and divides by the runs. It adds up every run's node count and checks the total.
+- **The live tick readout** times each tick on its own. It prints a figure only when the median tick lasts at least 20 clock steps. Below that it says the tick is too short for the clock and points to Benchmark, and the sparkline is not drawn.
+- **One-off times** (the golden scenarios, world generation) are printed with a ±2-step error, or as "under" two steps.
+
+Under Node's fine clock, the batched benchmark agreed with the single-tick median of the previous build to within 3%: 25.5 against 26.2 µs at 100², 252 against 245 µs at 320², and 2.51 against 2.45 ms at 1024².
+
 ## Measured in headless Edge on an Apple M4 Pro (2026-10-23)
 
-These are not recorded native numbers.
+These are not recorded native numbers. The clock counted in 100 µs steps with no cross-origin isolation.
 
-- A 1024×1024 lab tick in the `bench_simulation.cpp` scenario took about 2.4–2.5 ms (median of 12 ticks, one thread). The recorded native figure is 1.675 ms (baseline JSON) / 1.650 ms (PERFORMANCE.md M8 table).
-- Perft from the start position to depth 4 counted 197,281 nodes in about 7.5 ms.
+- Benchmark, one thread, median of seven batch means: 100² 23.7–24.4 µs a tick (batches of 1,024 ticks), 320² 236–243 µs (128 ticks), 1024² 2.35–2.53 ms (8 or 16 ticks), across five runs. The recorded native figures for the same scenario are 16.1 µs, 161 µs and 1.675 ms (`benchmarks/baselines/mac16-7-appleclang-relwithdebinfo.json`). The M8 table in `docs/PERFORMANCE.md` is a separate native run of the million-cell tick: 1.650 ms with no pool, 694 µs on 4 workers.
+- The same runs with `performance.now()` floored to whole milliseconds, which stands in for a 1 ms browser clock, gave 24.0 µs, 236 µs and 2.39 ms.
+- Perft from the start position: depth 3 (8,902 nodes) in 221–230 µs a run, the mean of 128 or 512 runs. Depth 5 (4,865,609 nodes) took 124–129 ms in one run. Natively, depth 3 takes 172 µs (`docs/PERFORMANCE.md`, M22).
 
 ## Licence
 
