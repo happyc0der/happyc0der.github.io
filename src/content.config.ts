@@ -8,7 +8,11 @@ const projects = defineCollection({
     title: z.string(),
     blurb: z.string(),
     repo: z.string().url().optional(),
-    demo: z.string().url().optional(),
+    demo: z.string().url().optional(),     // an external live link (the app, a store page)
+    // A live demo that runs on this site: public/demos/<slug>/index.html, loaded in an iframe on click.
+    demo_embed: z.string().optional(),     // e.g. /demos/<slug>/
+    demo_label: z.string().optional(),     // one sentence saying exactly what runs (shown under the demo)
+    demo_height: z.number().optional(),    // iframe height in px, default 640
     image: z.string().optional(),
     year: z.number(),
     order: z.number().default(99),
