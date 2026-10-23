@@ -1,0 +1,44 @@
+---
+// The first screen: the name, a rolling list of what I build, the one-line intro, and behind it a sphere
+// with one point per commit of the last year (src/scripts/sphere.ts), counted from content/stats/commits.json.
+import Icon from '../Icon.astro';
+import { profile, nameParts } from '../../lib';
+import { commitStats } from '../../stats';
+
+const [first, last] = nameParts(profile.name);
+const commits = commitStats();
+const roles: string[] = profile.roles ?? [];
+const year = new Date().getFullYear();
+---
+<section class="hero" aria-labelledby="hero-name">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="blob blob-a"></span>
+    <span class="blob blob-b"></span>
+    <canvas class="sphere" data-sphere data-points={commits?.total ?? 1200}></canvas>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="hero-meta mono"><span>Portfolio / {year}</span><span>{profile.location}</span></div>
+    <h1 class="hero-name" id="hero-name">
+      <span class="hero-first" data-split="chars" data-intro>{first}</span>
+      <span class="hero-last" data-split="chars" data-intro>{last}</span>
+    </h1>
+    {commits && <p class="sphere-caption mono">{commits.total.toLocaleString('en-US')} commits in the last year, one dot each</p>}
+    <div class="hero-foot">
+      {roles.length > 0 && (
+        <p class="hero-build" data-reveal-intro>
+          <span>I build</span>
+          <span class="ticker" data-ticker>
+            <span class="ticker-list" aria-hidden="true">{roles.map((r) => <span>{r}</span>)}</span>
+            <span class="sr-only">{roles.join(', ')}</span>
+          </span>
+        </p>
+      )}
+      <p class="hero-intro" data-reveal-intro>{profile.tagline}</p>
+      <a class="round-btn" href="#about" data-magnetic data-reveal-intro aria-label="Scroll to About"><Icon name="down" /></a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/sphere';
+</script>

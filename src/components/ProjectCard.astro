@@ -1,24 +1,28 @@
 ---
+// A card in the home page's "Selected work" track. The screenshot (or, without one, the headline number
+// on a grid, like the link-preview cards) under a wash in this card's hue and a big gradient number.
 import Picture from './Picture.astro';
-import { tagNames, badge } from '../lib';
-const { project, thumb = false, eager = false } = Astro.props;
+import Icon from './Icon.astro';
+import { badge, hue, pad } from '../lib';
+const { project, index, eager = false } = Astro.props;
 const d = project.data;
 const b = badge(d);
-// Cards show the 16:9 top slice from scripts/make-images.mjs; the full image stays on the project page.
-// Three columns of about 20rem on desktop, two on tablets, one on phones.
-const sizes = '(min-width: 64rem) 21rem, (min-width: 40rem) 46vw, 100vw';
+// About a third of the window on desktop, most of it on a phone.
+const sizes = '(min-width: 900px) 34vw, 84vw';
 ---
-<a class:list={['card', { 'has-thumb': thumb }]} href={`/projects/${project.id}/`} data-tags={d.tags.join(' ')}>
-  {thumb && (
-    d.image
-      ? <div class="thumb" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} thumb sizes={sizes} eager={eager} /></div>
-      : <div class="thumb text"><span>{d.stats[0] ?? d.title}</span></div>
-  )}
-  <div class="top">
-    <h3>{d.title}</h3>
-    <span class:list={['mono', b.live ? 'pill' : 'muted']}>{b.text}</span>
+<a class="wcard" href={`/projects/${project.id}/`} data-cursor={d.demo_embed ? 'Demo' : 'Open'} data-label={d.title} style={`--hue: ${hue(index)}`}>
+  <div class="wcard-media">
+    {d.image
+      ? <div class="wcard-shot shot" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} thumb sizes={sizes} eager={eager} /></div>
+      : <div class="wcard-panel"><span>{d.stats[0] ?? d.title}</span></div>}
+    <span class="wcard-wash" aria-hidden="true"></span>
+    <span class="wcard-num" aria-hidden="true">{pad(index + 1)}</span>
+    <span class:list={['wcard-year mono', { 'is-live': b.live }]}>{b.text}</span>
   </div>
-  <p>{d.blurb}</p>
-  <div class="tags">{d.tags.map((t: string) => <span class="tag">{tagNames[t]}</span>)}</div>
-  {d.stats.length > 0 && <div class="stats mono">{d.stats.map((s: string) => <span>{s}</span>)}</div>}
+  <div class="wcard-body">
+    <h3 class="wcard-title">{d.title}</h3>
+    <span class="round-btn small" aria-hidden="true"><Icon name="right" /></span>
+    <p class="wcard-blurb">{d.blurb}</p>
+    <ul class="tags wcard-stack" aria-label="Stack">{d.stack.slice(0, 5).map((s: string) => <li class="tag plain">{s}</li>)}</ul>
+  </div>
 </a>

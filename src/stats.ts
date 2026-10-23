@@ -92,6 +92,8 @@ export function garminStats() {
 }
 
 export const publicStats = () => read('public.json') || {};
+// The same test Stats.astro uses to render at all, so the home page can number its sections without a gap.
+export const hasStats = () => Boolean(githubStats() || claudeStats() || garminStats() || publicStats().overwatch);
 export const stravaStats = () => read('strava.json');
 
 // ---- More tiles -------------------------------------------------------------------------------

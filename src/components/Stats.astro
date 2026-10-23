@@ -2,6 +2,7 @@
 import Heatmap from './Heatmap.astro';
 import WeekBars from './WeekBars.astro';
 import HourBars from './HourBars.astro';
+import SectionHead from './SectionHead.astro';
 import {
   claudeStats, claudeBreakdown, githubStats, languageStats, commitStats, kaggleStats, garminStats, gtnhStats,
   publicStats, stravaStats, spotifyStats, garminRaw, emulatorStats, compact, fmtDay, nyDay,
@@ -24,13 +25,15 @@ const updated = [gh?.updated, cl?.updated, ga?.updated].filter(Boolean).sort().p
 const shipped = [pypi?.packages?.length, connectiq?.apps?.length, uptime?.sites?.length].some(Boolean);
 const emu = emulatorStats(profile.stats?.emulators_extra);
 const play = [ow, tw, sm, sp, emu].some(Boolean);
+// n / total: this section's place among the home page's numbered sections.
+const { n = 1, total = 1 } = Astro.props;
 ---
 {(gh || cl || ga || ow) && (
-<section class="stats" id="numbers">
-  <div class="section-head">
-    <h2>By the numbers</h2>
-    {updated && <span class="mono muted">updated {fmtDay(nyDay(updated))}</span>}
-  </div>
+<section class="section stats" id="numbers">
+  <div class="wrap">
+  <SectionHead n={n} total={total} title="By the numbers">
+    {updated && <p class="mono muted stats-updated">updated {fmtDay(nyDay(updated))}</p>}
+  </SectionHead>
 
   {/* ---------------- Code ---------------- */}
   <h3 class="group">Code</h3>
@@ -276,6 +279,7 @@ const play = [ow, tw, sm, sp, emu].some(Boolean);
         {sp.tracks?.[0] && <p class="sub">Top track: {sp.tracks[0].name} · {sp.tracks[0].artist}</p>}
       </div>
     )}
+  </div>
   </div>
 </section>
 )}

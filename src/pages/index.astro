@@ -1,60 +1,168 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Marquee from '../components/home/Marquee.astro';
+import SectionHead from '../components/SectionHead.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Picture from '../components/Picture.astro';
+import Icon from '../components/Icon.astro';
 import Stats from '../components/Stats.astro';
-import { profile, competitions } from '../lib';
+import { profile, competitions, hue, pad, resultShort, skillList } from '../lib';
+import { commitStats, publicStats, hasStats } from '../stats';
 
 const projects = (await getCollection('projects')).filter((p) => p.data.listed).sort((a, b) => a.data.order - b.data.order);
 const featured = projects.filter((p) => p.data.featured);
+const demos = projects.filter((p) => p.data.demo_embed);
+const listedIds = new Set(projects.map((p) => p.id));
+
+// Sections number themselves, so one that has nothing to show (Live demos until the first demo lands)
+// leaves no gap in the count.
+const order = ['about', 'work', demos.length && 'demos', competitions.length && 'competitions', hasStats() && 'numbers', 'education', 'contact'].filter(Boolean) as string[];
+const num = (id: string) => ({ n: order.indexOf(id) + 1, total: order.length });
+
+// About: four or five figures, each read from content/ at build time. A missing source drops its figure.
+const commits = commitStats();
+const lc = publicStats().leetcode;
+const finals = competitions.map((c: any) => c.result.match(/Final rank [\d,]+ of [\d,]+ teams \(top (\d+)%\)/)).filter(Boolean).map((m: any) => +m[1]);
+const counters = [
+  { value: projects.length, label: 'projects on this site, each with its code and numbers' },
+  commits && { value: commits.total.toLocaleString('en-US'), label: 'commits in the last year, private repos included' },
+  commits && { value: commits.repos, label: 'repositories those commits went to' },
+  finals.length && { pre: 'top ', value: Math.min(...finals), unit: '%', label: 'best final Kaggle finish' },
+  lc?.solved && { value: lc.solved.toLocaleString('en-US'), label: 'LeetCode problems solved' },
+].filter(Boolean) as { pre?: string; value: string | number; unit?: string; label: string }[];
+
+const skillNames: Record<string, string> = { languages: 'Languages', systems: 'Systems', ml: 'Machine learning', ai: 'AI and agents', data: 'Data', security: 'Security', testing: 'Testing', quant: 'Quant', tools: 'Tools' };
+const skillGroups = Object.entries(profile.skills as Record<string, string[]>).map(([k, list]) => [k, skillList(list)] as const);
+
+// Every course on the transcripts, once. profile.yaml groups them by resume track, not by school.
+const courses = [...new Set(Object.values(profile.coursework as Record<string, string[]>).flat())];
 ---
 <Base>
-  <section class="hero">
-    <p class="status"><span class="dot" aria-hidden="true"></span>Open to new-grad roles · NYC or remote</p>
-    <h1>{profile.name}</h1>
-    <p class="tagline">{profile.tagline}</p>
-    <div class="links">
-      <a class="btn primary" href="/resume/">Resume</a>
-      <a class="btn" href={profile.links.github}>GitHub</a>
-      <a class="btn" href={profile.links.linkedin}>LinkedIn</a>
-      <a class="btn" href={`mailto:${profile.email}`}>Email</a>
-      <a class="btn ghost" href="#numbers">By the numbers ↓</a>
+  <Hero />
+  <Marquee />
+
+  <section class="section about" id="about">
+    <div class="wrap">
+      <SectionHead {...num('about')} title="About" />
+      {profile.about && <p class="statement" data-scrub>{profile.about}</p>}
+      <dl class="counters">
+        {counters.map((c) => (
+          <div class="counter" data-reveal>
+            <dt>{c.label}</dt>
+            <dd>{c.pre && <small class="pre">{c.pre}</small>}<span data-count>{c.value}</span>{c.unit && <small>{c.unit}</small>}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="skills">
+        {skillGroups.map(([k, list]) => (
+          <div class="skill-group" data-reveal>
+            <h3 class="label quiet">{skillNames[k] ?? k}</h3>
+            <ul class="skill-list">{list.map((s) => <li class="skill">{s}</li>)}</ul>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
-  <section>
-    <div class="section-head">
-      <h2>Selected work</h2>
-      <a href="/projects/" class="mono">all {projects.length} →</a>
+  <section class="section work" id="work" data-work>
+    <div class="wrap">
+      <SectionHead {...num('work')} title="Selected work">
+        <p class="work-count mono" aria-hidden="true"><span data-work-index>01</span> / {pad(featured.length)}</p>
+      </SectionHead>
     </div>
-    <div class="grid">{featured.map((p, i) => <ProjectCard project={p} thumb eager={i < 3} />)}</div>
+    <div class="work-viewport" data-work-viewport>
+      <ol class="work-track" data-work-track>
+        {featured.map((p, i) => <li><ProjectCard project={p} index={projects.indexOf(p)} eager={i < 2} /></li>)}
+        <li class="work-more"><a href="/projects/" data-cursor="Open" data-label="Projects"><span class="mono">Index</span><strong>All {projects.length} projects</strong><Icon name="right" /></a></li>
+      </ol>
+    </div>
   </section>
 
-  <Stats />
+  {demos.length > 0 && (
+    <section class="section demos" id="demos">
+      <div class="wrap">
+        <SectionHead {...num('demos')} title="Live demos" />
+        <p class="section-lead">These run in your browser, on this site. Each one says exactly what it is.</p>
+        <ul class="demo-grid">
+          {demos.map((p) => (
+            <li data-reveal>
+              <a class="dcard" href={`/projects/${p.id}/#demo`} data-cursor="Demo" data-label={p.data.title} style={`--hue: ${hue(projects.indexOf(p))}`}>
+                <div class="dcard-poster">
+                  {p.data.image ? <Picture src={p.data.image} thumb sizes="(min-width: 900px) 30vw, 90vw" /> : <div class="wcard-panel"><span>{p.data.stats[0] ?? p.data.title}</span></div>}
+                  <span class="wcard-wash" aria-hidden="true"></span>
+                  <span class="dcard-play" aria-hidden="true"><Icon name="play" /></span>
+                </div>
+                <div class="dcard-body">
+                  <h3>{p.data.title}</h3>
+                  {p.data.demo_label && <p class="mono">{p.data.demo_label}</p>}
+                  <span class="link-cta">Run it <Icon name="right" /></span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
-  <section>
-    <div class="section-head"><h2>Competitions</h2></div>
-    <div class="rows">
-      {competitions.map((c: any) => (
-        <div class="row">
-          <span class="what">{c.name}</span>
-          <span class="when mono">{c.year}</span>
-          <span class="detail">{c.result}</span>
+  {competitions.length > 0 && (
+    <section class="section comps" id="competitions">
+      <div class="wrap">
+        <SectionHead {...num('competitions')} title="Competitions" />
+        <div class="acc">
+          {competitions.map((c: any, i: number) => (
+            <details class="acc-row" data-reveal>
+              <summary>
+                <span class="acc-num mono">{pad(i + 1)}</span>
+                <span class="acc-name">{c.name}</span>
+                <span class="acc-result">{resultShort(c.result)}</span>
+                <span class="acc-year mono">{c.year}</span>
+                <span class="acc-icon" aria-hidden="true"><Icon name="plus" /></span>
+              </summary>
+              <div class="acc-body">
+                <p>{c.result}</p>
+                {c.project && listedIds.has(c.project) && <a class="link-cta" href={`/projects/${c.project}/`}>The project <Icon name="right" /></a>}
+              </div>
+            </details>
+          ))}
         </div>
-      ))}
+      </div>
+    </section>
+  )}
+
+  <Stats {...num('numbers')} />
+
+  <section class="section edu" id="education">
+    <div class="wrap">
+      <SectionHead {...num('education')} title="Education" />
+      <ul class="edu-rows">
+        {profile.education.map((e: any) => (
+          <li class="edu-row" data-reveal>
+            <h3 class="edu-school">{e.school}</h3>
+            <p class="edu-degree">{e.degree}</p>
+            <p class="edu-meta mono"><span>{e.when}</span><span>{e.score}</span></p>
+          </li>
+        ))}
+      </ul>
+      {courses.length > 0 && <p class="edu-courses" data-reveal><span class="label quiet">Coursework, both degrees</span>{courses.join(' · ')}</p>}
+      <a class="btn-big" href="/resume/" data-magnetic data-cursor="PDF" data-label="Resume">Resumes <Icon name="right" /></a>
     </div>
   </section>
 
-  <section>
-    <div class="section-head"><h2>Education</h2></div>
-    <div class="rows">
-      {profile.education.map((e: any) => (
-        <div class="row">
-          <span class="what">{e.school}</span>
-          <span class="when mono">{e.when}</span>
-          <span class="detail">{e.degree}. {e.score}</span>
-        </div>
-      ))}
+  <section class="section contact" id="contact">
+    <div class="wrap">
+      <p class="shead-num mono">[ {pad(num('contact').n)} / {pad(num('contact').total)} ] · Contact</p>
+      <h2 class="signoff"><span data-split>Got a hard problem?</span> <em data-split>Let's talk.</em></h2>
+      <a class="contact-email" href={`mailto:${profile.email}`} data-copy={profile.email} data-cursor="Copy">{profile.email}</a>
+      <p class="copy-note mono" data-copy-note aria-live="polite"></p>
+      <ul class="socials">
+        <li><a class="social" href={profile.links.github}>GitHub <Icon name="out" /></a></li>
+        <li><a class="social" href={profile.links.linkedin}>LinkedIn <Icon name="out" /></a></li>
+        <li><a class="social" href={`mailto:${profile.email}`}>Email <Icon name="out" /></a></li>
+        <li><a class="social" href={profile.links.source}>Site source <Icon name="out" /></a></li>
+      </ul>
     </div>
   </section>
 </Base>
