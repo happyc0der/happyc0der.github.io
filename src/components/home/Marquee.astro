@@ -1,0 +1,13 @@
+---
+// A band of skills from profile.yaml, grotesk and serif italic in turn. It drifts by CSS on its own; with
+// motion on, motion.ts takes over so its speed and direction follow the scroll. Reduced motion: still.
+import Icon from '../Icon.astro';
+import { profile, marqueeSkills } from '../../lib';
+const skills = marqueeSkills(profile.skills);
+---
+<div class="marquee">
+  <div class="marquee-track" data-marquee>
+    <ul class="marquee-list" aria-label="Skills">{skills.map((s) => <li>{s}<Icon name="star" /></li>)}</ul>
+    <ul class="marquee-list" aria-hidden="true">{skills.map((s) => <li>{s}<Icon name="star" /></li>)}</ul>
+  </div>
+</div>

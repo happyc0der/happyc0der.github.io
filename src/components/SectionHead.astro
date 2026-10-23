@@ -1,0 +1,11 @@
+---
+// A home section's heading: "[ 02 / 07 ]" and a giant title that splits into words as it scrolls in.
+// Anything in the slot sits at the right end of the row (a counter, an "updated" date).
+import { pad } from '../lib';
+const { n, total, title, id } = Astro.props;
+---
+<div class="shead">
+  <p class="shead-num mono">[ {pad(n)} / {pad(total)} ]</p>
+  <h2 class="shead-title" id={id} data-split>{title}</h2>
+  {Astro.slots.has('default') && <div class="shead-end"><slot /></div>}
+</div>
