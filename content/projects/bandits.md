@@ -7,6 +7,9 @@ order: 23
 featured: false
 stack: [Python, NumPy, Matplotlib]
 tags: [ml, quant]
+demo_embed: /demos/bandits/
+demo_label: "The repo's five bandit algorithms, environment and bench/ metrics at commit 2be15ab, running unmodified in Pyodide in your browser; the regret, arm-choice and phase charts are drawn in JavaScript from their output."
+demo_height: 960
 stats: ["5 algorithms", "59x faster AdSwitch", "regret 21,860 to 174"]
 bullets:
   - "Five piecewise-stationary bandit algorithms (TS-GE, AdSwitch, M-UCB, UCB1, epsilon-greedy) behind one interface, benchmarked on five cases from 2 to 128 arms with regret split into decision regret and mandatory probing cost."
