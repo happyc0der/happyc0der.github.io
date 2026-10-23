@@ -6,6 +6,9 @@ image: /img/lfp2vec-fixes.png
 year: 2026
 order: 3
 featured: true
+demo_embed: /demos/lfp2vec-audit/
+demo_label: "Interactive charts of the repo's saved result files (results/spectra, results/postprocess, results/calibration, results/finetune_v2) at commit 4a0bdef; nothing is trained or re-run in your browser."
+demo_height: 780
 stack: [Python, PyTorch, Hugging Face transformers, wav2vec2, scikit-learn, SciPy, pytest, GitHub Actions]
 tags: [ml, data]
 stats: ["0.74 vs 0.68 published", "100 Hz low-pass fix", "337 tests, CI on push"]
