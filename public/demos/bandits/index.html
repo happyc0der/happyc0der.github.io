@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Non-stationary bandits demo</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="The multi_armed_bandit_algorithms repo's five algorithms and benchmark, running unmodified in Pyodide in the browser.">
+<meta name="description" content="The multi_armed_bandit_algorithms repo's five algorithms and benchmark metrics, running unmodified in Pyodide in the browser, with a small glue file written for the page.">
 <link rel="stylesheet" href="../_shared/demo.css">
 <link rel="stylesheet" href="app.css">
 </head>
@@ -86,7 +86,7 @@
             <h2 id="raster-title" class="card-title">Which arm was pulled</h2>
             <div class="seg seg-wrap" role="group" aria-label="Algorithm" id="raster-pick"></div>
           </div>
-          <p class="card-sub">Each column is <span id="raster-cols">a block of</span> slots; brighter means more of the block went to that arm. Outlined: the best arm at the time.</p>
+          <p class="card-sub">Each column is <span id="raster-cols">a block of</span> slots; brighter means more of the block went to that arm. Outlined: the best arm at the time. Both worked out by demo_entry.py from the run's chosen arms and the case's schedule.</p>
           <div class="chart" id="raster-chart">
             <canvas tabindex="0" role="img" aria-label="Share of pulls per arm over time for the selected algorithm. Use the arrow keys to read cells."></canvas>
             <div class="tip" hidden></div>
@@ -125,15 +125,15 @@
                 <th scope="col">Algorithm</th>
                 <th scope="col" class="num">Total</th>
                 <th scope="col" class="num">Decision</th>
-                <th scope="col" class="num" title="Slots from the change to the first detection">Detects after</th>
+                <th scope="col" class="num" title="Slots from the change to the first detection, by the rule in bench/runner.py's summary; computed by demo_entry.py">Detects after</th>
                 <th scope="col" class="num c-age" title="Longest any arm went unprobed after initialization">Max probe age</th>
-                <th scope="col" class="num c-best" title="Share of single-arm pulls that went to the best arm at the time">On best arm</th>
+                <th scope="col" class="num c-best" title="Share of single-arm pulls that went to the best arm at the time; computed by demo_entry.py, not a repo metric">On best arm</th>
                 <th scope="col" class="num c-time" title="Wall time of the algorithm's run() in this browser">Time here</th>
               </tr></thead>
               <tbody></tbody>
             </table>
           </div>
-          <p class="card-note">Regret per slot: the best arm's mean minus the reward received. Decision regret skips group-probe slots, which only TS-GE has. "Detects after": slots from the change to the first detection.</p>
+          <p class="card-note">Regret per slot: the best arm's mean minus the reward received. Decision regret skips group-probe slots, which only TS-GE has. "Detects after" (slots from the change to the first detection, by bench/runner.py's summary rule) and "On best arm" (not a repo metric) are worked out by demo_entry.py from the run's history; the other columns come from bench/.</p>
         </section>
 
         <section class="card card-phase" aria-labelledby="phase-title">
@@ -154,7 +154,7 @@
   <footer class="demo-foot">
     <span>Runs: the repo's five algorithms, environment and bench/ metrics, unmodified Python in Pyodide <span id="versions">0.29.5</span>, in a Web Worker. JavaScript only draws the charts.</span>
     <span>Source: <a href="https://github.com/happyc0der/multi_armed_bandit_algorithms/tree/2be15abf09b4642bd93454bc4e0280d66d580f63" target="_blank" rel="noopener">happyc0der/multi_armed_bandit_algorithms @ 2be15ab</a></span>
-    <span>Glue: <a href="demo_entry.py" target="_blank" rel="noopener">demo_entry.py</a>, written for this page</span>
+    <span>Glue: <a href="demo_entry.py" target="_blank" rel="noopener">demo_entry.py</a>, written for this page. Besides calling the repo, it derives the arm raster, "On best arm" and "Detects after" from each run's history.</span>
   </footer>
 </main>
 <script type="module" src="app.js"></script>

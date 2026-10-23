@@ -1,5 +1,6 @@
-// Page side of the bandits demo. Every number shown here comes out of the repo's Python
-// (via worker.js and demo_entry.py); this file only lays it out and draws charts.
+// Page side of the bandits demo. Every number shown here comes out of Python in the worker:
+// the repo's code, plus the few values demo_entry.py derives from its output (raster shares,
+// best-arm outline, "On best arm", "Detects after"). This file only lays them out and draws.
 
 const ALGOS = [
   { id: 'TS-GE', label: 'TS-GE', color: '#9085e9' },
