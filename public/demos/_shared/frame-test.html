@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo frame test</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="demo.css">
+<style>
+  body { padding: 16px; }
+  .frames { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  iframe { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); display: block; }
+</style>
+</head>
+<body>
+<!-- Development aid, not linked from the site: /demos/_shared/frame-test.html?demo=<slug>&h=640[&w=360,1400]
+     shows a demo inside iframes at the given widths, the way project pages embed it. -->
+<p class="label" id="what"></p>
+<div class="frames" id="frames"></div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const slug = q.get('demo') || '';
+  const h = +(q.get('h') || 640);
+  const widths = (q.get('w') || '360,1400').split(',').map(Number);
+  document.getElementById('what').textContent = `/demos/${slug}/ at ${widths.join(' and ')} px, ${h} px tall`;
+  for (const w of widths) {
+    const f = document.createElement('iframe');
+    f.src = `../${slug}/`;
+    f.width = w; f.height = h;
+    f.title = `${slug} demo at ${w}px`;
+    f.setAttribute('allow', 'fullscreen');
+    document.getElementById('frames').appendChild(f);
+  }
+</script>
+</body>
+</html>
