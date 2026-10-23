@@ -2,6 +2,9 @@
 title: NYC AutoDDG
 blurb: PySpark profiler and local-LLM description generator for NYC Open Data, with benchmarks of where Spark beats pandas.
 repo: https://github.com/happyc0der/nyc-autoddg
+demo_embed: /demos/nyc-autoddg/
+demo_label: "The repo's pandas profiler (src/autoddg/profile_pandas.py, the Spark profiler's test oracle) running unchanged in Pyodide on three bundled NYC Open Data CSVs or a CSV you choose, checked field by field against the committed Spark profiles; the qwen3:14b descriptions, judge scores and benchmark timings are recorded outputs from the repo, not run live."
+demo_height: 760
 image: /img/autoddg-scaling.png
 year: 2026
 order: 15
