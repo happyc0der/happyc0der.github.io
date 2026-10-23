@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledger live demo</title>
+<meta name="description" content="Ledger's verification code running in your browser over the claims Claude Sonnet 5.5 returned on 2026-10-17.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app" id="app" data-view="list">
+  <header class="top">
+    <div class="brand">
+      <p class="label">Ledger · verification layer, live</p>
+      <h1>Every claim checked in code</h1>
+    </div>
+    <div class="tabs seg" role="tablist" aria-label="Demo views" id="tabs" hidden>
+      <button role="tab" id="tab-deals" aria-controls="view-deals" aria-selected="true">Deals</button>
+      <button role="tab" id="tab-score" aria-controls="view-score" aria-selected="false" tabindex="-1">Scoreboard</button>
+      <button role="tab" id="tab-forecast" aria-controls="view-forecast" aria-selected="false" tabindex="-1">Forecast</button>
+    </div>
+  </header>
+
+  <main class="body" id="body">
+    <section class="poster" id="poster" aria-labelledby="poster-h">
+      <div class="poster-in">
+        <h2 id="poster-h">235 deals. A model read them. Code checks every claim it made.</h2>
+        <p class="lede">This runs the repo's verifier, consistency checks and scorer in Python in your browser, over the claim ledgers
+          Claude Sonnet 5.5 returned in the recorded run of 2026-10-17. Browse any deal, see a receipt for every claim,
+          then try to fool it: invent a quote, cite the rep as the buyer, or change a number, and watch what the checks do.</p>
+        <button class="btn primary" id="run" type="button">Run the checks</button>
+        <div class="progress" id="progress" hidden><i></i></div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+        <p class="size" id="size">Downloads about 13 MB on first run: Python 3.13 and pandas from jsDelivr (cached by your browser after that), plus 1.7 MB of data and code from this site. No model is called.</p>
+        <ul class="facts">
+          <li>The call notes and contacts are synthetic, generated for the 228 open deals of one sales team in Maven Analytics' public-domain CRM data. Deal values, dates (shifted) and real outcomes come from that data; 18 anomaly types were planted, including 7 duplicate deals.</li>
+          <li>The hackathon (Block Convey, Money Talks 2) result is still pending.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="view view-deals" id="view-deals" role="tabpanel" aria-labelledby="tab-deals" hidden>
+      <div class="browser">
+        <aside class="list-pane" aria-label="Deals">
+          <div class="filters">
+            <div class="seg filter-seg" id="filters" role="group" aria-label="Filter deals"></div>
+            <input type="search" id="q" placeholder="Search account, product, rep or id" aria-label="Search deals">
+          </div>
+          <p class="label list-count" id="count"></p>
+          <ul class="deal-list" id="list" aria-label="Deals"></ul>
+        </aside>
+        <article class="detail-pane" id="detail" aria-live="polite" tabindex="-1"></article>
+      </div>
+    </section>
+
+    <section class="view view-score" id="view-score" role="tabpanel" aria-labelledby="tab-score" hidden></section>
+    <section class="view view-forecast" id="view-forecast" role="tabpanel" aria-labelledby="tab-forecast" hidden></section>
+  </main>
+
+  <footer class="demo-foot">
+    <span class="foot-long">Runs: the repo's verification code (field rules, quote verifier, consistency checks, scorer, evaluator, forecast roll-up) in Pyodide over the claims Claude Sonnet 5.5 returned on 2026-10-17. No model is called; your edits are checked live.</span>
+    <span class="foot-short">Runs: the repo's checks in Pyodide over the claims Sonnet 5.5 returned on 2026-10-17; no model is called. Synthetic call notes over Maven's public-domain CRM data; hackathon result pending.</span>
+    <span>Source: <a href="https://github.com/happyc0der/ledger/tree/617c985371ec21e90d36d5d190ff4186feccd471" target="_blank" rel="noopener">happyc0der/ledger @ 617c985</a> · GPL-3.0-or-later (<a href="py/LICENSE" target="_blank" rel="noopener">licence</a>)</span>
+    <span class="foot-long">Synthetic call notes over Maven Analytics' public-domain CRM data. Hackathon result pending.</span>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
