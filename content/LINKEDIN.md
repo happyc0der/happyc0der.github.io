@@ -98,7 +98,7 @@ Code: github.com/happyc0der/eeg-dementia-graph-transformer
 Dates: Oct 2026 · Skills: LLM Agents, Python, FastAPI
 My solo entry for the Money Operations track of Block Convey's AI x Fintech hackathon, Money Talks 2, in New York on 17 October 2026. Ledger reads every deal's calls, emails and meetings into a ledger of what the buyer actually said, with verbatim quotes, and code compares each claim against the CRM. The output is a commit and best-case forecast where every excluded dollar has a reason, draft CRM corrections a person approves, and a Monday digest per rep.
 
-On 235 deals built from the public Maven CRM dataset with 18 planted problem types, run through the event's Claude Sonnet 5.5 gateway, Ledger found 94% of the problems with 0 of 86 clean deals falsely flagged and no invented numbers. The same model asked to "find the issues" found 72%, flagged 10 clean deals and invented 6 numbers.
+On 235 deals built from the public Maven CRM dataset with 18 planted problem types, run through the event's Claude Sonnet 5.5 gateway, Ledger found 94% of the problems with 0 of 86 clean deals falsely flagged and no invented numbers. The same model asked to "find the issues" found 72% and flagged 10 clean deals, and the same model as a plain forecaster invented 6 numbers.
 
 I ran the same pipeline on five models, including two local ones on my own GPUs. Reading improved with model size, judging win probability did not, and the code checks kept fabrications and false alarms at zero on every model. Every run is traced in PRISM, the sponsor's observability tool, and 27 failures are logged with their evidence, 26 of them fixed.
 
