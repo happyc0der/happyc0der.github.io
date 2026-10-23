@@ -2,6 +2,9 @@
 title: EEG dementia re-evaluation
 blurb: "Honest, subject-level re-evaluation of a course project that classified Alzheimer's, frontotemporal dementia and healthy controls from EEG: about 60% balanced accuracy, and no deep model beats spectral features."
 repo: https://github.com/happyc0der/eeg-dementia-graph-transformer
+demo_embed: /demos/eeg-dementia/
+demo_label: "Interactive charts of the repo's saved out-of-fold subject predictions, result tables and permutation nulls, plus a replay of the 2025 team model's training log; confusion matrices and balanced accuracies are recomputed in your browser from those saved predictions, and no model runs."
+demo_height: 840
 image: /img/eeg-dementia.png
 year: 2026
 order: 3.5
