@@ -80,6 +80,45 @@ def regions(repo: Path) -> list[str]:
     return []
 
 
+def four_class_view(repo: Path) -> list[str]:
+    """The classes of the repo's "4class" view (CLASS_VIEWS in lfpaudit/eval/runner.py)."""
+    tree = ast.parse((repo / "lfpaudit/eval/runner.py").read_text())
+    for node in tree.body:
+        if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "CLASS_VIEWS":
+            for key, value in zip(node.value.keys, node.value.values):
+                if isinstance(key, ast.Constant) and key.value == "4class":
+                    return list(ast.literal_eval(value))
+    fail("CLASS_VIEWS['4class'] not found in lfpaudit/eval/runner.py")
+    return []
+
+
+def data_card(repo: Path, classes: list[str]) -> dict:
+    """Channels kept per probe and per region, and chunks per region, from docs/DATA_CARD.md."""
+    text = (repo / "docs/DATA_CARD.md").read_text()
+    stores = {}
+    for name in ("ibl", "allen"):
+        check(f"### `{name}`" in text, f"DATA_CARD.md has no section for {name}")
+        section = text.split(f"### `{name}`", 1)[1].split("\n### ", 1)[0]
+        lines = section.splitlines()
+        header = next((ln for ln in lines if ln.startswith("| group |")), None)
+        check(header is not None, f"DATA_CARD.md {name}: no table")
+        cols = [c.strip() for c in header.strip("|").split("|")]
+        check(cols[1] == "channels kept" and cols[2 : 2 + len(classes)] == classes,
+              f"DATA_CARD.md {name}: unexpected columns {cols}")
+        groups = {}
+        for ln in lines:
+            if not ln.startswith("| ") or ln == header:
+                continue
+            cells = [c.strip() for c in ln.strip("|").split("|")]
+            groups[cells[0]] = {"kept": int(cells[1]), **{c: int(cells[2 + i]) for i, c in enumerate(classes)}}
+        found = re.search(r"Chunks per region: ([\d /]+)\.", section)
+        check(found is not None, f"DATA_CARD.md {name}: no chunks-per-region line")
+        per_region = [int(v) for v in found.group(1).split(" / ")]
+        check(len(per_region) == len(classes), f"DATA_CARD.md {name}: chunks per region")
+        stores[name] = {"groups": groups, "region_chunks": dict(zip(classes, per_region))}
+    return stores
+
+
 def spectra(repo: Path) -> dict:
     rows = read_csv(repo / "results/spectra/mean_psd.csv")
     labs: dict[str, list[tuple[float, float]]] = {}
@@ -230,9 +269,10 @@ def check_channel_tables(direction_runs: dict, by_run: dict, n_classes: int) -> 
                 check(all(0 <= p < n_classes for p in predicted), f"{tag}: class out of range")
 
 
-def probes(repo: Path, by_run: dict, classes: list[str]) -> dict:
+def probes(repo: Path, by_run: dict, classes: list[str], view: list[str], card: dict) -> dict:
     folder = repo / "results/postprocess"
     out = {}
+    dropped = [c for c in classes if c not in view]
     for scheme, labs in DIRECTIONS.items():
         tags = sorted(
             t for t, r in by_run.items()
@@ -259,6 +299,21 @@ def probes(repo: Path, by_run: dict, classes: list[str]) -> dict:
                     g["start"] = offset
                     offset += len(g["channel"])
                 info["groups"] = groups
+                # The channel tables use the repo's four-class view. Every channel the data card
+                # keeps for the test lab must be here except those of the classes that view drops.
+                store = card[labs["test"].lower()]
+                check(set(ids) == set(store["groups"]), f"{tag}: probes differ from DATA_CARD.md")
+                for g in groups:
+                    row = store["groups"][g["id"]]
+                    expected = row["kept"] - sum(row[c] for c in dropped)
+                    check(len(g["channel"]) == expected,
+                          f"{tag} {g['id']}: {len(g['channel'])} channels, DATA_CARD.md gives {expected}")
+                info["excluded"] = {
+                    "classes": dropped,
+                    "channels": sum(row[c] for row in store["groups"].values() for c in dropped),
+                    "chunks": sum(store["region_chunks"][c] for c in dropped),
+                    "file": "docs/DATA_CARD.md",
+                }
                 info["label"] = [int(r["label"]) for r in rows]
                 info["file_pattern"] = f"results/postprocess/{scheme}__all_target_groups__seed<N>[__lp100]__channels.csv"
             else:
@@ -271,13 +326,16 @@ def probes(repo: Path, by_run: dict, classes: list[str]) -> dict:
             }
         out[scheme] = info
     check_channel_tables(out, by_run, len(classes))
-    # The page gives CA2 no colour: no channel in these test sets is labelled or predicted CA2.
-    ca2 = classes.index("CA2")
-    for scheme, info in out.items():
-        check(ca2 not in info["label"], f"{scheme}: a channel is labelled CA2")
-        for tag, preds in info["runs"].items():
-            check(ca2 not in preds["temporal"] and ca2 not in preds["spatial"], f"{tag}: CA2 predicted")
-    # Compact the per-channel class lists into digit strings for size; decoded in index.html.
+    # The four-class view leaves CA2 out before scoring (Allen has 4 CA2 channels, IBL none), so
+    # no row of a channel table is labelled CA2; none may be predicted CA2 either, since the page
+    # gives the dropped classes no colour.
+    for c in dropped:
+        k = classes.index(c)
+        for scheme, info in out.items():
+            check(k not in info["label"], f"{scheme}: a channel is labelled {c}")
+            for tag, preds in info["runs"].items():
+                check(k not in preds["temporal"] and k not in preds["spatial"], f"{tag}: {c} predicted")
+    # Compact the per-channel class lists into digit strings for size; app.js reads them by index.
     for info in out.values():
         info["label"] = "".join(map(str, info["label"]))
         for preds in info["runs"].values():
@@ -286,8 +344,11 @@ def probes(repo: Path, by_run: dict, classes: list[str]) -> dict:
     return out
 
 
-def chunk_predictions(repo: Path, by_run: dict, classes: list[str]) -> dict:
-    """Share of test chunks per predicted class, before post-processing, from metrics.json."""
+def chunk_predictions(repo: Path, by_run: dict, classes: list[str], probe_info: dict) -> dict:
+    """Share of test chunks per predicted class, before post-processing, from metrics.json.
+
+    The four-class view, as on the rest of the page. `n_chunks_all` is the five-class count, every
+    test chunk, which is what the calibration files score."""
     out = {}
     for tag, entry in by_run.items():
         if entry.get("kind") != "cross_lab" or entry["config"] not in SHOWN:
@@ -296,15 +357,22 @@ def chunk_predictions(repo: Path, by_run: dict, classes: list[str]) -> dict:
         if not found:
             continue
         path = found[-1]
-        metrics = json.loads(path.read_text())["metrics"]["4class"]
+        views = json.loads(path.read_text())["metrics"]
+        metrics, every = views["4class"], views["5class"]
         check(metrics["class_names"] == classes, f"{path}: class names differ from REGIONS")
         confusion = metrics["confusion"]  # rows are the true class, columns the prediction
         total = sum(map(sum, confusion))
         check(total == metrics["n_samples"], f"{path}: confusion does not sum to n_samples")
+        excluded = probe_info[entry["direction"]]["excluded"]
+        left_out = sum(sum(every["confusion"][classes.index(c)]) for c in excluded["classes"])
+        check(every["n_samples"] - total == left_out == excluded["chunks"],
+              f"{path}: 5class minus 4class is {every['n_samples'] - total} chunks, "
+              f"DATA_CARD.md gives {excluded['chunks']} for {excluded['classes']}")
         columns = [sum(row[j] for row in confusion) for j in range(len(classes))]
         out[tag] = {
             "file": str(path.relative_to(repo)),
             "n_chunks": total,
+            "n_chunks_all": every["n_samples"],
             "predicted": columns,
             "accuracy": metrics["accuracy"],
             "balanced_accuracy": metrics["balanced_accuracy"],
@@ -390,6 +458,14 @@ def main() -> None:
     published_margins = check_against_fixes_table(repo, runs)
     calib = calibration(repo)
     published_within = check_readme(repo, runs, calib)
+    view = four_class_view(repo)
+    probe_info = probes(repo, by_run, classes, view, data_card(repo, classes))
+    chunks = chunk_predictions(repo, by_run, classes, probe_info)
+    # Calibration scores every test chunk, the five-class count, not the four-class view.
+    for tag, c in chunks.items():
+        check(calib[tag]["cross_lab"]["n_samples"] == c["n_chunks_all"],
+              f"{tag}: calibration scores {calib[tag]['cross_lab']['n_samples']} chunks, "
+              f"metrics.json 5class has {c['n_chunks_all']}")
     data = {
         "source": {
             "repo": "https://github.com/happyc0der/lfp2vec-audit",
@@ -399,6 +475,7 @@ def main() -> None:
         },
         "classes": classes,
         "classes_file": "lfpaudit/__init__.py",
+        "view": {"name": "4class", "classes": view, "file": "lfpaudit/eval/runner.py"},
         "spectra": spectra(repo),
         "published": {
             "cross_lab_file": "docs/RESULTS_FIXES.md",
@@ -406,8 +483,8 @@ def main() -> None:
             "within": published_within,
         },
         "runs": runs,
-        "probes": probes(repo, by_run, classes),
-        "chunks": chunk_predictions(repo, by_run, classes),
+        "probes": probe_info,
+        "chunks": chunks,
         "calibration": calib,
     }
     text = json.dumps(data, separators=(",", ":"), allow_nan=False, ensure_ascii=False)

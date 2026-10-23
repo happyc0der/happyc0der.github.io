@@ -11,8 +11,9 @@
   :root {
     --ibl: #3987e5;
     --allen: #d95926;
-    /* Region colours, in REGIONS order (CA1, CA2, CA3, DG, VIS). CA2 has no channels in these
-       test sets. The four used pass the all-pairs colour-vision checks on this surface. */
+    /* Region colours, in REGIONS order (CA1, CA2, CA3, DG, VIS). The repo's four-class view
+       leaves CA2 out (4 Allen channels, no IBL ones), so no cell on the page is CA2. The four
+       used pass the all-pairs colour-vision checks on this surface. */
     --r0: #d95926;
     --r1: #8f8aa3;
     --r2: #f2d16b;
@@ -112,7 +113,7 @@
   <p class="status loading" id="status">Loading data.json&hellip;</p>
 
   <section role="tabpanel" id="p-spectra" aria-labelledby="t-spectra" hidden>
-    <p class="lede">Mean power spectrum of each lab's recordings, each divided by its own value at 10&nbsp;Hz. They agree below 100&nbsp;Hz. Above IBL's 300&nbsp;Hz band-pass corner, Allen keeps power that IBL's pipeline removes. Drag across the chart, or focus it and use the arrow keys.</p>
+    <p class="lede" id="spec-lede">Each lab's mean power spectrum, divided by its own value at 10&nbsp;Hz. Above IBL's 300&nbsp;Hz band-pass corner, Allen keeps power that IBL's pipeline removes. Drag or tap the chart, or focus it and use the arrow keys.</p>
     <div class="legend" aria-hidden="true">
       <span><i class="linekey" style="background:var(--ibl)"></i>IBL</span>
       <span><i class="linekey" style="background:var(--allen)"></i>Allen</span>
@@ -149,7 +150,7 @@
     <p class="lede" id="transfer-lede"></p>
     <div class="controls" id="transfer-controls"></div>
     <div class="body">
-      <div><div class="chart" id="transfer-chart"></div><div class="cite" id="transfer-cite"></div><details class="values" id="transfer-values"><summary>Every run as a table</summary><div class="scroll-x"></div></details></div>
+      <div><div class="chart" id="transfer-chart"></div><p class="note" id="transfer-note"></p><div class="cite" id="transfer-cite"></div><details class="values" id="transfer-values"><summary>Every run as a table</summary><div class="scroll-x"></div></details></div>
       <div class="side" id="transfer-side"></div>
     </div>
   </section>
@@ -166,7 +167,7 @@
   <footer class="demo-foot" id="foot">
     <span>What runs: charts of the repo's saved result files, exported to <a href="data.json" target="_blank" rel="noopener">data.json</a> by <a href="export_data.py" target="_blank" rel="noopener">export_data.py</a>. Ratios, shares and seed means are computed in your browser from that file. Nothing is trained or re-run.</span>
     <span id="foot-source">Source: <a href="https://github.com/happyc0der/lfp2vec-audit" target="_blank" rel="noopener">happyc0der/lfp2vec-audit</a></span>
-    <span>lfp2vec-audit is MIT-licensed. Results come from public IBL and Allen Institute Neuropixels recordings; only per-channel results are shown.</span>
+    <span>lfp2vec-audit is MIT-licensed. Derived results of public IBL and Allen Institute Neuropixels recordings; no recordings are included.</span>
   </footer>
 </main>
 <div class="tip" id="tip" role="presentation" hidden></div>
