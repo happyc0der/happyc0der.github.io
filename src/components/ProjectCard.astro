@@ -3,18 +3,22 @@
 // on a grid, like the link-preview cards) under a wash in this card's hue and a big gradient number.
 import Picture from './Picture.astro';
 import Icon from './Icon.astro';
-import { badge, hue, pad } from '../lib';
+import { badge, hue, pad, splitStat } from '../lib';
 const { project, index, eager = false } = Astro.props;
 const d = project.data;
 const b = badge(d);
 // About a third of the window on desktop, most of it on a phone.
 const sizes = '(min-width: 900px) 34vw, 84vw';
+// No screenshot: the first stat, cut into its figure and the words after it ("0.45 ms" / "handshake").
+const [fig, figLabel] = splitStat(d.stats[0] ?? '');
 ---
 <a class="wcard" href={`/projects/${project.id}/`} data-cursor={d.demo_embed ? 'Demo' : 'Open'} data-label={d.title} style={`--hue: ${hue(index)}`}>
   <div class="wcard-media">
     {d.image
       ? <div class="wcard-shot shot" style={`view-transition-name: shot-${project.id}`}><Picture src={d.image} thumb sizes={sizes} eager={eager} /></div>
-      : <div class="wcard-panel"><span>{d.stats[0] ?? d.title}</span></div>}
+      : d.stats[0] && figLabel
+        ? <div class="wcard-panel is-split"><span class="wcard-fig">{fig}</span><span class="wcard-fig-label">{figLabel}</span></div>
+        : <div class="wcard-panel"><span>{d.stats[0] ?? d.title}</span></div>}
     <span class="wcard-wash" aria-hidden="true"></span>
     <span class="wcard-num" aria-hidden="true">{pad(index + 1)}</span>
     <span class:list={['wcard-year mono', { 'is-live': b.live }]}>{b.text}</span>
@@ -23,6 +27,6 @@ const sizes = '(min-width: 900px) 34vw, 84vw';
     <h3 class="wcard-title">{d.title}</h3>
     <span class="round-btn small" aria-hidden="true"><Icon name="right" /></span>
     <p class="wcard-blurb">{d.blurb}</p>
-    <ul class="tags wcard-stack" aria-label="Stack">{d.stack.slice(0, 5).map((s: string) => <li class="tag plain">{s}</li>)}</ul>
+    <ul class="tags wcard-stack" aria-label="Stack">{d.stack.slice(0, 5).map((s: string) => <li class="tag">{s}</li>)}</ul>
   </div>
 </a>
