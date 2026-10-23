@@ -80,7 +80,13 @@ html:not(.js) .sphere-caption { display: none; }
 .skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-8) var(--space-7); }
 @media (min-width: 64rem) { .skills { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .skill-group .label { margin-bottom: var(--space-4); }
-.skill-group-wide { grid-column: 1 / -1; }
+/* A group's chips past eight, behind "+N more". */
+.skill-rest { margin-top: var(--space-2); }
+.skill-rest summary { display: inline-flex; align-items: center; min-height: 2rem; color: var(--accent-hi); cursor: pointer; list-style: none; }
+.skill-rest summary::-webkit-details-marker { display: none; }
+.skill-rest summary:hover { color: var(--text); }
+.skill-rest[open] summary { color: var(--muted); }
+.skill-rest .skill-list { margin-top: var(--space-1); }
 .skill-list .tag { cursor: default; }
 .skill-list .tag[title] { text-decoration: underline dotted var(--line-2); text-underline-offset: 0.25em; }
 /* "More": the other groups and every group's chips past eight, one click away. */
