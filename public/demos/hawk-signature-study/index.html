@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hawk in Pyodide</title>
+<meta name="description" content="The hawk-signature-study repo's Python Hawk implementation running in Pyodide: key generation, signing, verification and tampering, on your device.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  :root { --warn: #fbbf24; --rose: #fda4af; }
+  [hidden] { display: none !important; }
+  body { padding: 16px; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1, h2, h3 { margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(18px, 2.2vw, 22px); font-weight: 650; line-height: 1.25; }
+  h2 { font-size: 15px; font-weight: 620; }
+  p { margin: 0; }
+  code, .mono { font-family: var(--mono); }
+
+  .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 6px 16px; margin-bottom: 10px; }
+  .top .label { margin-bottom: 4px; }
+
+  .broken { padding: 9px 12px; margin-bottom: 12px; border: 1px solid rgba(244, 63, 94, 0.45); border-radius: var(--radius); background: rgba(244, 63, 94, 0.07); color: var(--rose); font: 12.5px/1.5 var(--sans); }
+  .broken b { display: inline-block; margin-right: 8px; font: 600 11px/1.5 var(--mono); letter-spacing: 0.08em; color: #140f24; background: var(--danger); padding: 1px 7px; border-radius: 4px; }
+  .broken sup { font-size: 0.72em; line-height: 0; }
+
+  .poster h2 { font-size: clamp(17px, 2.4vw, 21px); }
+  .poster p { max-width: 58ch; color: var(--text-2); font-size: 13.5px; }
+  .poster .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .poster .progress { margin: 4px auto 0; }
+  .poster[data-state="idle"] .progress, .poster[data-state="idle"] .status { visibility: hidden; }
+
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 12px; }
+  .bar .status { flex: 1 1 200px; }
+  .seg button { min-height: 34px; }
+  .seg button[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .btn[aria-disabled="true"]:not([disabled]), .seg button[aria-disabled="true"] { opacity: 0.55; cursor: progress; }
+  .btn.primary[aria-disabled="true"]:hover { background: var(--accent); border-color: var(--accent); }
+
+  .steps { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 860px) { .steps { grid-template-columns: 1fr 1fr 1.25fr; } }
+  .step { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .step > header { display: flex; align-items: center; gap: 10px; }
+  .num { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(167, 139, 250, 0.16); color: var(--accent-hi); font: 600 12px/1 var(--mono); }
+  .call { font: 12px/1.4 var(--mono); color: var(--accent-hi); overflow-wrap: anywhere; }
+  .step .btn { align-self: flex-start; min-height: 36px; }
+
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; font: 12.5px/1.45 var(--mono); }
+  .facts dt { color: var(--muted); text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.08em; padding-top: 2px; }
+  .facts dd { margin: 0; color: var(--text); overflow-wrap: anywhere; }
+  .facts .ok { color: var(--good); }
+  .facts .bad { color: var(--danger); }
+  .hex { font: 11.5px/1.5 var(--mono); color: var(--text-2); overflow-wrap: anywhere; word-break: break-all; }
+  details { font-size: 12px; }
+  details summary { cursor: pointer; color: var(--muted); font: 11.5px/1.6 var(--mono); }
+  details summary:hover { color: var(--accent-hi); }
+  details .hex { max-height: 120px; overflow: auto; margin-top: 4px; padding: 6px 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; }
+  .ref { font: 11px/1.45 var(--mono); color: var(--muted); margin-top: auto; }
+
+  .field { display: grid; gap: 4px; }
+  .field span { font: 500 10.5px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  input[type="text"] { width: 100%; min-height: 36px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: 13.5px/1.3 var(--mono); }
+  input[type="text"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  input.changed { border-color: var(--danger); }
+
+  .verdict { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); font: 12px/1.5 var(--mono); color: var(--muted); min-height: 58px; }
+  .verdict strong { display: block; font: 650 17px/1.3 var(--mono); letter-spacing: 0.04em; color: var(--text); }
+  .verdict[data-kind="valid"] { border-color: rgba(74, 222, 128, 0.5); }
+  .verdict[data-kind="valid"] strong { color: var(--good); }
+  .verdict[data-kind="invalid"] { border-color: rgba(244, 63, 94, 0.55); }
+  .verdict[data-kind="invalid"] strong { color: var(--danger); }
+  .verdict[data-kind="raised"] { border-color: rgba(251, 191, 36, 0.55); }
+  .verdict[data-kind="raised"] strong { color: var(--warn); }
+
+  .tamper { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips .btn { padding: 7px 11px; font-size: 12px; min-height: 32px; }
+
+  .tests { margin-top: 12px; display: grid; gap: 10px; padding: 12px 14px; }
+  .tests .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+  .tests .head > div { flex: 1 1 320px; display: grid; gap: 4px; }
+  .tests p { font-size: 12.5px; color: var(--text-2); max-width: 92ch; }
+  pre#testout { margin: 0; max-height: 240px; overflow: auto; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font: 11.5px/1.5 var(--mono); color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .pass { color: var(--good); }
+  .fail { color: var(--danger); }
+
+  .demo-foot span { max-width: 100%; }
+  .demo-foot b { color: var(--text-2); font-weight: 500; }
+  noscript p { margin-top: 10px; color: var(--warn); font: 12px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div>
+      <p class="label">Hawk &middot; hash-and-sign lattice signature</p>
+      <h1>Sign and verify with the repo&rsquo;s Hawk code, in your browser</h1>
+    </div>
+  </header>
+
+  <aside class="broken" role="note">
+    <b>BROKEN</b>
+    Hawk was withdrawn from NIST&rsquo;s signature process on 29&nbsp;July&nbsp;2026, after Straznickas and Weis reduced Hawk-n key recovery to SVP in dimension n/2&nbsp;+&nbsp;1. Claimed key-recovery cost fell from 2<sup>150</sup> to 2<sup>108</sup> for Hawk-512 and from 2<sup>288</sup> to 2<sup>182</sup> for Hawk-1024, and real Hawk-256 keys were recovered. Teaching demo only.
+  </aside>
+
+  <section class="poster" id="poster" data-state="idle" aria-labelledby="poster-title">
+    <h2 id="poster-title">Run the repo&rsquo;s Python Hawk implementation</h2>
+    <p>Starts Python in this page (Pyodide 0.29.5, with NumPy and SymPy), imports the repo&rsquo;s <code>hawk_crypto</code> package unmodified, then generates a Hawk-512 key pair, signs a message and verifies it on your device. Then tamper with what Bob receives and watch verification fail.</p>
+    <div class="row">
+      <button class="btn primary" id="start" type="button">Start Python and run Hawk-512</button>
+    </div>
+    <p class="size">About 12.6&nbsp;MB from cdn.jsdelivr.net, cached after the first run. Nothing you type leaves the page.</p>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+    <p class="status" id="load-status" role="status" aria-live="polite"></p>
+    <noscript><p>This demo needs JavaScript: it runs Python in a Web Worker.</p></noscript>
+  </section>
+
+  <section id="app" hidden>
+    <div class="bar">
+      <div class="seg" role="group" aria-label="Parameter set" id="variants">
+        <button type="button" data-logn="8" aria-pressed="false">Hawk-256</button>
+        <button type="button" data-logn="9" aria-pressed="true">Hawk-512</button>
+        <button type="button" data-logn="10" aria-pressed="false">Hawk-1024 (slow)</button>
+      </div>
+      <button class="btn primary" id="run-all" type="button">Run all three steps</button>
+      <p class="status" id="busy" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="steps">
+      <article class="panel step" aria-labelledby="h-keygen">
+        <header><span class="num" aria-hidden="true">1</span><h2 id="h-keygen">Alice makes a key pair</h2></header>
+        <p class="call" id="call-keygen">priv, pub = hawkkeygen(9)</p>
+        <button class="btn" id="do-keygen" type="button">Generate keys</button>
+        <dl class="facts">
+          <dt>Private</dt><dd id="f-priv">&ndash;</dd>
+          <dt>Public</dt><dd id="f-pub">&ndash;</dd>
+          <dt>Time</dt><dd id="f-kg-ms">&ndash;</dd>
+        </dl>
+        <p class="hex" id="p-pub" hidden></p>
+        <details id="d-pub" hidden><summary id="s-pub">All public key bytes</summary><div class="hex" id="x-pub"></div></details>
+        <p class="ref" id="ref-keygen"></p>
+      </article>
+
+      <article class="panel step" aria-labelledby="h-sign">
+        <header><span class="num" aria-hidden="true">2</span><h2 id="h-sign">Alice signs a message</h2></header>
+        <label class="field"><span>Message</span>
+          <input type="text" id="msg" value="attack at dawn" maxlength="1000" autocomplete="off" spellcheck="false">
+        </label>
+        <button class="btn" id="do-sign" type="button">Sign with Alice&rsquo;s private key</button>
+        <dl class="facts">
+          <dt>Signature</dt><dd id="f-sig">&ndash;</dd>
+          <dt>Time</dt><dd id="f-sg-ms">&ndash;</dd>
+        </dl>
+        <p class="hex" id="p-sig" hidden></p>
+        <details id="d-sig" hidden><summary id="s-sig">All signature bytes</summary><div class="hex" id="x-sig"></div></details>
+        <p class="ref" id="ref-sign"></p>
+      </article>
+
+      <article class="panel step" aria-labelledby="h-verify">
+        <header><span class="num" aria-hidden="true">3</span><h2 id="h-verify">Bob verifies what arrived</h2></header>
+        <label class="field"><span>Message as received (edit it)</span>
+          <input type="text" id="recv-msg" maxlength="1000" autocomplete="off" spellcheck="false" disabled>
+        </label>
+        <dl class="facts">
+          <dt>Signature</dt><dd id="r-sig">&ndash;</dd>
+          <dt>Key</dt><dd id="r-key">&ndash;</dd>
+        </dl>
+        <button class="btn" id="do-verify" type="button">Verify</button>
+        <div class="verdict" id="verdict" aria-live="polite"><strong>&ndash;</strong><span>Run steps 1 and 2 first.</span></div>
+        <p class="ref" id="ref-verify"></p>
+      </article>
+    </div>
+
+    <div class="panel tamper" role="group" aria-labelledby="h-tamper">
+      <p class="label" id="h-tamper">Tamper with what Bob receives</p>
+      <div class="chips">
+        <button class="btn" type="button" data-tamper="char">Change one character</button>
+        <button class="btn" type="button" data-tamper="bit">Flip a signature bit</button>
+        <button class="btn" type="button" data-tamper="cut">Cut the last byte</button>
+        <button class="btn" type="button" data-tamper="eve">Use another key pair</button>
+        <button class="btn" type="button" data-tamper="garbage">64 random signatures</button>
+        <button class="btn" type="button" data-tamper="reset">Reset</button>
+      </div>
+    </div>
+
+    <section class="panel tests" aria-labelledby="h-tests">
+      <div class="head">
+        <div>
+          <h2 id="h-tests">Run the repo&rsquo;s test suite</h2>
+          <p>The repo&rsquo;s <code>tests/test_hawk.py</code> under pytest 8.3.5 (about 1.6&nbsp;MB more): round trips, sizes against the spec, tampering, wrong keys, random input and the decoder-fix regressions, for Hawk-256 and Hawk-512 as the repo runs by default. Takes a few seconds to half a minute.</p>
+        </div>
+        <button class="btn" id="do-tests" type="button">Run pytest</button>
+      </div>
+      <pre id="testout" hidden></pre>
+    </section>
+  </section>
+
+  <footer class="demo-foot">
+    <span><b>What runs:</b> the repo&rsquo;s <code>hawk_crypto</code> package (hawk-py, vendored with the six fixes in <a href="repo/hawk_crypto/PATCHES.md" target="_blank" rel="noopener">PATCHES.md</a>) and its tests, unmodified, in Pyodide 0.29.5 in a Web Worker. The Flask server <code>app.py</code> does not run; <a href="glue.py" target="_blank" rel="noopener">glue.py</a>, written for this page, calls <code>hawkkeygen</code>, <code>hawksign</code> and <code>hawkverify</code> directly. Times are measured on your device.</span>
+    <span><b>Source:</b> <a href="https://github.com/happyc0der/hawk-signature-study/tree/61a3dfab6fb056ae2f42e577fcda12c53d65835f" target="_blank" rel="noopener">happyc0der/hawk-signature-study @ 61a3dfa</a></span>
+    <span><b>Licence:</b> <a href="repo/LICENSE.txt" target="_blank" rel="noopener">MIT</a>; <code>hawk_crypto/</code> is from <a href="https://github.com/hawk-sign/hawk-py" target="_blank" rel="noopener">hawk-sign/hawk-py</a> (MIT) by the Hawk team.</span>
+    <span><b>Caveats:</b> key generation and signing are seeded from NumPy&rsquo;s <code>np.random</code>, upstream&rsquo;s choice and not a CSPRNG; the Python is not constant-time and runs 10&ndash;100x slower than Hawk&rsquo;s C code.</span>
+    <span id="loaded" hidden></span>
+  </footer>
+</main>
+<script type="module" src="demo.js"></script>
+</body>
+</html>
