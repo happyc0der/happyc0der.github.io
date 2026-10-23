@@ -11,10 +11,15 @@
   --grid: #23202e;
   --slot-bar: #4d4863;
 }
-html, body { overscroll-behavior: contain; }
+/* No overscroll-behavior here: the page is embedded in an iframe, and once it has nothing
+   left to scroll, wheel and touch scrolling must chain to the project page around it. */
 html { background: var(--bg); }
 body { overflow-x: hidden; }
 .wrap { max-width: 1400px; margin: 0 auto; padding: 14px 16px 12px; }
+/* Before Python starts, the poster takes whatever height the frame leaves after the header
+   and footer, so the first screen fits the iframe at any width without scrolling inside it. */
+.wrap:has(> .poster:not([hidden])) { min-height: 100vh; display: flex; flex-direction: column; }
+.wrap:has(> .poster:not([hidden])) > .poster { flex: 1 0 auto; }
 h1, h2 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
 h1 { font-size: clamp(17px, 2.1vw, 22px); line-height: 1.2; }
 .small { font-size: 12.5px; }
@@ -27,7 +32,7 @@ h1 { font-size: clamp(17px, 2.1vw, 22px); line-height: 1.2; }
 .top-status .progress { width: 200px; }
 
 /* Poster */
-.poster { min-height: max(300px, calc(100vh - 190px)); align-content: center; }
+.poster { min-height: 300px; align-content: center; }
 .poster .will { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; font: 11.5px/1.5 var(--mono); color: var(--muted); max-width: 640px; }
 .poster .will li::before { content: '✦ '; color: var(--accent-deep); }
 .poster-title { font-size: 20px; }
@@ -116,7 +121,8 @@ td { padding: 6px; border-bottom: 1px solid var(--grid); color: var(--text-2); w
 th:first-child, td:first-child { padding-left: 0; }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 td .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--sw); margin-right: 7px; vertical-align: -1px; }
-td .sw.dash { border-radius: 2px; background: repeating-linear-gradient(90deg, var(--sw) 0 3px, transparent 3px 5px); }
+/* A short horizontal dashed stroke, like the dashed curve it labels, in the same 10px slot as the dots. */
+td .sw.dash { height: 3px; border-radius: 1px; vertical-align: 3px; background: repeating-linear-gradient(90deg, var(--sw) 0 4px, transparent 4px 6px); }
 td.name { color: var(--text); }
 tr.pending td { color: var(--muted); }
 .ok { color: var(--good); }
@@ -167,6 +173,8 @@ details.card[open] > summary::before { content: '−'; }
   #regret-chart canvas { height: 230px; }
 }
 @media (max-width: 560px) {
+  .poster { padding: 18px 14px; gap: 10px; min-height: 0; }
+  .poster .will { display: none; }
   .opt { display: none; }
   .ctl-run { margin-left: 0; }
   .case-btn { flex: 1 1 100%; }

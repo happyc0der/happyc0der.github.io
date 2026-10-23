@@ -3,6 +3,9 @@
 Static files, no build step. The page runs the repo's own Python in Pyodide inside a Web
 Worker; JavaScript only lays out the numbers and draws the charts.
 
+Embedded at `demo_height: 720`. The page sets no `overscroll-behavior`, so wheel and touch
+scrolling pass on to the project page once the frame has nothing left to scroll.
+
 Source: https://github.com/happyc0der/multi_armed_bandit_algorithms at commit
 `2be15abf09b4642bd93454bc4e0280d66d580f63` (2be15ab, "Tidy reporting edge cases and remove
 dead code"). The repo has no LICENSE file at that commit; it is Keshav's own code.
@@ -68,6 +71,11 @@ demo never calls. `test_algorithms.py`, `test_fast_adswitch.py`, `legacy_impleme
   instance's `reproduce_paper_beta_typo = True`, which `TS_GE` reads only in `run()`.
 - `bench.metrics.downsample_cumulative` / `downsample_x` (600 points) for the curves, and
   `bench.metrics.dispersion` for the README check.
+- Computed in `demo_entry.py` itself, from the repo's run output, and labelled so on the page:
+  the best arm over time (`_best_segments`, from the case's `means` and `change_schedule`), the
+  arm-share raster (`_raster`, from `history["chosen_arm"]`), "On best arm" (`_on_best_share`,
+  which has no counterpart in the repo), and "Detects after" (`latency` in `run_one`, the same
+  rule as `bench/runner.py` `print_summary`, lines 311 to 321, applied to one seed).
 - The README figures (174 / 21,860 at case1 seed 42, the seed-1 phase table, and the 20-seed
   regression table) are constants in `demo_entry.py`, used only to say "same as" or
   "differs from" next to live numbers.

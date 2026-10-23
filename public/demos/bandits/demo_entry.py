@@ -9,10 +9,17 @@ into ./py/ from happyc0der/multi_armed_bandit_algorithms at commit 2be15ab:
     bench.metrics.summarize_run / dispersion  regret split, probe age, phase table
     bench.metrics.downsample_cumulative / _x  the curve reduction the repo's plots use
 
-This file only picks a case, calls those functions, and turns their output into JSON
-for the page to draw. The one thing it does that run_trial cannot is flip TS-GE's
-documented `reproduce_paper_beta_typo` switch (ts_ge.py, deviation 1), which
-build_algorithms has no case key for; that branch repeats run_trial's four calls.
+This file picks a case, calls those functions, and turns their output into JSON for the
+page to draw. The one thing it does that run_trial cannot is flip TS-GE's documented
+`reproduce_paper_beta_typo` switch (ts_ge.py, deviation 1), which build_algorithms has
+no case key for; that branch repeats run_trial's four calls.
+
+A few numbers on the page are computed here, from the repo's run output, not by the repo:
+
+    _best_segments   the best arm over time, from the case's means and change_schedule
+    _raster          each arm's share of the slots in each raster column
+    _on_best_share   "On best arm": share of single-arm pulls on the best arm (no repo metric)
+    latency          "Detects after": the rule bench/runner.py print_summary applies, for one seed
 """
 from __future__ import annotations
 
