@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Non-stationary bandits demo</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="The multi_armed_bandit_algorithms repo's five algorithms and benchmark metrics, running unmodified in Pyodide in the browser, with a small glue file written for the page.">
+<link rel="stylesheet" href="../_shared/demo.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="top-title">
+      <p class="label">Live · the repo's Python, in your browser</p>
+      <h1>Five bandit algorithms, one changing environment</h1>
+    </div>
+    <div class="top-status">
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <div class="progress" id="run-progress" hidden><i></i></div>
+    </div>
+  </header>
+
+  <section class="poster" id="poster" aria-labelledby="poster-title">
+    <h2 id="poster-title" class="poster-title">Run the benchmark yourself</h2>
+    <p class="pitch">TS-GE, AdSwitch, M-UCB, UCB1 and ε-greedy from the repo run on its own benchmark cases, here, in Pyodide. Pick a case and a seed, then switch TS-GE to the Beta update as the paper prints it.</p>
+    <ul class="will">
+      <li>cumulative regret, total and decision-only</li>
+      <li>which arm each algorithm pulled</li>
+      <li>TS-GE's regret by phase</li>
+      <li>the paper's Beta update against the fix</li>
+      <li>the README's regression numbers, rerun</li>
+    </ul>
+    <button class="btn primary" id="start" type="button">Start Python</button>
+    <p class="size">Downloads Python 3.13 and NumPy from cdn.jsdelivr.net, about 8 MB, cached after the first visit.</p>
+    <div class="progress" id="boot-progress" hidden><i></i></div>
+    <p class="status" id="boot-status" aria-live="polite"></p>
+  </section>
+
+  <section id="app" hidden>
+    <form class="controls" id="controls" autocomplete="off">
+      <fieldset class="ctl ctl-case">
+        <legend class="label">Case <span class="muted">· bench/cases.py</span></legend>
+        <div class="cases" role="group" aria-label="Benchmark case">
+          <button type="button" class="case-btn" data-preset="case1" aria-pressed="true">
+            <b>case1 · K=2 · T=6,000</b><span>the worst arm becomes the best</span>
+          </button>
+          <button type="button" class="case-btn" data-preset="case5" aria-pressed="false">
+            <b>case5 · K=16 · T=100,000</b><span>the best arm collapses</span>
+          </button>
+        </div>
+      </fieldset>
+      <fieldset class="ctl ctl-algos">
+        <legend class="label">Algorithms</legend>
+        <div class="chips" id="algo-chips"></div>
+      </fieldset>
+      <div class="ctl ctl-run">
+        <label class="seed"><span class="label">Seed</span>
+          <input type="number" id="seed" min="0" max="99999" step="1" value="42" inputmode="numeric">
+        </label>
+        <button class="btn primary" id="run" type="submit">Run</button>
+      </div>
+    </form>
+    <p class="case-line" id="case-line"></p>
+
+    <div class="grid">
+      <div class="col col-a">
+        <section class="card card-regret" aria-labelledby="regret-title">
+          <div class="card-head">
+            <h2 id="regret-title" class="card-title">Cumulative regret <span class="muted card-sub-inline" id="regret-sub"></span></h2>
+            <div class="seg" role="group" aria-label="Regret measure">
+              <button type="button" data-measure="total" aria-pressed="true">Total</button>
+              <button type="button" data-measure="decision" aria-pressed="false">Decision</button>
+            </div>
+          </div>
+          <div class="chart" id="regret-chart">
+            <canvas tabindex="0" role="img" aria-label="Cumulative regret over time for each algorithm. Use the arrow keys to read values."></canvas>
+            <div class="tip" hidden></div>
+          </div>
+          <ul class="legend" id="legend"></ul>
+        </section>
+
+        <section class="card card-raster" aria-labelledby="raster-title">
+          <div class="card-head">
+            <h2 id="raster-title" class="card-title">Which arm was pulled</h2>
+            <div class="seg seg-wrap" role="group" aria-label="Algorithm" id="raster-pick"></div>
+          </div>
+          <p class="card-sub">Each column is <span id="raster-cols">a block of</span> slots; brighter means more of the block went to that arm. Outlined: the best arm at the time. Both worked out by demo_entry.py from the run's chosen arms and the case's schedule.</p>
+          <div class="chart" id="raster-chart">
+            <canvas tabindex="0" role="img" aria-label="Share of pulls per arm over time for the selected algorithm. Use the arrow keys to read cells."></canvas>
+            <div class="tip" hidden></div>
+          </div>
+        </section>
+
+        <div class="extras">
+          <details class="card" id="preflight-box">
+            <summary><span class="card-title">Preflight</span> <span class="muted">bench/preflight.py, run before any simulation</span></summary>
+            <div class="preflight-edit">
+              <label><span class="label">TS-GE delta</span> <input type="number" id="delta" step="any" min="0.0001" max="10" inputmode="decimal"></label>
+              <button class="btn" type="button" id="delta-check">Check</button>
+              <button class="btn" type="button" id="delta-reset">Case default</button>
+              <span class="muted small">On case1, try 0.02 or 2: the repo refuses both.</span>
+            </div>
+            <ul class="findings" id="findings"></ul>
+          </details>
+          <details class="card" id="regression-box">
+            <summary><span class="card-title">Check against the README</span> <span class="muted">case1, seeds 1 to 20</span></summary>
+            <p class="small muted">The README records mean final total regret over these 20 seeds to six decimals as its regression reference. This reruns them here through bench.runner.run_trial and compares mean, std, min and max.</p>
+            <button class="btn" type="button" id="regression-run">Run 20 seeds</button>
+            <div class="table-wrap"><table id="regression" hidden>
+              <thead><tr><th scope="col">Algorithm</th><th scope="col" class="num">Mean here</th><th scope="col" class="num">README</th><th scope="col" class="num opt">Std here</th><th scope="col">Same to 6 dp</th></tr></thead>
+              <tbody></tbody>
+            </table></div>
+          </details>
+        </div>
+      </div>
+
+      <div class="col col-b">
+        <section class="card card-table" aria-labelledby="table-title">
+          <h2 id="table-title" class="card-title">Results <span class="muted" id="table-seed"></span></h2>
+          <div class="table-wrap">
+            <table id="results">
+              <thead><tr>
+                <th scope="col">Algorithm</th>
+                <th scope="col" class="num">Total</th>
+                <th scope="col" class="num">Decision</th>
+                <th scope="col" class="num" title="Slots from the change to the first detection, by the rule in bench/runner.py's summary; computed by demo_entry.py">Detects after</th>
+                <th scope="col" class="num c-age" title="Longest any arm went unprobed after initialization">Max probe age</th>
+                <th scope="col" class="num c-best" title="Share of single-arm pulls that went to the best arm at the time; computed by demo_entry.py, not a repo metric">On best arm</th>
+                <th scope="col" class="num c-time" title="Wall time of the algorithm's run() in this browser">Time here</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="card-note">Regret per slot: the best arm's mean minus the reward received. Decision regret skips group-probe slots, which only TS-GE has. "Detects after" (slots from the change to the first detection, by bench/runner.py's summary rule) and "On best arm" (not a repo metric) are worked out by demo_entry.py from the run's history; the other columns come from bench/.</p>
+        </section>
+
+        <section class="card card-phase" aria-labelledby="phase-title">
+          <div class="card-head">
+            <h2 id="phase-title" class="card-title">TS-GE regret by phase</h2>
+            <div class="seg" role="group" aria-label="TS-GE variant" id="phase-variant">
+              <button type="button" data-variant="corrected" aria-pressed="true">Corrected</button>
+              <button type="button" data-variant="typo" aria-pressed="false" disabled>As printed</button>
+            </div>
+          </div>
+          <div id="phases"></div>
+          <div class="callout" id="callout" hidden></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <footer class="demo-foot">
+    <span>Runs: the repo's five algorithms, environment and bench/ metrics, unmodified Python in Pyodide <span id="versions">0.29.5</span>, in a Web Worker. JavaScript only draws the charts.</span>
+    <span>Source: <a href="https://github.com/happyc0der/multi_armed_bandit_algorithms/tree/2be15abf09b4642bd93454bc4e0280d66d580f63" target="_blank" rel="noopener">happyc0der/multi_armed_bandit_algorithms @ 2be15ab</a></span>
+    <span>Glue: <a href="demo_entry.py" target="_blank" rel="noopener">demo_entry.py</a>, written for this page. Besides calling the repo, it derives the arm raster, "On best arm" and "Detects after" from each run's history.</span>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
