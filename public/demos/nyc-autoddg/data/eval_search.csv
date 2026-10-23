@@ -1,0 +1,11 @@
+queries_from,variant,queries,recall@1,recall@5,recall@10,mrr
+original description (LLM),original,200,0.885,0.995,1,0.932
+original description (LLM),ufd,200,0.73,0.93,0.96,0.818
+original description (LLM),sfd,200,0.745,0.935,0.975,0.834
+original description (LLM),ufd+sfd,200,0.765,0.945,0.965,0.846
+original description (LLM),original+sfd,200,0.905,0.995,1,0.945
+portal tags,original,81,0.605,0.864,0.926,0.712
+portal tags,ufd,81,0.568,0.914,0.938,0.715
+portal tags,sfd,81,0.58,0.914,0.938,0.723
+portal tags,ufd+sfd,81,0.58,0.951,0.963,0.737
+portal tags,original+sfd,81,0.728,0.963,0.988,0.825
