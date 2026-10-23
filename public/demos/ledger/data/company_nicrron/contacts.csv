@@ -1,0 +1,450 @@
+opportunity_id,name,title,role
+06AIY3IS,Grace Abara,Platform Engineering Manager,champion
+07FRJ44N,Ethan Moreau,Systems Engineer,champion
+07FRJ44N,Luke Adeyemi,CIO,economic_buyer
+07WKR17A,Priya Okafor,Procurement Analyst,champion
+07WKR17A,Ben Delgado,Head of IT Operations,economic_buyer
+0AR9HD16,Luke Abara,Procurement Analyst,champion
+0AR9HD16,Ethan Petrov,CTO,economic_buyer
+0IF5FH68,Tom Marchetti,Systems Engineer,champion
+0IF5FH68,Aisha Ivanova,VP Infrastructure,economic_buyer
+0TR3RU8A,Marcus Petrov,Infrastructure Lead,champion
+0TR3RU8A,Clara Sandoval,Head of IT Operations,economic_buyer
+0W6S0ODT,Noah Farouk,Procurement Analyst,champion
+0W6S0ODT,Yuki Bergström,VP Infrastructure,economic_buyer
+0WO582AV,Kwame Moreau,Systems Engineer,champion
+0WO582AV,Jorge Lindqvist,VP Engineering,economic_buyer
+0YCAS0B9,Victor Nakamura,Systems Engineer,champion
+0YCAS0B9,Ines Reyes,CTO,economic_buyer
+14V0RQBV,Priya Reyes,Systems Engineer,champion
+14V0RQBV,Tom Adeyemi,VP Infrastructure,economic_buyer
+1Q5XFO8D,Ingrid Marchetti,Infrastructure Lead,champion
+1Q5XFO8D,Ben Whitfield,Head of IT Operations,economic_buyer
+1UHFKBP6,Jorge Adeyemi,IT Manager,champion
+1UHFKBP6,Raj Mensah,CIO,economic_buyer
+1V3IQVOF,Aisha Lindqvist,Infrastructure Lead,champion
+1XNXJUQM,Marcus Ivanova,Systems Engineer,champion
+1XNXJUQM,Priya Delgado,Head of IT Operations,economic_buyer
+1Y9KPBXY,Victor Castellano,Procurement Analyst,champion
+1Y9KPBXY,Fatima Mensah,Head of IT Operations,economic_buyer
+1ZMWMU21,Omar Castellano,Platform Engineering Manager,champion
+1ZMWMU21,Hannah Thornton,Head of IT Operations,economic_buyer
+28S2Z15A,Priya Hughes,Platform Engineering Manager,champion
+28S2Z15A,Mei Reyes,VP Engineering,economic_buyer
+2CZVRGQ4,Jorge Hughes,Platform Engineering Manager,champion
+2CZVRGQ4,Ingrid Adeyemi,CIO,economic_buyer
+2G82J8WD,Clara Reyes,Procurement Analyst,champion
+2GN2TRVV,Jorge Delgado,Infrastructure Lead,champion
+2NPSMBLK,Aisha Mensah,Infrastructure Lead,champion
+2NPSMBLK,Grace Hughes,Head of IT Operations,economic_buyer
+2ZEFCKS3,Ruth Petrov,IT Manager,champion
+2ZEFCKS3,Mei Adeyemi,VP Engineering,economic_buyer
+379SDV6Y,Mei Lindqvist,IT Manager,champion
+379SDV6Y,Victor Whitfield,Head of IT Operations,economic_buyer
+3AIA6RL3,Yuki Petrov,Infrastructure Lead,champion
+3AIA6RL3,Clara Okafor,CTO,economic_buyer
+3DY60YA7,Aisha Thornton,Procurement Analyst,champion
+3DY60YA7,Marcus Sato,CTO,economic_buyer
+3IIDRUGI,Daniel Farouk,Systems Engineer,champion
+3IIDRUGI,Aisha Castellano,VP Engineering,economic_buyer
+3ZG0719M,Sofia Adeyemi,Procurement Analyst,champion
+3ZG0719M,Marcus Sandoval,VP Engineering,economic_buyer
+45CMXP2K,Daniel Haddad,Platform Engineering Manager,champion
+45CMXP2K,Samuel Farouk,Head of IT Operations,economic_buyer
+461LIUS7,Victor Quinn,IT Manager,champion
+461LIUS7,Fatima Quinn,Head of IT Operations,economic_buyer
+48INT6OA,Sofia Fischer,IT Manager,champion
+48INT6OA,Andre Abara,CTO,economic_buyer
+4F8MNVNP,Samuel Whitfield,Systems Engineer,champion
+4F8MNVNP,Ines Adeyemi,VP Engineering,economic_buyer
+4HP16LRH,Ben Nakamura,Infrastructure Lead,champion
+4HP16LRH,Fatima Ivanova,Head of IT Operations,economic_buyer
+4ICL09BD,Kwame Delgado,Procurement Analyst,champion
+4ICL09BD,Marcus Marchetti,VP Infrastructure,economic_buyer
+4N2KE2ER,Patrick Quinn,Systems Engineer,champion
+4Q2GV039,Victor Fischer,Infrastructure Lead,champion
+4Q2GV039,Jorge Bergström,VP Engineering,economic_buyer
+4UN65HWV,Sofia Petrov,IT Manager,champion
+4UN65HWV,Elena Petrov,VP Infrastructure,economic_buyer
+5BGYQS4R,Noah Whitfield,Systems Engineer,champion
+5BGYQS4R,Sofia Abara,VP Engineering,economic_buyer
+5CFCTZ5K,Patrick Kowalski,Procurement Analyst,champion
+5CFCTZ5K,Grace Thornton,VP Infrastructure,economic_buyer
+5O0597PP,Ben Petrov,Procurement Analyst,champion
+5O0597PP,Samuel Nakamura,Head of IT Operations,economic_buyer
+69XL3JMB,Priya Haddad,Platform Engineering Manager,champion
+6BV9IARK,Omar Quinn,Procurement Analyst,champion
+6BV9IARK,Priya Whitfield,CIO,economic_buyer
+6C1DLYBH,Sofia Fischer,Systems Engineer,champion
+6C1DLYBH,Ben Bergström,CIO,economic_buyer
+6CFONO4W,Luke Brennan,Procurement Analyst,champion
+6CFONO4W,Noah Whitfield,VP Infrastructure,economic_buyer
+6FUPOO3I,Marcus Okafor,Systems Engineer,champion
+6FUPOO3I,Nadia Delgado,VP Infrastructure,economic_buyer
+6JWA8DFJ,Sofia Nakamura,Platform Engineering Manager,champion
+6JWA8DFJ,Victor Adeyemi,VP Infrastructure,economic_buyer
+6OJAC85F,Victor Thornton,Procurement Analyst,champion
+6OJAC85F,Sofia Hughes,VP Infrastructure,economic_buyer
+6VLA3FDQ,Kwame Abara,Infrastructure Lead,champion
+6VLA3FDQ,Aisha Mensah,VP Infrastructure,economic_buyer
+7QIU2BCK,Noah Lindqvist,Systems Engineer,champion
+7QIU2BCK,Isla Oyelaran,VP Engineering,economic_buyer
+7SJD7M9K,Victor Sandoval,Procurement Analyst,champion
+7SJD7M9K,Clara Whitfield,VP Infrastructure,economic_buyer
+81NOKKSW,Omar Reyes,IT Manager,champion
+81NOKKSW,Tom Whitfield,CIO,economic_buyer
+8H19L55Y,Daniel Ivanova,Infrastructure Lead,champion
+8H19L55Y,Ruth Lindqvist,VP Engineering,economic_buyer
+8QH99OEZ,Victor Bergström,Infrastructure Lead,champion
+8QH99OEZ,Fatima Hughes,VP Engineering,economic_buyer
+94TA0AWF,Ethan Adeyemi,Platform Engineering Manager,champion
+94TA0AWF,Noah Whitfield,Head of IT Operations,economic_buyer
+95B6AKI1,Elena Thornton,Systems Engineer,champion
+95B6AKI1,Nadia Bergström,CIO,economic_buyer
+99L2TNR5,Priya Farouk,Systems Engineer,champion
+99L2TNR5,Ingrid Marchetti,VP Engineering,economic_buyer
+9C2RRH1Q,Luke Brennan,Platform Engineering Manager,champion
+9C2RRH1Q,Elena Petrov,VP Engineering,economic_buyer
+9C9GO9XO,Samuel Sato,Platform Engineering Manager,champion
+9C9GO9XO,Mei Quinn,Head of IT Operations,economic_buyer
+9GQ6HQLK,Victor Haddad,Systems Engineer,champion
+9GQ6HQLK,Leah Lindqvist,CTO,economic_buyer
+9KYX5G9K,Luke Lindqvist,Systems Engineer,champion
+9KYX5G9K,Samuel Bergström,VP Infrastructure,economic_buyer
+9WUD1Q5D,Ruth Bergström,Procurement Analyst,champion
+9WUD1Q5D,Kwame Whitfield,VP Infrastructure,economic_buyer
+A3OROHUS,Ingrid Sandoval,IT Manager,champion
+A3OROHUS,Ben Adeyemi,VP Infrastructure,economic_buyer
+AFQG21L7,Clara Ivanova,Infrastructure Lead,champion
+AFQG21L7,Ben Fischer,CTO,economic_buyer
+AHRCT8IP,Leah Farouk,Procurement Analyst,champion
+AHRCT8IP,Elena Kowalski,VP Engineering,economic_buyer
+AIAX4W1O,Kwame Thornton,Infrastructure Lead,champion
+AIAX4W1O,Grace Marchetti,VP Infrastructure,economic_buyer
+AR2T4LAR,Aisha Fischer,Platform Engineering Manager,champion
+AR2T4LAR,Noah Sato,CIO,economic_buyer
+AUEAKRQV,Ines Delgado,Infrastructure Lead,champion
+AUEAKRQV,Luke Ivanova,Head of IT Operations,economic_buyer
+AUS25SFH,Nadia Mensah,Platform Engineering Manager,champion
+AUS25SFH,Luke Kowalski,CIO,economic_buyer
+BNYWSG6W,Jorge Kowalski,Systems Engineer,champion
+BNYWSG6W,Aisha Mensah,CTO,economic_buyer
+BTNSR87A,Daniel Thornton,IT Manager,champion
+BTNSR87A,Daniel Lindqvist,CIO,economic_buyer
+C7NW3JB2,Yuki Quinn,Procurement Analyst,champion
+C7NW3JB2,Ruth Farouk,VP Engineering,economic_buyer
+CE852VBF,Leah Nakamura,Infrastructure Lead,champion
+CE852VBF,Noah Bergström,VP Engineering,economic_buyer
+CM2GVLV6,Clara Osei,Procurement Analyst,champion
+CM2GVLV6,Yuki Quinn,CTO,economic_buyer
+CMCVD0N8,Clara Hughes,Platform Engineering Manager,champion
+CMCVD0N8,Mei Sato,CTO,economic_buyer
+CPL37MZC,Patrick Whitfield,Infrastructure Lead,champion
+CPL37MZC,Luke Fischer,CIO,economic_buyer
+CVGTFBZE,Fatima Sandoval,Systems Engineer,champion
+CVGTFBZE,Tom Nakamura,Head of IT Operations,economic_buyer
+D5LEL3HF,Sofia Hughes,Systems Engineer,champion
+D5LEL3HF,Elena Bergström,VP Engineering,economic_buyer
+D5TGHX3Y,Patrick Mensah,Procurement Analyst,champion
+D5TGHX3Y,Noah Petrov,CIO,economic_buyer
+D6XIVDQF,Clara Castellano,Systems Engineer,champion
+D6XIVDQF,Raj Sato,Head of IT Operations,economic_buyer
+DG7LABPD,Luke Lindqvist,Infrastructure Lead,champion
+DG7LABPD,Andre Farouk,CIO,economic_buyer
+DJ60T39C,Sofia Haddad,IT Manager,champion
+DJ60T39C,Samuel Bergström,VP Engineering,economic_buyer
+DLQTM07N,Ruth Adeyemi,Systems Engineer,champion
+DLQTM07N,Tom Hughes,CTO,economic_buyer
+DQ0DSK7P,Ingrid Sandoval,Systems Engineer,champion
+DQ0DSK7P,Andre Moreau,VP Infrastructure,economic_buyer
+DXF00KY4,Luke Lindqvist,Platform Engineering Manager,champion
+DXF00KY4,Aisha Brennan,Head of IT Operations,economic_buyer
+E4H6CBPJ,Ingrid Quinn,Procurement Analyst,champion
+E4H6CBPJ,Jorge Moreau,VP Engineering,economic_buyer
+EFWND7VS,Raj Moreau,IT Manager,champion
+EFWND7VS,Jun Lindgren,CIO,economic_buyer
+EK0KWGQX,Priya Ivanova,IT Manager,champion
+EK0KWGQX,Andre Delgado,VP Engineering,economic_buyer
+EP0H3SJO,Ines Reyes,Platform Engineering Manager,champion
+EP0H3SJO,Andre Castellano,VP Engineering,economic_buyer
+ESH4HX52,Fatima Farouk,Platform Engineering Manager,champion
+ESH4HX52,Daniel Okafor,Head of IT Operations,economic_buyer
+EWRVDN3U,Daniel Lindqvist,Infrastructure Lead,champion
+EWRVDN3U,Kwame Delgado,VP Infrastructure,economic_buyer
+F9XJYM9F,Grace Nakamura,IT Manager,champion
+F9XJYM9F,Marcus Hughes,CIO,economic_buyer
+FROU0UKW,Nadia Delgado,Infrastructure Lead,champion
+FROU0UKW,Ethan Castellano,CTO,economic_buyer
+G1303HIC,Noah Abara,IT Manager,champion
+G1303HIC,Priya Brennan,CTO,economic_buyer
+G17TENJ4,Grace Quinn,Platform Engineering Manager,champion
+G17TENJ4,Ruth Whitfield,VP Engineering,economic_buyer
+G1XX0IB4,Omar Abara,Infrastructure Lead,champion
+G1XX0IB4,Aisha Adeyemi,CTO,economic_buyer
+G6X1B2K5,Aisha Sandoval,Infrastructure Lead,champion
+G6X1B2K5,Omar Haddad,CTO,economic_buyer
+GACP1E2I,Priya Petrov,Infrastructure Lead,champion
+GACP1E2I,Marcus Kowalski,CTO,economic_buyer
+GC4YH9D0,Leah Ivanova,Systems Engineer,champion
+GC4YH9D0,Samuel Osei,Head of IT Operations,economic_buyer
+GIJ14130,Tom Castellano,Infrastructure Lead,champion
+GIJ14130,Tom Lindqvist,VP Engineering,economic_buyer
+GIP11NY3,Tom Adeyemi,Systems Engineer,champion
+GIP11NY3,Fatima Delgado,CTO,economic_buyer
+GIVVPRQQ,Daniel Ivanova,Procurement Analyst,champion
+GIVVPRQQ,Mei Adeyemi,VP Infrastructure,economic_buyer
+GKHTT70P,Patrick Ivanova,Infrastructure Lead,champion
+GKHTT70P,Raj Adeyemi,VP Infrastructure,economic_buyer
+GVCMT0GZ,Fatima Reyes,Systems Engineer,champion
+GVCMT0GZ,Ruth Ivanova,CIO,economic_buyer
+GX3SHSEA,Daniel Delgado,Systems Engineer,champion
+GX3SHSEA,Omar Abara,CTO,economic_buyer
+GZ5M7MIQ,Ethan Sandoval,IT Manager,champion
+GZ5M7MIQ,Sofia Petrov,CIO,economic_buyer
+H5ZSM3IR,Mei Sato,Procurement Analyst,champion
+H6TY7RBJ,Yuki Whitfield,Infrastructure Lead,champion
+H6TY7RBJ,Grace Ivanova,Head of IT Operations,economic_buyer
+HBIQF55L,Victor Brennan,Infrastructure Lead,champion
+HBIQF55L,Leah Whitfield,VP Engineering,economic_buyer
+HDITQL1S,Ben Delgado,Systems Engineer,champion
+HDITQL1S,Luke Kowalski,CIO,economic_buyer
+HE5988NI,Sofia Brennan,Infrastructure Lead,champion
+HE5988NI,Elena Kowalski,Head of IT Operations,economic_buyer
+HUCB9WIQ,Ingrid Adeyemi,Procurement Analyst,champion
+HZ283240,Ruth Hughes,Infrastructure Lead,champion
+HZ283240,Luke Kowalski,CIO,economic_buyer
+I4YPNNTU,Yuki Brennan,Systems Engineer,champion
+I4YPNNTU,Patrick Whitfield,VP Engineering,economic_buyer
+I8WTUMTA,Aisha Mensah,Platform Engineering Manager,champion
+I8WTUMTA,Hannah Sato,Head of IT Operations,economic_buyer
+IJNOVBGU,Mei Thornton,Infrastructure Lead,champion
+IJNOVBGU,Mei Quinn,CIO,economic_buyer
+INAEAAI9,Ines Moreau,Procurement Analyst,champion
+INAEAAI9,Ruth Marchetti,CTO,economic_buyer
+IRODLEGG,Hannah Farouk,Platform Engineering Manager,champion
+IRODLEGG,Mei Marchetti,Head of IT Operations,economic_buyer
+IWQP4M72,Samuel Osei,Infrastructure Lead,champion
+IWQP4M72,Ben Thornton,VP Engineering,economic_buyer
+JEMEGXUG,Tom Brennan,Platform Engineering Manager,champion
+JEMEGXUG,Nadia Bergström,CTO,economic_buyer
+JFIBKWMQ,Victor Hughes,Platform Engineering Manager,champion
+JFIBKWMQ,Nadia Adeyemi,CIO,economic_buyer
+JGG9CO2Y,Hannah Haddad,Infrastructure Lead,champion
+JP2EY6QU,Noah Brennan,IT Manager,champion
+JP2EY6QU,Leah Thornton,VP Infrastructure,economic_buyer
+JT1UUOXN,Aisha Osei,Systems Engineer,champion
+JT1UUOXN,Patrick Nakamura,Head of IT Operations,economic_buyer
+K05LLUU4,Marcus Thornton,IT Manager,champion
+K05LLUU4,Luke Mensah,Head of IT Operations,economic_buyer
+K0HLZM4Q,Luke Farouk,Infrastructure Lead,champion
+K0HLZM4Q,Elena Castellano,VP Infrastructure,economic_buyer
+K6ZDH79M,Raj Sato,IT Manager,champion
+K6ZDH79M,Jorge Lindqvist,VP Infrastructure,economic_buyer
+KAPP0SBT,Aisha Ivanova,Platform Engineering Manager,champion
+KAPP0SBT,Patrick Fischer,Head of IT Operations,economic_buyer
+KCTYAQOR,Yuki Sandoval,IT Manager,champion
+KCTYAQOR,Clara Sato,CTO,economic_buyer
+KMGXUADZ,Nadia Okafor,IT Manager,champion
+KMGXUADZ,Ethan Petrov,CIO,economic_buyer
+KOI7M0RU,Clara Fischer,Systems Engineer,champion
+KOI7M0RU,Jorge Kowalski,VP Infrastructure,economic_buyer
+KTSB1KYT,Leah Bergström,Platform Engineering Manager,champion
+KTSB1KYT,Omar Okafor,CTO,economic_buyer
+KTX7ETCE,Ingrid Lindqvist,Platform Engineering Manager,champion
+KTX7ETCE,Sofia Farouk,VP Engineering,economic_buyer
+L2QMWU4H,Samuel Marchetti,Procurement Analyst,champion
+L2QMWU4H,Daniel Kowalski,VP Infrastructure,economic_buyer
+L58MN75X,Ben Bergström,Procurement Analyst,champion
+L58MN75X,Sofia Delgado,VP Engineering,economic_buyer
+L71FBIF7,Marcus Moreau,Infrastructure Lead,champion
+L71FBIF7,Andre Bergström,CIO,economic_buyer
+L8CG1IQO,Kwame Thornton,Platform Engineering Manager,champion
+L9WWFYQW,Marcus Quinn,IT Manager,champion
+LKMZWCKQ,Kwame Lindqvist,Platform Engineering Manager,champion
+LKMZWCKQ,Luke Bergström,CTO,economic_buyer
+LPY6VIZV,Luke Marchetti,Platform Engineering Manager,champion
+LPY6VIZV,Ben Hughes,VP Infrastructure,economic_buyer
+LZ6PSZ4T,Nadia Reyes,Platform Engineering Manager,champion
+LZ6PSZ4T,Mei Delgado,VP Infrastructure,economic_buyer
+M03IHS3P,Fatima Delgado,Procurement Analyst,champion
+M26BSX5S,Yuki Thornton,IT Manager,champion
+M26BSX5S,Tom Moreau,VP Infrastructure,economic_buyer
+M4HY664H,Andre Moreau,Systems Engineer,champion
+M4HY664H,Samuel Abara,CIO,economic_buyer
+MFO940S8,Hannah Quinn,IT Manager,champion
+MFO940S8,Elena Moreau,CIO,economic_buyer
+MHPI0ZW1,Tom Sandoval,Procurement Analyst,champion
+MHPI0ZW1,Noah Mensah,Head of IT Operations,economic_buyer
+MMUC1AXI,Clara Sandoval,Systems Engineer,champion
+MMUC1AXI,Marcus Adeyemi,CIO,economic_buyer
+MMWD47ZY,Hannah Brennan,IT Manager,champion
+MMWD47ZY,Andre Reyes,Head of IT Operations,economic_buyer
+NDMY5PPT,Raj Hughes,Infrastructure Lead,champion
+NDMY5PPT,Tom Moreau,Head of IT Operations,economic_buyer
+NJC209SC,Ines Mensah,IT Manager,champion
+NJC209SC,Raj Brennan,CIO,economic_buyer
+NLKPA1KP,Victor Haddad,Infrastructure Lead,champion
+NLKPA1KP,Noah Abara,VP Infrastructure,economic_buyer
+NMN9DVEV,Sofia Hughes,IT Manager,champion
+NMN9DVEV,Kwame Castellano,VP Engineering,economic_buyer
+NNKWGFDH,Priya Whitfield,IT Manager,champion
+NNKWGFDH,Ruth Haddad,VP Infrastructure,economic_buyer
+NX4ODZY2,Ingrid Haddad,Systems Engineer,champion
+NX4ODZY2,Nadia Moreau,CTO,economic_buyer
+NZB45UZX,Clara Fischer,Platform Engineering Manager,champion
+NZB45UZX,Daniel Petrov,VP Infrastructure,economic_buyer
+OBGCQ1BK,Raj Lindqvist,Platform Engineering Manager,champion
+OBGCQ1BK,Tom Haddad,VP Engineering,economic_buyer
+ODIX25WY,Raj Hughes,Infrastructure Lead,champion
+ODIX25WY,Yuki Castellano,CIO,economic_buyer
+OEBJXZN6,Kwame Whitfield,IT Manager,champion
+OEBJXZN6,Nadia Osei,CIO,economic_buyer
+OES8ZX7B,Clara Petrov,Procurement Analyst,champion
+OES8ZX7B,Aisha Lindqvist,VP Engineering,economic_buyer
+OG13XT4P,Fatima Nakamura,Platform Engineering Manager,champion
+ON9H54WD,Victor Fischer,Infrastructure Lead,champion
+ON9H54WD,Patrick Ivanova,VP Infrastructure,economic_buyer
+OPL7DH0Q,Clara Kowalski,Platform Engineering Manager,champion
+OPL7DH0Q,Hiro Oyelaran,CTO,economic_buyer
+OZL7CDMQ,Raj Okafor,Procurement Analyst,champion
+OZL7CDMQ,Kwame Whitfield,CIO,economic_buyer
+P0BMLVSL,Luke Thornton,Infrastructure Lead,champion
+P0BMLVSL,Marcus Fischer,VP Engineering,economic_buyer
+P9VFKNR0,Kwame Whitfield,Procurement Analyst,champion
+P9VFKNR0,Fatima Sato,CTO,economic_buyer
+PLYYX5CD,Raj Lindqvist,Systems Engineer,champion
+PLYYX5CD,Raj Quinn,CTO,economic_buyer
+PTKOWYW6,Ben Moreau,IT Manager,champion
+PTKOWYW6,Tom Lindqvist,CIO,economic_buyer
+PUTILZZG,Hannah Okafor,Systems Engineer,champion
+Q5JU0LZJ,Ben Adeyemi,Procurement Analyst,champion
+Q5JU0LZJ,Samuel Sandoval,VP Engineering,economic_buyer
+Q5R1PYJS,Fatima Thornton,Procurement Analyst,champion
+Q5R1PYJS,Priya Thornton,Head of IT Operations,economic_buyer
+Q7ST5E1W,Ethan Fischer,IT Manager,champion
+Q7ST5E1W,Ruth Okafor,CTO,economic_buyer
+QCIG6H19,Sofia Nakamura,Infrastructure Lead,champion
+QCIG6H19,Samuel Sato,Head of IT Operations,economic_buyer
+QMUBRAT2,Sofia Okafor,IT Manager,champion
+QUOU67L5,Kwame Hughes,Systems Engineer,champion
+QUOU67L5,Patrick Kowalski,CTO,economic_buyer
+QWYRCDA8,Ben Mensah,Procurement Analyst,champion
+QWYRCDA8,Dara Volkov,CTO,economic_buyer
+QYKTG5QA,Luke Fischer,Systems Engineer,champion
+QYKTG5QA,Kwame Marchetti,VP Engineering,economic_buyer
+R617R51D,Noah Moreau,IT Manager,champion
+R617R51D,Kwame Farouk,VP Engineering,economic_buyer
+RA77E84P,Ben Sato,Infrastructure Lead,champion
+RA77E84P,Patrick Sandoval,VP Engineering,economic_buyer
+RGRUF328,Fatima Reyes,Systems Engineer,champion
+RGRUF328,Andre Quinn,CIO,economic_buyer
+RJH0CL3Z,Victor Farouk,IT Manager,champion
+RJH0CL3Z,Aisha Adeyemi,VP Infrastructure,economic_buyer
+RLHNJZBW,Kwame Castellano,Systems Engineer,champion
+RLHNJZBW,Ingrid Okafor,Head of IT Operations,economic_buyer
+RQJKAR7E,Yuki Moreau,IT Manager,champion
+RQJKAR7E,Samuel Whitfield,CIO,economic_buyer
+RXIQFV8D,Grace Adeyemi,Infrastructure Lead,champion
+RXIQFV8D,Sofia Nakamura,Head of IT Operations,economic_buyer
+S983P5KR,Aisha Nakamura,Systems Engineer,champion
+SD8JJSKT,Noah Adeyemi,Infrastructure Lead,champion
+SD8JJSKT,Kwame Ivanova,CTO,economic_buyer
+SFBHZLHK,Ruth Kowalski,Procurement Analyst,champion
+SFBHZLHK,Samuel Marchetti,CTO,economic_buyer
+SFCT64YG,Hannah Osei,Systems Engineer,champion
+SFCT64YG,Luke Fischer,CTO,economic_buyer
+SHETLR3T,Grace Adeyemi,Infrastructure Lead,champion
+SHETLR3T,Ethan Farouk,CTO,economic_buyer
+SNGS64S7,Tom Thornton,Systems Engineer,champion
+SS9FXCS2,Mei Quinn,IT Manager,champion
+SS9FXCS2,Grace Mensah,VP Infrastructure,economic_buyer
+SUXDAQNV,Luke Petrov,Procurement Analyst,champion
+SUXDAQNV,Elena Farouk,CTO,economic_buyer
+SXV6VZVC,Nadia Marchetti,Platform Engineering Manager,champion
+SXV6VZVC,Ruth Sandoval,CTO,economic_buyer
+SYJKN818,Hannah Whitfield,Infrastructure Lead,champion
+SYJKN818,Ingrid Brennan,CTO,economic_buyer
+T2J83GFD,Tom Quinn,Systems Engineer,champion
+T2J83GFD,Samuel Bergström,VP Infrastructure,economic_buyer
+TAGD6XU9,Ines Mensah,Platform Engineering Manager,champion
+TAGD6XU9,Omar Delgado,CIO,economic_buyer
+TLT4JJ0U,Hannah Haddad,Systems Engineer,champion
+TLT4JJ0U,Noah Delgado,CIO,economic_buyer
+TPNU79C1,Priya Castellano,Procurement Analyst,champion
+TPNU79C1,Marcus Sandoval,CTO,economic_buyer
+U48PDN1F,Nadia Farouk,IT Manager,champion
+U48PDN1F,Ethan Moreau,CTO,economic_buyer
+UJSFG18F,Sofia Adeyemi,Infrastructure Lead,champion
+UJSFG18F,Kira Valdez,Head of IT Operations,economic_buyer
+UTJGDR3K,Ingrid Mensah,Procurement Analyst,champion
+UTJGDR3K,Hannah Abara,CIO,economic_buyer
+UZN5JBF3,Omar Thornton,Infrastructure Lead,champion
+UZN5JBF3,Ingrid Fischer,VP Infrastructure,economic_buyer
+V0V6O05H,Clara Bergström,Infrastructure Lead,champion
+V0V6O05H,Clara Okafor,VP Infrastructure,economic_buyer
+V7DHDF8V,Fatima Lindqvist,Infrastructure Lead,champion
+V7DHDF8V,Luke Osei,CIO,economic_buyer
+V7Y78MPU,Fatima Brennan,Platform Engineering Manager,champion
+V7Y78MPU,Jorge Petrov,CIO,economic_buyer
+VA2JJZXD,Luke Quinn,Systems Engineer,champion
+VA2JJZXD,Noah Lindqvist,CIO,economic_buyer
+VF7DWQIH,Priya Mensah,IT Manager,champion
+VF7DWQIH,Elena Quinn,VP Infrastructure,economic_buyer
+VP2CW520,Patrick Osei,Platform Engineering Manager,champion
+VP2CW520,Mei Marchetti,CTO,economic_buyer
+VRSTX620,Samuel Kowalski,IT Manager,champion
+VRSTX620,Yuki Fischer,VP Infrastructure,economic_buyer
+VSZ4UVVN,Leah Quinn,Systems Engineer,champion
+VSZ4UVVN,Ethan Kowalski,VP Infrastructure,economic_buyer
+VYPIKMKO,Sofia Kowalski,Procurement Analyst,champion
+VYPIKMKO,Samuel Mensah,VP Engineering,economic_buyer
+W5P1OLUL,Ingrid Fischer,Infrastructure Lead,champion
+W5P1OLUL,Ethan Brennan,VP Engineering,economic_buyer
+W604BPPE,Hannah Abara,Platform Engineering Manager,champion
+W604BPPE,Clara Farouk,Head of IT Operations,economic_buyer
+W8CSV90F,Raj Sato,Platform Engineering Manager,champion
+W8CSV90F,Andre Sato,Head of IT Operations,economic_buyer
+WB974HS4,Clara Sandoval,Platform Engineering Manager,champion
+WB974HS4,Ben Kowalski,CTO,economic_buyer
+WGSS08LF,Ruth Delgado,Infrastructure Lead,champion
+WGSS08LF,Ethan Whitfield,CIO,economic_buyer
+WJ81WITC,Elena Castellano,Platform Engineering Manager,champion
+WJ81WITC,Jorge Petrov,CTO,economic_buyer
+X46ZXX2S,Ben Nakamura,Platform Engineering Manager,champion
+X66G66ZA,Ines Nakamura,IT Manager,champion
+X66G66ZA,Tom Marchetti,Head of IT Operations,economic_buyer
+XEP9GSSY,Jorge Ivanova,IT Manager,champion
+XEP9GSSY,Luke Fischer,Head of IT Operations,economic_buyer
+XWN6WWOD,Mei Quinn,IT Manager,champion
+XWN6WWOD,Priya Sato,CIO,economic_buyer
+Y9SCLUH8,Elena Castellano,Platform Engineering Manager,champion
+Y9SCLUH8,Ben Thornton,Head of IT Operations,economic_buyer
+YQ6VELF1,Leah Mensah,Procurement Analyst,champion
+YQ6VELF1,Kwame Farouk,CIO,economic_buyer
+YQK2K6U5,Elena Castellano,Infrastructure Lead,champion
+YQK2K6U5,Yuki Hughes,VP Engineering,economic_buyer
+YRYMSUE3,Ben Moreau,IT Manager,champion
+Z032GGRE,Leah Delgado,Infrastructure Lead,champion
+Z032GGRE,Omar Brennan,VP Engineering,economic_buyer
+Z64MQTF2,Ethan Thornton,IT Manager,champion
+Z64MQTF2,Leah Mensah,CIO,economic_buyer
+ZA6AJ0N1,Ingrid Nakamura,Procurement Analyst,champion
+ZA6AJ0N1,Raj Whitfield,CIO,economic_buyer
+ZGSQMEQ9,Kwame Sandoval,Infrastructure Lead,champion
+ZIFDD41D,Nadia Moreau,Infrastructure Lead,champion
+ZIFDD41D,Nadia Haddad,CTO,economic_buyer
+ZT6D57ED,Raj Hughes,IT Manager,champion
+ZT6D57ED,Ines Petrov,CTO,economic_buyer
+6OJAC8DP,Victor Thornton,Procurement Analyst,champion
+6OJAC8DP,Sofia Hughes,VP Infrastructure,economic_buyer
+4N2KE2DP,Patrick Quinn,Systems Engineer,champion
+BNYWSGDP,Jorge Kowalski,Systems Engineer,champion
+BNYWSGDP,Aisha Mensah,CTO,economic_buyer
+5O0597DP,Ben Petrov,Procurement Analyst,champion
+5O0597DP,Samuel Nakamura,Head of IT Operations,economic_buyer
+6JWA8DDP,Sofia Nakamura,Platform Engineering Manager,champion
+6JWA8DDP,Victor Adeyemi,VP Infrastructure,economic_buyer
+G6X1B2DP,Aisha Sandoval,Infrastructure Lead,champion
+G6X1B2DP,Omar Haddad,CTO,economic_buyer
+P0BMLVDP,Luke Thornton,Infrastructure Lead,champion
+P0BMLVDP,Marcus Fischer,VP Engineering,economic_buyer

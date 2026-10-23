@@ -2,6 +2,9 @@
 title: Ledger
 blurb: "Revenue-forecast agent with receipts, built for Block Convey's Money Talks 2 hackathon: every number and buyer quote is checked in code before a finance team sees it."
 repo: https://github.com/happyc0der/ledger
+demo_embed: /demos/ledger/
+demo_label: "The repo's verification code (field rules, quote verifier, consistency checks, scorer) running in Pyodide over the claims Claude Sonnet 5.5 returned in the recorded 2026-10-17 run; no model is called, and any edit you make is checked live."
+demo_height: 760
 image: /img/ledger.png
 year: 2026
 order: 14
