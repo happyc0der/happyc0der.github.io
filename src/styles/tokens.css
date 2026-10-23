@@ -5,16 +5,27 @@
   --surface: #14121c;
   --surface-2: #1b1826;
   --line: #262233;
+  --line-2: #363048;        /* a line that has to show on --surface */
   --text: #e7e5ee;
   --text-2: #cfcbdb;        /* long-form body copy, a step softer than headings */
   --muted: #8f8aa3;
+  --dim: #4f4a63;           /* words not yet reached by a scrub reveal; never resting text */
   --accent: #a78bfa;
   --accent-hi: #c4b5fd;
   --accent-deep: #8b5cf6;   /* glows and shadows only, never text */
+  --accent-deeper: #6d28d9; /* the far edge of a glow */
   --accent-dim: rgba(167, 139, 250, 0.12);
-  --good: #4ade80;
+  --good: #4ade80;          /* the "open to work" dot, and passing checks in the stats */
   --danger: #f43f5e;
   --paper: #f4f4f6;         /* behind resume previews, which are white pages */
+
+  /* Project washes, assigned by project order (never random): violet, indigo, fuchsia, blue, purple, pink. */
+  --hue-1: #a78bfa;
+  --hue-2: #818cf8;
+  --hue-3: #e879f9;
+  --hue-4: #60a5fa;
+  --hue-5: #c084fc;
+  --hue-6: #f0abfc;
 
   /* Sequential ramp for counts (heatmap): validated 4-step ordinal on the card surface. */
   --heat-0: #1f1b2b;
@@ -23,10 +34,14 @@
   --heat-3: #9b82f7;
   --heat-4: #cdbffd;
 
+  /* Four families. Display for big headings, serif italic for the emphasis words, Inter for reading,
+     mono for labels. The @font-face rules (latin only) are written in src/layouts/Base.astro. */
+  --display: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
   --sans: 'Inter Variable', system-ui, sans-serif;
   --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
-  /* Type: ten sizes. 2xs is for uppercase mono labels, tags and badges. */
+  /* Type: ten text sizes, then the display steps. 2xs is for uppercase mono labels, tags and badges. */
   --fs-2xs: 0.7rem;
   --fs-xs: 0.78rem;
   --fs-sm: 0.9rem;
@@ -37,9 +52,18 @@
   --fs-lead: clamp(1.05rem, 2.4vw, 1.3rem);
   --fs-title: clamp(2rem, 5vw, 3rem);
   --fs-hero: clamp(2.6rem, 8vw, 4.75rem);
+  --fs-statement: clamp(1.45rem, 3.3vw, 2.9rem);  /* the scrub paragraphs */
+  --fs-card: clamp(1.6rem, 2.6vw, 2.25rem);       /* card and row titles */
+  --fs-number: clamp(2.6rem, 6vw, 5.25rem);       /* counters */
+  --fs-display: clamp(3.1rem, 10vw, 8.75rem);     /* section titles */
+  --fs-giant: clamp(5.25rem, 21vw, 17.5rem);      /* the name in the hero */
+  --track-display: -0.045em;
+  --track-tight: -0.025em;
+  --track-label: 0.14em;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 650;
+  --fw-heavy: 760;
 
   /* Space: one scale for every margin, padding and gap. Steps under --space-1 are optical nudges inside pills. */
   --space-1: 0.25rem;
@@ -52,13 +76,23 @@
   --space-8: 2.5rem;
   --space-9: 3.5rem;
   --space-10: 5rem;
+  --space-11: 8rem;
+  --section: clamp(5.5rem, 14vw, 11rem);  /* between home sections */
 
   --radius-xs: 2px;         /* chart marks */
   --radius-sm: 4px;         /* inline code, small badges */
-  --radius: 10px;           /* cards, tiles, panels, rows */
+  --radius: 10px;           /* tiles, panels, rows */
+  --radius-lg: 18px;        /* project media, frames */
   --radius-pill: 999px;     /* buttons, chips, tags */
   --shadow-lift: 0 10px 30px -18px color-mix(in srgb, var(--accent-deep) 60%, transparent);
+  --shadow-deep: 0 40px 80px -40px color-mix(in srgb, var(--accent-deep) 55%, transparent);
 
-  --width: 64rem;
-  --gutter: clamp(1rem, 4vw, 2rem);
+  --header-h: 4.25rem;
+  --width: 90rem;           /* the shell: nav, hero, section grids */
+  --measure: 44rem;         /* prose */
+  --gutter: clamp(1rem, 4vw, 3.5rem);
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
 }

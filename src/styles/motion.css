@@ -1,0 +1,36 @@
+/* ---------- Motion ----------
+   Decoration only. Every rule that hides something is scoped to .motion, which Base.astro sets only when
+   JS runs and motion is welcome, and drops again if src/scripts/motion.ts has not started 2.6 s later.
+   Without JS, or with reduced motion, every page renders complete and still. */
+
+/* Split headings stay invisible until motion.ts has wrapped their words (and letters) in masks. */
+.motion [data-split]:not(.is-split) { visibility: hidden; }
+.sw { display: inline-block; vertical-align: top; overflow: clip; padding: 0.14em 0.08em 0.2em; margin: -0.14em -0.08em -0.2em; }
+.swi, .sc { display: inline-block; will-change: transform; }
+.is-split.is-done .swi, .is-split.is-done .sc { will-change: auto; }
+
+/* Blocks that rise in as they scroll into view; --d staggers a batch. */
+.motion :is([data-reveal], [data-reveal-intro]):not(.is-in) { opacity: 0; }
+.motion :is([data-reveal], [data-reveal-intro]).is-in { animation: rise 1s var(--ease-expo) both var(--d, 0ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(36px); } }
+.motion .tile:not(.is-in), .motion .stats .group:not(.is-in) { opacity: 0; }
+.motion :is(.tile, .stats .group).is-in { animation: rise 1s var(--ease-expo) both var(--d, 0ms); }
+
+/* Charts draw in once their tile is revealed; --i is each mark's position in its chart. */
+@keyframes grow-y { from { transform: scaleY(0); } }
+@keyframes cell { from { opacity: 0; transform: scale(0.3); } }
+.motion .tile.is-in .weekbars .bar { transform-box: fill-box; transform-origin: 50% 100%; animation: grow-y 0.8s var(--ease-out) backwards calc(var(--d, 0ms) + 0.15s + var(--i, 0) * 30ms); }
+.motion .tile.is-in .heatmap rect { transform-box: fill-box; transform-origin: center; animation: cell 0.45s ease-out backwards calc(var(--d, 0ms) + var(--i, 0) * 1.4ms); }
+.motion .tile.is-in .shares .track i { transform-origin: left; animation: grow-x 0.9s var(--ease-out) backwards calc(var(--d, 0ms) + 0.15s + var(--i, 0) * 60ms); }
+.motion .tile.is-in .ticks i { transform-origin: bottom; animation: grow-y 0.4s ease-out backwards calc(var(--d, 0ms) + var(--i, 0) * 18ms); }
+
+@media print {
+  .motion [data-split], .motion [data-reveal], .motion [data-reveal-intro], .motion .tile { visibility: visible !important; opacity: 1 !important; animation: none !important; }
+  .loader, .wipe, .grain, .cursor, .cursor-dot, .progress { display: none !important; }
+}
+/* Reduced motion: no smooth scroll, intro, cursor, splits, scrubs or marquee drift (motion.ts never loads,
+   because Base.astro does not set .motion), and no CSS animation or transition either. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  @view-transition { navigation: none; }
+}
