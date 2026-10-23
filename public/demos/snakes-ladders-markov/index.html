@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snakes and Ladders chain</title>
+<meta name="description" content="The SPA_Project repo's model.py and simulation.py running in Pyodide: the exact expected length of Snakes and Ladders for any die from d1 to d24, computed in your browser from the 101x101 transition matrix.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../_shared/demo.css">
+<style>
+  :root {
+    --ladder: #60a5fa;
+    --snake: #f0abfc;
+    --warn: #fbbf24;
+  }
+  [hidden] { display: none !important; }
+  body { padding: 14px; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: clamp(17px, 2.1vw, 21px); font-weight: 650; line-height: 1.25; letter-spacing: -0.01em; }
+  h2 { font-size: 14px; font-weight: 620; }
+  code, .mono { font-family: var(--mono); }
+  code { font-size: 0.92em; color: var(--accent-hi); }
+
+  .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 4px 16px; margin-bottom: 12px; }
+  .top .label { margin-bottom: 3px; }
+
+  /* Poster: a faint, empty 10x10 grid behind the call to action. Nothing moves before Start. */
+  .poster { min-height: clamp(420px, calc(100vh - 190px), 960px); align-content: center; }
+  .poster p.error { color: var(--danger); }
+  .poster::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 10% 10%,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 10% 10%;
+    -webkit-mask-image: radial-gradient(closest-side at 50% 50%, #000 30%, transparent);
+    mask-image: radial-gradient(closest-side at 50% 50%, #000 30%, transparent);
+  }
+  .poster > * { position: relative; }
+  .poster h2 { font-size: clamp(17px, 2.4vw, 22px); }
+  .poster p { max-width: 60ch; color: var(--text-2); font-size: 13.5px; }
+  .poster .progress { margin: 2px auto 0; }
+  .poster[data-state="idle"] .progress, .poster[data-state="idle"] .status { visibility: hidden; }
+  .poster .btn.primary { font-size: 14px; padding: 11px 20px; }
+  .btn[aria-disabled="true"] { opacity: 0.6; cursor: progress; }
+
+  /* App layout: board on the left, numbers on the right; one column under 900 px. */
+  .grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); } }
+  @media (min-width: 1200px) { .grid { grid-template-columns: minmax(0, 520px) minmax(0, 1fr); } }
+  .col { display: grid; gap: 12px; min-width: 0; align-content: start; }
+  #col-b { container-type: inline-size; }
+  .board-col { display: grid; gap: 10px; width: 100%; max-width: 560px; margin: 0 auto; }
+
+  .board-wrap { position: relative; border-radius: var(--radius); outline-offset: 3px; }
+  .board-wrap:focus-visible { outline: 2px solid var(--accent); }
+  #board { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+  #board .cell { stroke: var(--bg); stroke-width: 3; cursor: pointer; }
+  #board .num { font: 500 23px var(--mono); fill: var(--muted); pointer-events: none; }
+  #board .val { font: 650 27px var(--mono); text-anchor: middle; pointer-events: none; paint-order: stroke; stroke: rgba(11, 10, 16, 0.7); stroke-width: 5px; }
+  #board .unreach { stroke: var(--muted); stroke-dasharray: 8 8; stroke-width: 2; fill: none; pointer-events: none; }
+  #board .sel { fill: none; stroke: var(--accent-hi); stroke-width: 6; pointer-events: none; }
+  #board .links { pointer-events: none; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font: 11px/1.5 var(--mono); color: var(--muted); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+  .legend .l-ladder { background: var(--ladder); }
+  .legend .l-snake { background: var(--snake); }
+  .legend .l-head { background: repeating-linear-gradient(45deg, #2a2538 0 2px, #14121c 2px 5px); border: 1px solid var(--line); }
+  .legend .l-unreach { border: 1px dashed var(--muted); }
+
+  .play { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .play .btn { min-height: 36px; }
+  .seed { display: inline-flex; align-items: center; gap: 6px; font: 11px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .seed input { width: 96px; min-height: 36px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: 13px/1 var(--mono); }
+  .seed input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .game-status { font: 12px/1.5 var(--mono); color: var(--text-2); min-height: 1.5em; }
+  .game-status.err { color: var(--warn); }
+
+  .controls { display: grid; gap: 10px; padding: 12px 14px; }
+  @container (min-width: 600px) { .controls { grid-template-columns: 1fr 1fr; column-gap: 22px; } .controls .ctl-row { grid-column: 1 / -1; } }
+  .ctl { display: grid; grid-template-columns: 88px minmax(0, 1fr) 40px; align-items: center; gap: 10px; }
+  .ctl .label { margin: 0; }
+  .ctl output { font: 600 14px/1 var(--mono); color: var(--accent-hi); text-align: right; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 28px; margin: 0; }
+  .ctl-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+  .seg button { min-height: 32px; }
+  #busy { font: 11px/1.4 var(--mono); color: var(--muted); }
+
+  .tiles { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @container (min-width: 600px) { .tiles { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.9fr) minmax(0, 1.35fr) minmax(0, 0.9fr); } }
+  .tile sup { text-transform: none; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+  .tile strong { font: 680 clamp(18px, 2.3vw, 24px)/1.1 var(--mono); color: var(--text); letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  .tile strong.small { font-size: clamp(14px, 1.7vw, 17px); }
+  .tile .sub { font: 10.5px/1.4 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+
+  .note { font: 12px/1.5 var(--sans); color: var(--text-2); padding: 9px 12px; border-radius: var(--radius); border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.06); }
+  .note code { color: var(--warn); }
+
+  .charts { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  @container (min-width: 600px) { .charts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  figure { margin: 0; padding: 10px 12px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
+  figcaption { display: flex; justify-content: space-between; gap: 8px; font: 11px/1.4 var(--mono); color: var(--muted); margin-bottom: 4px; }
+  figcaption b { color: var(--text-2); font-weight: 500; }
+  figure svg { display: block; width: 100%; height: auto; }
+  .ax { font: 13px var(--mono); fill: var(--muted); }
+  .ax-hi { font: 600 14px var(--mono); fill: var(--accent-hi); }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .bar { cursor: pointer; }
+
+  .readout { font: 12px/1.55 var(--mono); color: var(--text-2); padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-height: 62px; overflow-wrap: anywhere; }
+  .readout b { color: var(--accent-hi); font-weight: 600; }
+  .readout .err { color: var(--warn); }
+
+  .sim { display: grid; gap: 8px; padding: 12px 14px; }
+  .sim .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+  .sim p { font-size: 12.5px; color: var(--text-2); }
+  .sim .facts { font: 12px/1.55 var(--mono); color: var(--text-2); }
+  .sim .facts b { color: var(--accent-hi); font-weight: 600; }
+  .rowcmp { display: grid; gap: 3px; font: 11px/1.3 var(--mono); color: var(--muted); }
+  .rowcmp .r { display: grid; grid-template-columns: 40px minmax(0, 1fr) 150px; align-items: center; gap: 8px; }
+  .rowcmp .bars { display: grid; gap: 2px; }
+  .rowcmp .bars i { display: block; height: 5px; border-radius: 2px; min-width: 1px; }
+  .rowcmp .bars i.ex { background: var(--accent); }
+  .rowcmp .bars i.si { background: var(--snake); }
+  .rowcmp .v { text-align: right; color: var(--text-2); }
+
+  .tests { display: grid; gap: 8px; padding: 12px 14px; }
+  .tests .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+  .tests .head > div { flex: 1 1 300px; display: grid; gap: 3px; }
+  .tests p { font-size: 12.5px; color: var(--text-2); }
+  pre#testout { margin: 0; max-height: 220px; overflow: auto; padding: 10px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font: 11px/1.5 var(--mono); color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .pass { color: var(--accent-hi); }
+  .fail { color: var(--danger); }
+
+  .demo-foot span { max-width: 100%; }
+  .demo-foot b { color: var(--text-2); font-weight: 500; }
+  noscript p { margin-top: 8px; color: var(--warn); font: 12px/1.5 var(--mono); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div>
+      <p class="label">Snakes and Ladders &middot; a 101-state Markov chain</p>
+      <h1>Exact game length for any die, from the repo&rsquo;s <code>model.py</code> in your browser</h1>
+    </div>
+  </header>
+
+  <section class="poster" id="poster" data-state="idle" aria-labelledby="poster-title">
+    <h2 id="poster-title">Run the model</h2>
+    <p>Starts Python in this page (Pyodide 0.29.5 with NumPy), imports the repo&rsquo;s <code>model.py</code> and <code>simulation.py</code> unmodified, and builds the 101&times;101 transition matrix. Then change the die from d1 to d24, scrub through turns, sample games from the chain, roll real dice with <code>simulation.py</code>, and run the repo&rsquo;s tests.</p>
+    <button class="btn primary" id="start" type="button">Start Python</button>
+    <p class="size">About 8.1&nbsp;MB from cdn.jsdelivr.net, cached after the first run. The optional test run adds about 1.6&nbsp;MB.</p>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+    <p class="status" id="load-status" role="status" aria-live="polite"></p>
+    <noscript><p>This demo needs JavaScript: it runs Python in a Web Worker.</p></noscript>
+  </section>
+
+  <section id="app" hidden>
+    <!-- Two columns from 760 px. demo.js moves the pieces between them to suit the width
+         (layout() there); this order is the one for 1200 px and wider. -->
+    <div class="grid">
+      <div class="col" id="col-a">
+        <div class="board-col" id="p-board">
+          <div class="board-wrap" id="board-wrap" tabindex="0" aria-label="Board. Arrow keys move the selected square: left and right by one, up and down by ten.">
+            <svg id="board" viewBox="0 0 1000 1090" role="img" aria-labelledby="board-title"><title id="board-title">The 10 by 10 board with its ladders and snakes, squares shaded by the chosen view</title></svg>
+          </div>
+          <div class="legend" aria-hidden="true">
+            <span><i class="l-ladder"></i>ladder</span>
+            <span><i class="l-snake"></i>snake</span>
+            <span><i class="l-head"></i>head (no turn ends here)</span>
+            <span><i class="l-unreach"></i>unreachable from 0</span>
+          </div>
+          <div class="play">
+            <button class="btn primary" id="play" type="button">Play a game</button>
+            <button class="btn" id="step" type="button">Step</button>
+            <button class="btn" id="end" type="button">End</button>
+            <label class="seed">Seed <input id="seed" type="number" inputmode="numeric" min="0" max="4294967295" step="1" value="1"></label>
+            <button class="btn" id="next-seed" type="button" aria-label="Next seed">+1</button>
+          </div>
+          <p class="game-status" id="game-status" role="status" aria-live="polite">One game is <code>model.simulate_game(T)</code> after <code>np.random.seed(seed)</code>.</p>
+        </div>
+      </div>
+      <div class="col" id="col-b">
+        <div class="panel controls" id="p-controls">
+          <div class="ctl">
+            <label class="label" for="die">Die</label>
+            <input id="die" type="range" min="1" max="24" step="1" value="6" aria-valuetext="6-sided die">
+            <output id="die-out" for="die">d6</output>
+          </div>
+          <div class="ctl">
+            <label class="label" for="turn">After turn</label>
+            <input id="turn" type="range" min="0" max="299" step="1" value="10">
+            <output id="turn-out" for="turn">10</output>
+          </div>
+          <div class="ctl-row">
+            <div class="seg" role="group" aria-label="Shade the board by">
+              <button type="button" data-view="dist" aria-pressed="true">Where after n turns</button>
+              <button type="button" data-view="left" aria-pressed="false">Turns left</button>
+            </div>
+            <p id="busy" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="tiles" id="p-tiles">
+          <div class="tile"><span class="label">Expected turns</span><strong id="t-exp">&ndash;</strong><span class="sub" id="t-exp-sub">expected_turns(T), from square 0</span></div>
+          <div class="tile"><span class="label">Reachable</span><strong id="t-reach">&ndash;</strong><span class="sub">reachable_squares(T)</span></div>
+          <div class="tile"><span class="label">Fewest / 50% / 90% / 99%</span><strong id="t-q" class="small">&ndash;</strong><span class="sub">turns to finish, read off completion_curve(d)</span></div>
+          <div class="tile"><span class="label">T<sup>n</sup> settles</span><strong id="t-lim">&ndash;</strong><span class="sub">first_limiting_power(T, 1e-4)</span></div>
+        </div>
+
+        <p class="note" id="note" hidden></p>
+
+        <div class="charts" id="p-charts">
+          <figure>
+            <figcaption><b>Expected turns by die size</b><span>tap a bar</span></figcaption>
+            <svg id="sweep" viewBox="0 0 480 180" role="img" aria-label="Expected turns to win for dice with 1 to 24 faces"></svg>
+          </figure>
+          <figure>
+            <figcaption><b>Games finished by turn n</b><span id="curve-die">d6</span></figcaption>
+            <svg id="curve" viewBox="0 0 480 180" role="img" aria-label="Percentage of games finished after each turn, from completion_curve"></svg>
+          </figure>
+        </div>
+
+        <div class="readout" id="readout" aria-live="polite"></div>
+
+        <div class="panel sim" id="p-sim">
+          <div class="head">
+            <h2><code>simulation.py</code>: roll real dice</h2>
+            <div class="seg" role="group" aria-label="Number of games">
+              <button type="button" data-games="1000" aria-pressed="true">1,000 games</button>
+              <button type="button" data-games="20000" aria-pressed="false">20,000</button>
+            </div>
+            <button class="btn" id="roll" type="button">Roll</button>
+          </div>
+          <p>Plays games with <code>roll_die()</code> instead of the matrix and tallies every move into an empirical transition matrix, as <code>simulation.main()</code> does with seed <span id="sim-seed">42</span>. It always rolls a d6.</p>
+          <div class="facts" id="sim-facts" aria-live="polite"></div>
+          <div class="rowcmp" id="rowcmp"></div>
+        </div>
+
+        <section class="panel tests" id="p-tests" aria-labelledby="tests-title">
+          <div class="head">
+            <div>
+              <h2 id="tests-title">The repo&rsquo;s tests</h2>
+              <p><code>test_model.py</code> under pytest 8.3.5, unmodified. Several tests play tens of thousands of games, so this takes a while in the browser.</p>
+            </div>
+            <button class="btn" id="run-tests" type="button">Run test_model.py</button>
+          </div>
+          <p class="status" id="tests-status" role="status" aria-live="polite" hidden></p>
+          <pre id="testout" hidden></pre>
+        </section>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="demo-foot">
+    <span><b>What runs:</b> the repo&rsquo;s <code>model.py</code>, <code>simulation.py</code> and <code>test_model.py</code>, unmodified, in Pyodide 0.29.5 with NumPy, in a Web Worker. <code>matplotlib</code> is replaced by a do-nothing stub, since the page never calls the plotting code; the board and charts are drawn in JavaScript from the numbers Python returns. <a href="glue.py" target="_blank" rel="noopener">glue.py</a>, written for this page, makes the calls.</span>
+    <span><b>Source:</b> <a href="https://github.com/happyc0der/SPA_Project/tree/d678fcdd16989681f84c089a5d9da09c6586163a" target="_blank" rel="noopener">happyc0der/SPA_Project @ d678fcd</a></span>
+    <span><b>Credit:</b> Aman Kumar wrote the empirical transition-matrix tally in the original 2022 simulation.</span>
+    <span id="loaded" hidden></span>
+  </footer>
+</main>
+<script type="module" src="demo.js"></script>
+</body>
+</html>
