@@ -7,6 +7,7 @@ site: happyc0der.github.io
 links:
   github: https://github.com/happyc0der
   linkedin: https://www.linkedin.com/in/happyc0der/
+  devpost: https://devpost.com/keshav-rajput4   # the active Devpost account (Ledger, Portfolio Pulse); site only, the resumes do not read it
   source: https://github.com/happyc0der/happyc0der.github.io
 
 # Site only (the resumes do not read these). open_to_work shows the green pill in the nav;

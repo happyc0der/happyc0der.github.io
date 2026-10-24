@@ -155,7 +155,7 @@ const current = (href: string) => (!href.includes('#') && path.startsWith(href) 
         </ul>
         <div class="menu-foot">
           {profile.open_to_work && <p class="mono"><span class="dot" aria-hidden="true"></span>{profile.availability}</p>}
-          <p class="menu-links"><a href={`mailto:${profile.email}`}>Email</a><a href={profile.links.github}>GitHub</a><a href={profile.links.linkedin}>LinkedIn</a></p>
+          <p class="menu-links"><a href={`mailto:${profile.email}`}>Email</a><a href={profile.links.github}>GitHub</a><a href={profile.links.linkedin}>LinkedIn</a>{profile.links.devpost && <a href={profile.links.devpost}>Devpost</a>}</p>
         </div>
       </nav>
     </div>
