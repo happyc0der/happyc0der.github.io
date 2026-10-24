@@ -173,6 +173,7 @@ const courses = [...new Set(Object.values(profile.coursework as Record<string, s
       <ul class="socials">
         <li><a class="social" href={profile.links.github}>GitHub <Icon name="out" /></a></li>
         <li><a class="social" href={profile.links.linkedin}>LinkedIn <Icon name="out" /></a></li>
+        {profile.links.devpost && <li><a class="social" href={profile.links.devpost}>Devpost <Icon name="out" /></a></li>}
         <li><a class="social" href={`mailto:${profile.email}`}>Email <Icon name="out" /></a></li>
         <li><a class="social" href={profile.links.source}>Site source <Icon name="out" /></a></li>
       </ul>
