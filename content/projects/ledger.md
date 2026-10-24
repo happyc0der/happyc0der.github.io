@@ -21,7 +21,7 @@ bullets:
   - "Compared five models under one pipeline (Gemini, Sonnet 5.5, Opus 5.5, and local 12B and 14B models): reading recall scales with model size but win-probability judgment does not, while the verification layer kept fabrications and false alarms at zero on every one; every run traced in PRISM, 27 failures logged and 26 fixed, 45 tests."
 resume_bullets:
   - "Built Ledger solo for Block Convey's Money Talks 2 hackathon: a forecast agent whose model fills a claim schema with verbatim buyer quotes while code checks each claim against the CRM."
-  - "On 235 deals with 18 planted anomaly types (Claude Sonnet 5.5): 94% recall, 0 of 86 clean deals flagged, 0 invented numbers, vs 72%, 10 and 6 for the same model asked directly."
+  - "On 235 deals with 18 planted anomaly types (Claude Sonnet 5.5): 94% recall, 0 of 86 clean deals flagged, 0 invented numbers; the same model asked directly found 72% and flagged 10, and as a plain forecaster it invented 6."
   - "Compared five models: reading recall scaled with model size, judgment did not, and verification held fabrications and false alarms at zero on all; 27 failures logged with evidence, 26 fixed."
 ---
 
