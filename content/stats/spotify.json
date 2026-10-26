@@ -1,6 +1,10 @@
 {
- "updated": "2026-10-25T10:16:33.017Z",
+ "updated": "2026-10-26T10:16:53.675Z",
  "artists": [
+  {
+   "name": "Alien Ant Farm",
+   "url": "https://open.spotify.com/artist/6TZdvF1kFzwnQLgHQynzsO"
+  },
   {
    "name": "Blue Imagined",
    "url": "https://open.spotify.com/artist/6tQZ5A1EKJnSlcyj5iZqZZ"
@@ -16,10 +20,6 @@
   {
    "name": "atmos bloom",
    "url": "https://open.spotify.com/artist/5F6pjXWILFr4XnOngaKyo3"
-  },
-  {
-   "name": "Mohit Chauhan",
-   "url": "https://open.spotify.com/artist/5GnnSrwNCGyfAU4zuIytiS"
   }
  ],
  "tracks": [
