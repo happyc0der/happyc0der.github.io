@@ -122,8 +122,9 @@ export function claudeBreakdown() {
   if (!c?.machines) return null;
   const byProject: Record<string, number> = {}, byModel: Record<string, number> = {};
   for (const m of Object.values<any>(c.machines)) {
-    for (const [dir, v] of Object.entries<number>(m.projects || {})) {
-      const slug = c.labels?.[dir];
+    // Keys are portfolio slugs plus "other" (older files keyed by directory with a labels map).
+    for (const [key, v] of Object.entries<number>(m.projects || {})) {
+      const slug = c.labels ? c.labels[key] : key === 'other' ? null : key;
       const label = slug ? projectTitles[slug] ?? slug : 'Other work';
       byProject[label] = (byProject[label] || 0) + v;
     }

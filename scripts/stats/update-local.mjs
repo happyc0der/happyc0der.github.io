@@ -85,6 +85,10 @@ if (!here) {
 //    but Claude Code deletes old transcripts, so a later count can only miss data, not add it.
 const claudeFile = 'content/stats/claude.json';
 const claude = readJson(claudeFile, { machines: {} });
+// Per-directory totals name private and personal folders, so they stay on this Mac (mode 600); the public file
+// gets only portfolio project slugs and one "other" total. The first run seeds it from the old public layout.
+const CLAUDE_DIRS = path.join(HOME, '.config', 'portfolio-stats', 'claude-dirs.json');
+const claudeDirs = readJson(CLAUDE_DIRS, null) ?? Object.fromEntries(Object.entries(claude.machines).map(([k, m]) => [k, claude.labels ? { ...(m.projects || {}) } : {}]));
 const counters = [['mac', () => run('node', ['scripts/stats/claude-usage.mjs'])]];
 counters.push(['msi', () => run('ssh', ['-o', 'ConnectTimeout=10', '-o', 'BatchMode=yes', 'msi', 'node --input-type=module -'], { input: fs.readFileSync('scripts/stats/claude-usage.mjs') })]);
 for (const [machine, count] of counters) {
@@ -95,9 +99,8 @@ for (const [machine, count] of counters) {
       const old = m.days[d];
       m.days[d] = old && old.total >= v.total ? old : v;
     }
-    // Same rule for the per-project and per-model totals: never let a cleaned-up log shrink them.
-    for (const [key, totals] of [['projects', projects], ['models', models]]) {
-      const kept = (m[key] ||= {});
+    // Same rule for the per-directory and per-model totals: never let a cleaned-up log shrink them.
+    for (const [kept, totals] of [[(claudeDirs[machine] ||= {}), projects], [(m.models ||= {}), models]]) {
       for (const [k, v] of Object.entries(totals)) kept[k] = Math.max(kept[k] || 0, v);
     }
     claude.machines[machine].updated = new Date().toISOString();
@@ -106,10 +109,18 @@ for (const [machine, count] of counters) {
     log('claude', machine, 'skipped:', e.message.split('\n')[0]);
   }
 }
-// Name only the projects that are on the portfolio; everything else is shown as "Other".
-claude.labels = labelProjects(Object.values(claude.machines).flatMap((m) => Object.keys(m.projects || {})));
+// Name only the projects that are on the portfolio; everything else is one "other" total.
+const slugOf = labelProjects(Object.values(claudeDirs).flatMap((d) => Object.keys(d)));
+for (const [machine, dirs] of Object.entries(claudeDirs)) {
+  const bySlug = {};
+  for (const [dir, v] of Object.entries(dirs)) { const k = slugOf[dir] ?? 'other'; bySlug[k] = (bySlug[k] || 0) + v; }
+  if (claude.machines[machine]) claude.machines[machine].projects = bySlug;
+}
+delete claude.labels;
 claude.updated = new Date().toISOString();
 writeJson(claudeFile, claude);
+fs.mkdirSync(path.dirname(CLAUDE_DIRS), { recursive: true });
+fs.writeFileSync(CLAUDE_DIRS, JSON.stringify(claudeDirs, null, 1), { mode: 0o600 });
 
 // 3. Garmin: today and yesterday every run, plus any of the last 14 days still missing; activities since 1 January.
 const garminFile = 'content/stats/garmin.json';
