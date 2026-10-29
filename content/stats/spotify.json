@@ -1,25 +1,25 @@
 {
- "updated": "2026-10-28T10:16:44.957Z",
+ "updated": "2026-10-29T10:17:27.365Z",
  "artists": [
+  {
+   "name": "Eminem",
+   "url": "https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR"
+  },
+  {
+   "name": "Mohit Chauhan",
+   "url": "https://open.spotify.com/artist/5GnnSrwNCGyfAU4zuIytiS"
+  },
+  {
+   "name": "NVM",
+   "url": "https://open.spotify.com/artist/3DkHOBTtRZIj7m2aF42rtC"
+  },
+  {
+   "name": "april june",
+   "url": "https://open.spotify.com/artist/4WreACyfQITcXGx86xxYkG"
+  },
   {
    "name": "Alien Ant Farm",
    "url": "https://open.spotify.com/artist/6TZdvF1kFzwnQLgHQynzsO"
-  },
-  {
-   "name": "Blue Imagined",
-   "url": "https://open.spotify.com/artist/6tQZ5A1EKJnSlcyj5iZqZZ"
-  },
-  {
-   "name": "PinkPantheress",
-   "url": "https://open.spotify.com/artist/78rUTD7y6Cy67W1RVzYs7t"
-  },
-  {
-   "name": "GRAZER",
-   "url": "https://open.spotify.com/artist/66npZ0iLHcWmV2DAC8oYRF"
-  },
-  {
-   "name": "atmos bloom",
-   "url": "https://open.spotify.com/artist/5F6pjXWILFr4XnOngaKyo3"
   }
  ],
  "tracks": [
