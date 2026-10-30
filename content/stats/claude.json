@@ -199,13 +199,17 @@
      "output": 1978242
     },
     "2026-10-29": {
-     "total": 314695143,
-     "output": 1216762
+     "total": 2063631745,
+     "output": 7083354
+    },
+    "2026-10-30": {
+     "total": 321052838,
+     "output": 1004836
     }
    },
-   "updated": "2026-10-29T10:15:07.863Z",
+   "updated": "2026-10-30T10:15:11.251Z",
    "projects": {
-    "other": 6971883603,
+    "other": 9017615682,
     "forgelog": 1723493902,
     "portfolio": 1680349197,
     "mldsa-auth": 5475167407,
@@ -219,7 +223,7 @@
     "snakes-ladders-markov": 12431934,
     "lfp2vec-audit": 301342216,
     "tidefit": 210687327,
-    "gemma-swe-agent": 853778039,
+    "gemma-swe-agent": 865405845,
     "gridsentry": 94628688,
     "infoviz": 4843645,
     "atlas-engine": 3556278752,
@@ -231,13 +235,13 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 463299973,
-    "trafficflowbench": 662653976
+    "trading-agent": 473951028,
+    "trafficflowbench": 664632476
    },
    "models": {
     "claude-opus-5": 9182914644,
-    "claude-fable-5-1": 2668374635,
-    "claude-opus-5-5": 12318163602,
+    "claude-fable-5-1": 2683583139,
+    "claude-opus-5-5": 14372944538,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 192916763,
     "claude-haiku-4-5": 5480915,
@@ -389,17 +393,21 @@
      "output": 637579
     },
     "2026-10-29": {
-     "total": 108213362,
-     "output": 201940
+     "total": 646836363,
+     "output": 1276397
+    },
+    "2026-10-30": {
+     "total": 213721070,
+     "output": 507553
     }
    },
-   "updated": "2026-10-29T10:15:43.850Z",
+   "updated": "2026-10-30T10:15:43.534Z",
    "projects": {
-    "other": 16590267249,
+    "other": 17342611320,
     "gtnh-agent": 5065393358
    },
    "models": {
-    "claude-opus-5-5": 19665720479,
+    "claude-opus-5-5": 20418064550,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 167880483,
     "claude-fable-5-1": 1820124955,
@@ -407,5 +415,5 @@
    }
   }
  },
- "updated": "2026-10-29T10:15:44.736Z"
+ "updated": "2026-10-30T10:15:44.292Z"
 }
