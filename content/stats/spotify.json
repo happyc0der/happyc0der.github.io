@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T10:17:27.365Z",
+ "updated": "2026-10-30T10:16:53.253Z",
  "artists": [
   {
    "name": "Eminem",
@@ -39,14 +39,14 @@
    "url": "https://open.spotify.com/track/1wBuTYRugaQTGMl0BH08yX"
   },
   {
+   "name": "Tuyo (Narcos Theme) [Extended Version] - A Netflix Original Series Soundtrack",
+   "artist": "Rodrigo Amarante",
+   "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
+  },
+  {
    "name": "Devil Town",
    "artist": "Cavetown",
    "url": "https://open.spotify.com/track/0vf2eBw2inhl8y61cYQMv2"
-  },
-  {
-   "name": "Inside Out",
-   "artist": "Duster",
-   "url": "https://open.spotify.com/track/6WlmEymaXKMRs3D2c4j6os"
   }
  ]
 }
