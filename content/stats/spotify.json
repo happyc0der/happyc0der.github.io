@@ -1,9 +1,13 @@
 {
- "updated": "2026-10-30T10:16:53.253Z",
+ "updated": "2026-10-31T10:16:52.993Z",
  "artists": [
   {
    "name": "Eminem",
    "url": "https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR"
+  },
+  {
+   "name": "Red Hot Chili Peppers",
+   "url": "https://open.spotify.com/artist/0L8ExT028jH3ddEcZwqJJ5"
   },
   {
    "name": "Mohit Chauhan",
@@ -16,10 +20,6 @@
   {
    "name": "april june",
    "url": "https://open.spotify.com/artist/4WreACyfQITcXGx86xxYkG"
-  },
-  {
-   "name": "Alien Ant Farm",
-   "url": "https://open.spotify.com/artist/6TZdvF1kFzwnQLgHQynzsO"
   }
  ],
  "tracks": [
