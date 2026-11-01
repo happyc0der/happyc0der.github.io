@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31T10:16:52.993Z",
+ "updated": "2026-11-01T11:16:54.260Z",
  "artists": [
   {
    "name": "Eminem",
@@ -24,6 +24,11 @@
  ],
  "tracks": [
   {
+   "name": "Midnight City",
+   "artist": "M83",
+   "url": "https://open.spotify.com/track/1eyzqe2QqGZUmfcPZtrIyt"
+  },
+  {
    "name": "Sleepwalking",
    "artist": "Bring Me The Horizon",
    "url": "https://open.spotify.com/track/0gchQwxmBWj5no8NJ8b2yH"
@@ -42,11 +47,6 @@
    "name": "Tuyo (Narcos Theme) [Extended Version] - A Netflix Original Series Soundtrack",
    "artist": "Rodrigo Amarante",
    "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
-  },
-  {
-   "name": "Devil Town",
-   "artist": "Cavetown",
-   "url": "https://open.spotify.com/track/0vf2eBw2inhl8y61cYQMv2"
   }
  ]
 }
