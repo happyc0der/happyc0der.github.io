@@ -15,8 +15,8 @@ bullets:
   - "Found a window-selection regularity in the queue-onset task that lifted onset IoU from 0.57 to 0.93 and reported it on the competition forum; the hosts confirmed it and announced it to all teams. Both final submissions rebuild byte for byte from a fresh clone of my local repository (6.8 h and 7.2 h), and the causality check passes 304 of 304 comparisons; that final code is not public yet."
 resume_bullets:
   - "Scored 0.892 solo on the Kaggle TrafficFlowBench (IEEE Big Data Cup) public leaderboard against a 0.553 baseline; final ranking pending."
-  - "Built LightGBM and PyTorch U-Net models, causal time-series forecasters and an NNLS origin-destination solver."
-  - "Found a window-selection regularity that lifted queue-onset IoU from 0.57 to 0.93; reported it on the forum, and the hosts announced it to all teams."
+  - "Built the four-task pipeline: missing cells from LightGBM residual models and PyTorch U-Nets, causal LightGBM time-series queue forecasters and a regularized NNLS origin-destination solver."
+  - "Found a window-selection regularity that lifted queue-onset IoU from 0.57 to 0.93 and the hosts announced it to all teams; a fresh clone of my working repo rebuilds both final submissions byte for byte."
 ---
 
 TrafficFlowBench is the 2026 IEEE Big Data Cup competition on Kaggle: ten freeway corridors at five-minute resolution and four scored tasks on the same data. Fill the missing detector cells, say which links are queued over the next thirty minutes, keep the reconstruction consistent with traffic-flow physics, and estimate origin-destination (OD) path flows from link counts. The score weights them 0.35, 0.30, 0.15 and 0.20. The public leaderboard scores one month and a separately generated month decides the final ranking. I entered solo as team Dank Axon. Final submissions are due Nov 6, the competition ends Nov 7, 2026, and code and report are due Nov 10, so the final ranking is pending.
