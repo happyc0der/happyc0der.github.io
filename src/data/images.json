@@ -137,10 +137,18 @@
  },
  "/img/ow2-career-tracker.png": {
   "width": 1400,
-  "height": 972,
+  "height": 816,
   "opt": [
    800,
    1400
+  ]
+ },
+ "/img/portfolio-pulse.png": {
+  "width": 1600,
+  "height": 1000,
+  "opt": [
+   800,
+   1600
   ]
  },
  "/img/tidefit.png": {

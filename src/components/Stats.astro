@@ -42,7 +42,11 @@ const { n = 1, total = 1 } = Astro.props;
     {pypi?.packages?.map((p: any) => (
       <div class="tile">
         <p class="label">PyPI · {p.name}</p>
-        <p class="stat"><strong>{p.last_month.toLocaleString('en-US')}</strong> downloads last month</p>
+        {/* pypistats' monthly count lags for a package released this month (it can read 0 beside hundreds a week),
+            so show whichever window is larger and say which one it is. */}
+        {(p.last_month ?? 0) >= (p.last_week ?? 0)
+          ? <p class="stat"><strong>{(p.last_month ?? 0).toLocaleString('en-US')}</strong> downloads last month</p>
+          : <p class="stat"><strong>{p.last_week.toLocaleString('en-US')}</strong> downloads last week</p>}
         <p class="sub">{p.total.toLocaleString('en-US')} all time, mirrors excluded · <a href={`https://pypi.org/project/${p.name}/`}>pypi.org →</a></p>
       </div>
     ))}

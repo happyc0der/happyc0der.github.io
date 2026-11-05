@@ -22,7 +22,7 @@ const { Content } = await render(project);
 // copy of that paragraph is hidden (.skip-first), so nothing is shown twice and nothing is lost.
 const first = splitParagraph(project.body, 2);
 const overview = first?.head;
-const liveLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io') ? 'Project page' : 'Live site') : null;
+const liveLabel = d.demo ? (d.demo.includes('apps.garmin.com') ? 'Connect IQ store' : d.demo.includes('github.io/ForgeLog') ? 'Project page' : 'Live site') : null;
 // Tall images (phone screens, a comic page) sit in a phone frame; everything else in a browser frame.
 const meta = d.image ? (images as Record<string, { width: number; height: number }>)[d.image] : null;
 const portrait = meta ? meta.height / meta.width > 1.2 : false;
