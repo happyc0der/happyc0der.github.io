@@ -8,7 +8,14 @@ import { spawnSync } from 'node:child_process';
 import matter from 'gray-matter';
 import sharp from 'sharp';
 
-const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
+// Playwright's bundled Chromium only: Edge or Chrome on this Mac touch the Keychain and his Microsoft account.
+const bundledChromium = () => {
+  const root = path.join(os.homedir(), 'Library/Caches/ms-playwright');
+  const dir = fs.readdirSync(root).filter((d) => d.startsWith('chromium_headless_shell-')).sort().pop();
+  if (!dir) throw new Error('no bundled Chromium: run npx playwright install chromium-headless-shell');
+  return path.join(root, dir, 'chrome-headless-shell-mac-arm64/chrome-headless-shell');
+};
+const CHROMIUM = bundledChromium();
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const outDir = path.join(root, 'public/img/og');
 fs.mkdirSync(outDir, { recursive: true });
@@ -49,7 +56,7 @@ p { font-size: 22px; line-height: 1.4; color: #b4afc6; margin-top: 18px; display
 ${img ? `<div class="shot"><img src="file://${path.join(root, 'public', img)}"></div>` : `<div class="hero"><span>${esc((d.stats || [])[0] || d.title)}</span></div>`}
 </body></html>`;
 
-// A fresh Edge profile otherwise signs itself into the Mac's Microsoft account through the Keychain and syncs
+// A fresh browser profile could otherwise sign into the Mac's Microsoft account through the Keychain and sync
 // extensions; these flags keep each headless run signed out, with no extensions.
 let made = 0;
 for (const f of fs.readdirSync(path.join(root, 'content/projects')).filter((f) => f.endsWith('.md')).sort()) {
@@ -58,7 +65,7 @@ for (const f of fs.readdirSync(path.join(root, 'content/projects')).filter((f) =
   if (d.listed === false) continue;
   const html = path.join(tmp, `${id}.html`), png = path.join(tmp, `${id}.png`);
   fs.writeFileSync(html, card(d, d.image || null));
-  const r = spawnSync(EDGE, ['--headless', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', `--user-data-dir=${path.join(tmp, 'edge')}`,
+  const r = spawnSync(CHROMIUM, ['--headless', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', `--user-data-dir=${path.join(tmp, 'edge')}`,
     '--use-mock-keychain', '--password-store=basic', '--disable-sync', '--disable-extensions', '--disable-background-networking', '--disable-component-update', '--no-service-autorun',
     '--window-size=1200,630', '--virtual-time-budget=3000', `--screenshot=${png}`, `file://${html}`], { timeout: 60000 });
   if (!fs.existsSync(png)) { console.error(`${id}: no screenshot (${r.status ?? r.error})`); process.exitCode = 1; continue; }

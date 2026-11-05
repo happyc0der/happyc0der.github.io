@@ -19,7 +19,14 @@ const publicDir = path.join(root, 'public/resume');
 const desktopDir = path.join(os.homedir(), 'Desktop');
 fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(publicDir, { recursive: true });
-const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
+// Playwright's bundled Chromium only: Edge or Chrome on this Mac touch the Keychain and his Microsoft account.
+const bundledChromium = () => {
+  const root = path.join(os.homedir(), 'Library/Caches/ms-playwright');
+  const dir = fs.readdirSync(root).filter((d) => d.startsWith('chromium_headless_shell-')).sort().pop();
+  if (!dir) throw new Error('no bundled Chromium: run npx playwright install chromium-headless-shell');
+  return path.join(root, dir, 'chrome-headless-shell-mac-arm64/chrome-headless-shell');
+};
+const CHROMIUM = bundledChromium();
 
 // Plain ASCII in the PDFs: older resume parsers mangle or drop these.
 const ascii = { '±': '+/-', '²': '2', '³': '3', '×': 'x', '→': 'to', '≥': '>=', '≤': '<=', 'µ': 'u', '–': '-', '—': '-', '’': "'", '‘': "'", '“': '"', '”': '"', '…': '...', '·': ',', '≈': '~' };
@@ -94,13 +101,13 @@ ${activities}
 </body></html>`;
 }
 
-// Headless Edge writes the PDF but does not always exit, so wait for the file and then stop it.
+// Headless Chromium writes the PDF but does not always exit, so wait for the file and then stop it.
 async function printPdf(html, pdf) {
   fs.rmSync(pdf, { force: true });
-  // A fresh Edge profile otherwise signs itself into the Mac's Microsoft account through the Keychain and syncs
+  // A fresh browser profile could otherwise sign into the Mac's Microsoft account through the Keychain and sync
   // extensions; these flags keep each headless run signed out, with no extensions.
   const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'resume-edge-'));
-  const child = spawn(EDGE, ['--headless=new', '--disable-gpu', '--no-first-run', '--use-mock-keychain', '--password-store=basic', '--disable-sync', '--disable-extensions', '--disable-background-networking', '--disable-component-update', '--no-service-autorun', `--user-data-dir=${profileDir}`, '--no-pdf-header-footer', `--print-to-pdf=${pdf}`, `file://${html}`], { stdio: 'ignore' });
+  const child = spawn(CHROMIUM, ['--headless', '--disable-gpu', '--no-first-run', '--use-mock-keychain', '--password-store=basic', '--disable-sync', '--disable-extensions', '--disable-background-networking', '--disable-component-update', '--no-service-autorun', `--user-data-dir=${profileDir}`, '--no-pdf-header-footer', `--print-to-pdf=${pdf}`, `file://${html}`], { stdio: 'ignore' });
   let size = -1;
   for (let i = 0; i < 120; i++) {
     await new Promise((r) => setTimeout(r, 500));
@@ -108,7 +115,7 @@ async function printPdf(html, pdf) {
     if (now > 0 && now === size) break;
     size = now;
   }
-  // Newer Edge exits by itself after printing; only wait for 'exit' if it has not already happened.
+  // Newer builds exit by themselves after printing; only wait for 'exit' if it has not already happened.
   if (child.exitCode === null && child.signalCode === null) {
     const exited = new Promise((r) => child.once('exit', r));
     child.kill('SIGKILL');
@@ -117,7 +124,7 @@ async function printPdf(html, pdf) {
   for (let i = 0; i < 10; i++) {
     try { fs.rmSync(profileDir, { recursive: true, force: true }); break; } catch { await new Promise((r) => setTimeout(r, 300)); }
   }
-  if (!fs.existsSync(pdf)) throw new Error(`Edge did not produce ${pdf}`);
+  if (!fs.existsSync(pdf)) throw new Error(`Chromium did not produce ${pdf}`);
 }
 
 // Hyphenated tokens that straddled a line end in the extracted text ("ChaCha20-" / "Poly1305"): keyword matchers lose them.
