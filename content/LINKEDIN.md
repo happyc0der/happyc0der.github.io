@@ -1,6 +1,6 @@
 # LinkedIn, paste-ready
 
-Written from content/; last updated 2026-10-19. Limits: headline 220 characters, About 2,600, each project description 2,000, skills 50 (3 pinned). Paste each block as is.
+Written from content/; last updated 2026-11-05. Limits: headline 220 characters, About 2,600, each project description 2,000, skills 50 (3 pinned). Paste each block as is.
 
 ## Profile URL
 
@@ -63,7 +63,7 @@ Description: Distributed Systems, Operating Systems, Computer Networks, Advanced
 4. https://apps.garmin.com/apps/f81aaa08-71a6-4bc2-8faa-716f37a8ad44 (TRENCHFIRE on the Connect IQ store, link)
 5. https://github.com/happyc0der/atlas-engine (link)
 
-Featured descriptions: mldsa-auth "ML-DSA-65 signatures over hybrid X25519 + ML-KEM-768. 0.45 ms handshake, 12 fuzz targets, 299 mutations nightly, ProVerif model."; Atlas "Deterministic lockstep simulation with state hashing, WebAssembly-sandboxed mods, over 1,000 tests, CI on macOS, Linux and Windows."
+Featured descriptions: mldsa-auth "ML-DSA-65 signatures over hybrid X25519 + ML-KEM-768. 0.45 ms handshake, 12 fuzz targets, 384 mutations nightly, ProVerif model."; Atlas "Deterministic lockstep simulation with state hashing, WebAssembly-sandboxed mods, over 1,000 tests, CI on macOS, Linux and Windows."
 
 ## Projects (LinkedIn "Projects" section, one entry each; the form has no URL field, so links go at the end of the description)
 
@@ -73,11 +73,11 @@ Written for a reader, not a parser: the first sentence says what the thing is an
 Dates: Sep 2026 - present · Skills: C++, Game Engine Development, WebAssembly
 A game engine I am building alone in C++23, in 32 gated milestones so far: SDL_GPU renderer, hot-reloading assets, versioned saves and 25 written design decisions.
 
-The simulation is deterministic. It advances in fixed ticks and hashes its state, so a replay, a save or a second machine playing in lockstep over ENet can be checked bit for bit. A million-cell tick runs in 694 microseconds. Mods run as WebAssembly with no clock, filesystem or randomness of their own.
+The simulation is deterministic. It advances in fixed ticks and hashes its state, so a replay, a save or a second process playing in lockstep over ENet can be checked bit for bit. A million-cell tick runs in 694 microseconds. Mods run as WebAssembly with no clock, filesystem or randomness of their own.
 
 The first game on it is chess, now in its own repository and built against the installed engine: every rule including the draws, and an opponent that is a C mod compiled to WebAssembly.
 
-Over 1,000 tests. CI on macOS, Linux and Windows with sanitizers and benchmark gates.
+Over 1,000 tests. CI on macOS, Linux and Windows with ASan and TSan lanes.
 
 Code: github.com/happyc0der/atlas-engine
 Chess: github.com/happyc0der/atlas-chess
@@ -110,7 +110,7 @@ My solo entry to the Kaggle Gemma 4 Developer Agent competition: an LLM agent, w
 
 The organizers had not released their evaluation harness, so I re-implemented it as swelite: Docker sandboxes, the nine agent tools, an ADK YAML compiler and patch verification. 109 of 129 public tasks pass its gold checks.
 
-A 16 GB laptop GPU, reached over SSH, serves a smaller proxy model through vLLM so every prompt change can be tested on a 33-task holdout. Daily submissions scored 0.00 for the first two days and up to 0.12 since; final ranking pending, and the competition ends in December 2026.
+Prompts are tested offline on a 33-task holdout: the organizers' harness, patched to behave like the scorer, runs the real 31B through llama.cpp on Kaggle's free T4 pair (best own prompt 14/33). My own configs scored 0.00 for the first two days and up to 0.12 after that. Since October 21 the daily base is a credited public bundle, Budget-Fit by Kaggle user verracodeguacas (Apache 2.0). Final ranking pending; the competition ends in December 2026.
 
 Code: github.com/happyc0der/gemma-swe-agent
 
@@ -118,19 +118,19 @@ Code: github.com/happyc0der/gemma-swe-agent
 Dates: Sep 2026 · Skills: C, Cryptography, Fuzzing
 A mutual authentication and session protocol in C11, designed to resist attacks from quantum computers: ML-DSA-65 signatures (FIPS 204) over a hybrid X25519 + ML-KEM-768 key exchange, with a padded ChaCha20-Poly1305 record layer.
 
-Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 299 must-kill mutations run nightly.
+Measured, not estimated: a 0.45 ms median handshake and 736 MiB/s record encryption. Every push runs the tests under ASan and UBSan on Linux and macOS; 12 libFuzzer targets and 384 must-kill mutations run nightly.
 
 On top of it, mldsa-authd: a login service with single-use login codes, device enrollment, revocation, key rotation and recovery codes. The handshake has a ProVerif model.
 
 Code: github.com/happyc0der/mldsa-auth
 
 ### Custodian: household recall monitor as an MCP server with its own OAuth 2.1
-Dates: Sep 2026 · Skills: TypeScript, OAuth, AWS
-An MCP server and app that checks what you own against the CPSC, NHTSA and openFDA recall feeds and tracks home maintenance. Built for the Alexa+ track of Amazon Build, Ship, Shape 2026.
+Dates: Sep 2026 · Skills: TypeScript, OAuth, Node.js
+An MCP server and app that checks what you own against the CPSC, NHTSA and openFDA recall feeds and tracks home maintenance. Built for the Alexa+ track of Amazon Build, Ship, Shape 2026; not submitted, because the Alexa CLI needs an AWS account.
 
 10 tools and 5 screen views. A deterministic matcher writes a reason for every recall it flags. The OAuth 2.1 authorization server is hand-written: client credentials, authorization code with PKCE, ES256 JWTs, rotating refresh tokens, per-method scopes.
 
-Every tool call finishes inside the 500 ms voice budget; tests assert p95 under 100 ms. TypeScript monorepo, 79 tests, AWS CDK stack synthesized in CI.
+Tool calls stay inside the 500 ms voice budget by moving network and model calls to an hourly sweeper; local tests assert p95 under 100 ms. TypeScript monorepo, 79 tests, AWS CDK stack synthesized in CI.
 
 Code: github.com/happyc0der/custodian
 
@@ -194,9 +194,9 @@ Biohub Cell Tracking: finished 591st of 3,947 teams (top 15%), on free Kaggle GP
 
 Playground S6E9 (EV purchases, ROC AUC): finished 287th of 3,575 teams (top 9%), with a private AUC of 0.94545 against the winner's 0.94602. Nested target encodings, 20-fold cross-validation, a LightGBM, CatBoost and MLP blend, and 192 experiments judged by paired DeLong tests. Label resampling showed a perfect model would score 0.9459 ± 0.0003, so the remaining gap is label noise.
 
-TrafficFlowBench (IEEE Big Data Cup 2026, in progress): 0.889 against a 0.553 baseline. A PyTorch U-Net and LightGBM models for state reconstruction, LightGBM time-series forecasters trained out of core on 56M rows and an exact NNLS origin-destination solver; one script rebuilds the submission bit for bit.
+TrafficFlowBench (IEEE Big Data Cup 2026, in progress): public leaderboard 0.892 against a 0.553 baseline, final ranking pending. Four PyTorch U-Nets and LightGBM models for state reconstruction, causal LightGBM queue forecasters and a regularized NNLS origin-destination solver; both final submissions rebuild byte for byte from a fresh clone of my local repository.
 
-Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench
+Code: github.com/happyc0der/kaggle-s6e9-ev-purchases and github.com/happyc0der/trafficflowbench (the final TrafficFlowBench code is not public yet)
 
 ### Split/Second PC fixes: wireless Xbox controllers, Xbox button names and 60 FPS
 Dates: Oct 2026 · Skills: C++, Reverse Engineering
@@ -207,6 +207,26 @@ The game reads input only through DirectInput and picks default controls by exac
 I also ported preseznik's community 60 FPS mod to a second build of the game: I mapped every hooked address from runtime memory dumps of the copy-protected exe, checked each patch against the expected original bytes, and held 59.8 to 60.1 FPS in 209 of 223 five-second windows over a 19-minute session.
 
 Code: github.com/happyc0der/SplitSecond-PadFix, github.com/happyc0der/SplitSecond-ButtonNames and github.com/happyc0der/SplitSecond-HFR
+
+### garmin-connect-api: Python library and MCP server for Garmin Connect
+Dates: Sep 2026 - present · Skills: Python, FastAPI, REST APIs
+A typed Python library, local HTTP service and MCP server that read and write my own Garmin Connect account, including completed strength sessions, which nothing official offers. Released as v0.3.2 on PyPI and the official MCP Registry, MIT licensed, and listed in awesome-mcp-servers.
+
+38 MCP tools generated mostly from the FastAPI routes, each annotated as reading, adding or deleting. A completed session is encoded as a FIT file and uploaded; logging the identical session again is reported as a duplicate. Every write except the raw workout DTO is validated against a bundled catalog of 1,527 exercises.
+
+487 offline tests in CI on Linux, Windows and macOS, and run live against my real account. Five review rounds after the first release, with each finding reproduced before it was fixed.
+
+Code: github.com/happyc0der/garmin-connect-api
+
+### Portfolio Pulse: portfolio monitoring for venture funds (Deal Flow hackathon)
+Dates: Oct 2026 · Skills: Python, FastAPI, React
+Team entry with Utkarsh Mittal for Track 3 of Deal Flow, NYC's first VC hackathon, at Betaworks on October 24, 2026. Portfolio Pulse did not win.
+
+Pick a fund and the app pulls 90 days of akta.pro news for each company. Fixed rules, not a model, turn it into signals with a category, a severity and a suggested move, and rank companies by a pulse score. Claude Opus 5.5 drafts partner notes, founder emails and LP updates from numbered sources, and a validator drops any fact without a citation. Nothing sends itself.
+
+On the day the live app held 142 companies across four funds and 358 signals, and a fund added by name was ready in about 45 seconds. 75 backend tests.
+
+Code: github.com/happyc0der/portfolio-pulse-app
 
 ## Skills (add these, pin the first three)
 

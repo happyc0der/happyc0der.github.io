@@ -28,7 +28,7 @@ stats:
   overwatch:
     name: DankAxon
     player_id: "d65fa281926994a3a4a12ea6dd|09da774c5ab3d84f981a4520bfd146d6"
-  pypi: [ephys-mcp]
+  pypi: [ephys-mcp, garmin-connect-api]
   connectiq:
     - name: TRENCHFIRE
       id: f81aaa08-71a6-4bc2-8faa-716f37a8ad44

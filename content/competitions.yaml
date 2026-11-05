@@ -12,12 +12,12 @@
   tags: [ml, data, quant]
 - name: Gemma 4 Developer Agent, Kaggle (Google DeepMind)
   project: gemma-swe-agent
-  result: LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM. In progress, ends Dec 2, 2026
+  result: LLM agent entry in Google ADK; local evaluation harness with Docker sandboxes and tool calls, served by vLLM and llama.cpp. In progress, ends Dec 2, 2026
   year: 2026
   tags: [ml, swe]
 - name: TrafficFlowBench
   project: trafficflowbench
-  result: Public leaderboard 0.889 against a 0.553 baseline (LightGBM queue forecasts, a PyTorch U-Net, an NNLS origin-destination solver). In progress, ends Nov 7, 2026
+  result: Public leaderboard 0.892 against a 0.553 baseline (LightGBM queue forecasts, PyTorch U-Nets, an NNLS origin-destination solver). In progress, ends Nov 7, 2026
   year: 2026
   tags: [data, ml, quant]
 - name: Money Talks 2, AI x Fintech Hackathon (Block Convey), Money Operations track
@@ -25,3 +25,8 @@
   result: Solo entry Ledger, a forecast agent that checks every claim against the CRM; 94% recall and 0 false alarms on 235 deals. Result pending
   year: 2026
   tags: [ml, data]
+- name: Deal Flow, NYC's first VC hackathon (Betaworks), Track 3 Portfolio
+  project: portfolio-pulse
+  result: Team entry Portfolio Pulse with Utkarsh Mittal, VC portfolio monitoring with rule-based signals and cited drafts. Did not win
+  year: 2026
+  tags: []   # site only until an ATS comparison says it belongs on a resume
