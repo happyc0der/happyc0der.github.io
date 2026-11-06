@@ -125,8 +125,8 @@ On top of it, mldsa-authd: a login service with single-use login codes, device e
 Code: github.com/happyc0der/mldsa-auth
 
 ### Custodian: household recall monitor as an MCP server with its own OAuth 2.1
-Dates: Sep 2026 · Skills: TypeScript, OAuth, Node.js
-An MCP server and app that checks what you own against the CPSC, NHTSA and openFDA recall feeds and tracks home maintenance. Built for the Alexa+ track of Amazon Build, Ship, Shape 2026; not submitted, because the Alexa CLI needs an AWS account.
+Dates: Sep 2026 · Skills: TypeScript, OAuth, AWS
+An MCP server and app that checks what you own against the CPSC, NHTSA and openFDA recall feeds and tracks home maintenance. Built for the Alexa+ track of Amazon Build, Ship, Shape 2026; not submitted, because the Alexa CLI needed an AWS account, which I did not have at the time.
 
 10 tools and 5 screen views. A deterministic matcher writes a reason for every recall it flags. The OAuth 2.1 authorization server is hand-written: client credentials, authorization code with PKCE, ES256 JWTs, rotating refresh tokens, per-method scopes.
 
