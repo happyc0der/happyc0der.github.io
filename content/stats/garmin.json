@@ -511,17 +511,32 @@
    "sleep_score": 73
   },
   "2026-11-08": {
-   "steps": null,
-   "distance_m": null,
-   "floors": 0,
-   "active_kcal": 0,
+   "steps": 6588,
+   "distance_m": 5336,
+   "floors": 7.75591,
+   "active_kcal": 153,
    "intensity_min": 0,
-   "resting_hr": 61,
-   "stress": 33,
-   "body_battery_high": 6,
+   "resting_hr": 60,
+   "stress": 52,
+   "body_battery_high": 38,
+   "hrv": 57,
+   "hrv_status": "LOW",
+   "readiness": 45,
+   "sleep_s": 20820,
+   "sleep_score": 58
+  },
+  "2026-11-09": {
+   "steps": 63,
+   "distance_m": 51,
+   "floors": 1,
+   "active_kcal": 3,
+   "intensity_min": 0,
+   "resting_hr": 62,
+   "stress": 56,
+   "body_battery_high": 5,
    "hrv": null,
    "hrv_status": null,
-   "readiness": null,
+   "readiness": 60,
    "sleep_s": null,
    "sleep_score": null
   }
@@ -1193,7 +1208,7 @@
    "calories": 148
   }
  ],
- "updated": "2026-11-08T11:16:07.076Z",
+ "updated": "2026-11-09T11:15:50.355Z",
  "records": {
   "farthest_run_m": {
    "value": 3045,

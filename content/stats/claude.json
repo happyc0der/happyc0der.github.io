@@ -239,16 +239,20 @@
      "output": 1620424
     },
     "2026-11-08": {
-     "total": 50054126,
-     "output": 37314
+     "total": 537321560,
+     "output": 802956
+    },
+    "2026-11-09": {
+     "total": 47114445,
+     "output": 68185
     }
    },
-   "updated": "2026-11-08T11:15:13.052Z",
+   "updated": "2026-11-09T11:15:13.997Z",
    "projects": {
-    "other": 11353000094,
+    "other": 11779784195,
     "forgelog": 1723493902,
-    "portfolio": 1757487675,
-    "mldsa-auth": 5799433926,
+    "portfolio": 1759724283,
+    "mldsa-auth": 5903739222,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -271,14 +275,14 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 512087491,
+    "trading-agent": 513143365,
     "trafficflowbench": 681870551,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
-    "claude-fable-5-1": 2735480723,
-    "claude-opus-5-5": 17504111242,
+    "claude-fable-5-1": 2736536597,
+    "claude-opus-5-5": 18037437247,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
@@ -470,18 +474,22 @@
      "output": 129324
     },
     "2026-11-08": {
-     "total": 3703378,
-     "output": 3972
+     "total": 81872561,
+     "output": 159321
+    },
+    "2026-11-09": {
+     "total": 9110856,
+     "output": 16324
     }
    },
-   "updated": "2026-11-08T11:16:01.194Z",
+   "updated": "2026-11-09T11:15:44.628Z",
    "projects": {
-    "other": 18573119249,
+    "other": 18660399288,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103
    },
    "models": {
-    "claude-opus-5-5": 21841706987,
+    "claude-opus-5-5": 21928987026,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 170663919,
     "claude-fable-5-1": 1820124955,
@@ -489,5 +497,5 @@
    }
   }
  },
- "updated": "2026-11-08T11:16:01.971Z"
+ "updated": "2026-11-09T11:15:45.497Z"
 }
