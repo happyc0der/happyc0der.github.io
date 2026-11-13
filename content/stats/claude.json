@@ -255,16 +255,20 @@
      "output": 989148
     },
     "2026-11-12": {
-     "total": 32532879,
-     "output": 156492
+     "total": 139532176,
+     "output": 683894
+    },
+    "2026-11-13": {
+     "total": 16471893,
+     "output": 67082
     }
    },
-   "updated": "2026-11-12T11:15:13.560Z",
+   "updated": "2026-11-13T11:15:13.896Z",
    "projects": {
-    "other": 12821607084,
+    "other": 12881506337,
     "forgelog": 1723493902,
     "portfolio": 1759995716,
-    "mldsa-auth": 6148903978,
+    "mldsa-auth": 6208096545,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -287,21 +291,21 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 574470719,
+    "trading-agent": 578850089,
     "trafficflowbench": 683228429,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 18738339379,
+    "claude-opus-5-5": 18741135402,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 621196747
+    "claude-fable-5-2": 741871914
    }
   },
   "msi": {
@@ -503,18 +507,22 @@
      "output": 92010
     },
     "2026-11-12": {
-     "total": 5625792,
-     "output": 3936
+     "total": 31384387,
+     "output": 61298
+    },
+    "2026-11-13": {
+     "total": 817193,
+     "output": 3694
     }
    },
-   "updated": "2026-11-12T11:15:44.382Z",
+   "updated": "2026-11-13T11:15:43.114Z",
    "projects": {
-    "other": 18912665930,
+    "other": 18939241718,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103
    },
    "models": {
-    "claude-opus-5-5": 22179906927,
+    "claude-opus-5-5": 22206482715,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 170663919,
     "claude-fable-5-1": 1820124955,
@@ -523,5 +531,5 @@
    }
   }
  },
- "updated": "2026-11-12T11:15:45.243Z"
+ "updated": "2026-11-13T11:15:43.994Z"
 }
