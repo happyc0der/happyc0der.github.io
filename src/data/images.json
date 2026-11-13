@@ -23,6 +23,14 @@
    960
   ]
  },
+ "/img/claude-purple.png": {
+  "width": 1600,
+  "height": 1025,
+  "opt": [
+   800,
+   1600
+  ]
+ },
  "/img/custodian.png": {
   "width": 1600,
   "height": 829,
