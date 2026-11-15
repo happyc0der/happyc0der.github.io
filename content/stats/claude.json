@@ -263,16 +263,20 @@
      "output": 1297547
     },
     "2026-11-14": {
-     "total": 93270466,
-     "output": 308821
+     "total": 553959470,
+     "output": 1603640
+    },
+    "2026-11-15": {
+     "total": 101720737,
+     "output": 163898
     }
    },
-   "updated": "2026-11-14T11:15:32.942Z",
+   "updated": "2026-11-15T11:15:15.052Z",
    "projects": {
-    "other": 13167475435,
+    "other": 13333352366,
     "forgelog": 1723493902,
-    "portfolio": 1765650151,
-    "mldsa-auth": 6324746554,
+    "portfolio": 1766855706,
+    "mldsa-auth": 6720858105,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -295,22 +299,22 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 611831027,
-    "trafficflowbench": 684691772,
+    "trading-agent": 615774216,
+    "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 18772536740,
+    "claude-opus-5-5": 18784367165,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 1067268775,
-    "claude-mythos-5-2": 86350568
+    "claude-fable-5-2": 1220565640,
+    "claude-mythos-5-2": 483540584
    }
   },
   "msi": {
@@ -520,20 +524,24 @@
      "output": 172509
     },
     "2026-11-14": {
-     "total": 1294508,
-     "output": 3732
+     "total": 103617511,
+     "output": 202230
+    },
+    "2026-11-15": {
+     "total": 2341964,
+     "output": 3904
     }
    },
-   "updated": "2026-11-14T11:16:03.661Z",
+   "updated": "2026-11-15T11:16:19.975Z",
    "projects": {
-    "other": 17482147174,
-    "slopify": 1165529360,
+    "other": 17559914064,
+    "slopify": 1176262413,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
-    "creditmap": 351793161
+    "creditmap": 367958185
    },
    "models": {
-    "claude-opus-5-5": 22265906124,
+    "claude-opus-5-5": 22370571091,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 170663919,
     "claude-fable-5-1": 1820124955,
@@ -542,5 +550,5 @@
    }
   }
  },
- "updated": "2026-11-14T11:16:04.550Z"
+ "updated": "2026-11-15T11:16:20.941Z"
 }
