@@ -271,16 +271,20 @@
      "output": 552698
     },
     "2026-11-16": {
-     "total": 40618156,
-     "output": 227919
+     "total": 596655709,
+     "output": 1588826
+    },
+    "2026-11-17": {
+     "total": 130528128,
+     "output": 504073
     }
    },
-   "updated": "2026-11-16T11:15:14.972Z",
+   "updated": "2026-11-17T11:15:14.848Z",
    "projects": {
-    "other": 13402459293,
+    "other": 13792275189,
     "forgelog": 1723493902,
-    "portfolio": 1766855706,
-    "mldsa-auth": 6814842911,
+    "portfolio": 1767136975,
+    "mldsa-auth": 7102092172,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -303,7 +307,7 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 615774216,
+    "trading-agent": 624993471,
     "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
@@ -317,8 +321,8 @@
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 1286303194,
-    "claude-mythos-5-2": 580894763
+    "claude-fable-5-2": 1685619614,
+    "claude-mythos-5-2": 868144024
    }
   },
   "msi": {
@@ -536,27 +540,31 @@
      "output": 200027
     },
     "2026-11-16": {
-     "total": 26388768,
-     "output": 19999
+     "total": 164168940,
+     "output": 245568
+    },
+    "2026-11-17": {
+     "total": 2783592,
+     "output": 2429
     }
    },
-   "updated": "2026-11-16T11:15:46.508Z",
+   "updated": "2026-11-17T11:16:23.086Z",
    "projects": {
-    "other": 17726926381,
-    "slopify": 1185641332,
+    "other": 17857058967,
+    "slopify": 1194910108,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
-    "creditmap": 371917257
+    "creditmap": 373079659
    },
    "models": {
-    "claude-opus-5-5": 22520238049,
+    "claude-opus-5-5": 22638277002,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 170663919,
     "claude-fable-5-1": 1820124955,
     "claude-haiku-5-5": 2264474,
-    "claude-fable-5-2": 32030091
+    "claude-fable-5-2": 54554902
    }
   }
  },
- "updated": "2026-11-16T11:15:47.423Z"
+ "updated": "2026-11-17T11:16:23.986Z"
 }
