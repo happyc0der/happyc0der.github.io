@@ -279,16 +279,20 @@
      "output": 3354353
     },
     "2026-11-18": {
-     "total": 382559427,
-     "output": 688305
+     "total": 1368835196,
+     "output": 2260224
+    },
+    "2026-11-19": {
+     "total": 224686551,
+     "output": 711230
     }
    },
-   "updated": "2026-11-18T11:15:16.761Z",
+   "updated": "2026-11-19T11:15:17.928Z",
    "projects": {
-    "other": 15142926567,
+    "other": 15737934574,
     "forgelog": 1723493902,
     "portfolio": 1767136975,
-    "mldsa-auth": 7848684909,
+    "mldsa-auth": 8462285498,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -311,22 +315,22 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 626351210,
+    "trading-agent": 628704934,
     "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 20444951560,
+    "claude-opus-5-5": 21419564447,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 1841205283,
-    "claude-mythos-5-2": 1150575814
+    "claude-fable-5-2": 1866905715,
+    "claude-mythos-5-2": 1361224815
    }
   },
   "msi": {
@@ -552,20 +556,24 @@
      "output": 275437
     },
     "2026-11-18": {
-     "total": 20270570,
-     "output": 36105
+     "total": 229020602,
+     "output": 399033
+    },
+    "2026-11-19": {
+     "total": 64495949,
+     "output": 76631
     }
    },
-   "updated": "2026-11-18T11:16:20.792Z",
+   "updated": "2026-11-19T11:16:23.116Z",
    "projects": {
-    "other": 18091763939,
-    "slopify": 1206780328,
+    "other": 18212358847,
+    "slopify": 1311293457,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
-    "creditmap": 389081926
+    "creditmap": 437219870
    },
    "models": {
-    "claude-opus-5-5": 22894137126,
+    "claude-opus-5-5": 23167383107,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 170663919,
     "claude-fable-5-1": 1820124955,
@@ -574,5 +582,5 @@
    }
   }
  },
- "updated": "2026-11-18T11:16:21.902Z"
+ "updated": "2026-11-19T11:16:24.234Z"
 }

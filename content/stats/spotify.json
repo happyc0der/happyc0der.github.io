@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T11:17:50.649Z",
+ "updated": "2026-11-19T11:18:19.390Z",
  "artists": [
   {
    "name": "Eminem",
@@ -29,24 +29,24 @@
    "url": "https://open.spotify.com/track/3eJYsyo7X23vNcLR8dzFIn"
   },
   {
-   "name": "Sleepwalking",
-   "artist": "Bring Me The Horizon",
-   "url": "https://open.spotify.com/track/0gchQwxmBWj5no8NJ8b2yH"
-  },
-  {
-   "name": "Meet Me At Our Spot - Live",
-   "artist": "THE ANXIETY",
-   "url": "https://open.spotify.com/track/3BrWLBC4WYx393yRUOlTih"
-  },
-  {
-   "name": "Nina",
-   "artist": ".Feast",
-   "url": "https://open.spotify.com/track/0daEJMXc3b4ZMTnvtHpuTt"
+   "name": "Tek It",
+   "artist": "Cafuné",
+   "url": "https://open.spotify.com/track/751srcHf5tUqcEa9pRCQwP"
   },
   {
    "name": "Jump - 2015 Remaster",
    "artist": "Van Halen",
    "url": "https://open.spotify.com/track/1o9p6BfR2lYxPhoWsU6uMv"
+  },
+  {
+   "name": "Best of You",
+   "artist": "Foo Fighters",
+   "url": "https://open.spotify.com/track/5FZxsHWIvUsmSK1IAvm2pp"
+  },
+  {
+   "name": "Tuyo (Narcos Theme) [Extended Version] - A Netflix Original Series Soundtrack",
+   "artist": "Rodrigo Amarante",
+   "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
   }
  ]
 }
