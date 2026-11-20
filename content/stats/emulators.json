@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19T11:18:18.484Z",
+ "updated": "2026-11-20T11:18:05.303Z",
  "machine": "MSI",
  "emulators": [
   {
@@ -15,7 +15,7 @@
   {
    "name": "Xenia",
    "platform": "Xbox 360",
-   "games": 2
+   "games": 1
   },
   {
    "name": "Cemu",
