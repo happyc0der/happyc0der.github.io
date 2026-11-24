@@ -1,13 +1,13 @@
 {
- "updated": "2026-11-20T11:18:05.836Z",
+ "updated": "2026-11-24T11:19:28.695Z",
  "artists": [
-  {
-   "name": "Eminem",
-   "url": "https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR"
-  },
   {
    "name": "C418",
    "url": "https://open.spotify.com/artist/4uFZsG1vXrPcvnZ4iSQyrx"
+  },
+  {
+   "name": "Eminem",
+   "url": "https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR"
   },
   {
    "name": "Red Hot Chili Peppers",
@@ -24,6 +24,11 @@
  ],
  "tracks": [
   {
+   "name": "Ki",
+   "artist": "C418",
+   "url": "https://open.spotify.com/track/4IX21gApFLNpDxYHaXOuex"
+  },
+  {
    "name": "Midnight City",
    "artist": "M83",
    "url": "https://open.spotify.com/track/3eJYsyo7X23vNcLR8dzFIn"
@@ -34,19 +39,14 @@
    "url": "https://open.spotify.com/track/751srcHf5tUqcEa9pRCQwP"
   },
   {
+   "name": "Aria Math",
+   "artist": "C418",
+   "url": "https://open.spotify.com/track/6VK8OMA2FhX4KoS3QCH7rL"
+  },
+  {
    "name": "Jump - 2015 Remaster",
    "artist": "Van Halen",
    "url": "https://open.spotify.com/track/1o9p6BfR2lYxPhoWsU6uMv"
-  },
-  {
-   "name": "Tuyo (Narcos Theme) [Extended Version] - A Netflix Original Series Soundtrack",
-   "artist": "Rodrigo Amarante",
-   "url": "https://open.spotify.com/track/6g2BiiVQqY5v1S4HIrM54F"
-  },
-  {
-   "name": "Sleepwalking",
-   "artist": "Bring Me The Horizon",
-   "url": "https://open.spotify.com/track/0gchQwxmBWj5no8NJ8b2yH"
   }
  ]
 }

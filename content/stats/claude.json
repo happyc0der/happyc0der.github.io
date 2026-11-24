@@ -287,16 +287,28 @@
      "output": 3152108
     },
     "2026-11-20": {
-     "total": 433729532,
-     "output": 728660
+     "total": 1241434841,
+     "output": 1938041
+    },
+    "2026-11-23": {
+     "total": 952837987,
+     "output": 1717162
+    },
+    "2026-11-24": {
+     "total": 234706784,
+     "output": 443101
+    },
+    "2026-11-21": {
+     "total": 0,
+     "output": 0
     }
    },
-   "updated": "2026-11-20T11:15:19.365Z",
+   "updated": "2026-11-24T11:15:18.776Z",
    "projects": {
-    "other": 16590396545,
+    "other": 18051186369,
     "forgelog": 1723493902,
     "portfolio": 1767136975,
-    "mldsa-auth": 9031712065,
+    "mldsa-auth": 9559850466,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -307,7 +319,7 @@
     "snakes-ladders-markov": 12431934,
     "lfp2vec-audit": 301342216,
     "tidefit": 210687327,
-    "gemma-swe-agent": 889711962,
+    "gemma-swe-agent": 889944529,
     "gridsentry": 94628688,
     "infoviz": 4843645,
     "atlas-engine": 3556278752,
@@ -319,22 +331,22 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 628704934,
+    "trading-agent": 634794222,
     "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 22225813495,
+    "claude-opus-5-5": 23572402483,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 1913118638,
-    "claude-mythos-5-2": 1930651382
+    "claude-fable-5-2": 2033641329,
+    "claude-mythos-5-2": 2458789783
    }
   },
   "msi": {
@@ -568,27 +580,44 @@
      "output": 737009
     },
     "2026-11-20": {
-     "total": 18764139,
-     "output": 24546
+     "total": 80163534,
+     "output": 164511
+    },
+    "2026-11-23": {
+     "total": 604318420,
+     "output": 5026290
+    },
+    "2026-11-21": {
+     "total": 2024421343,
+     "output": 13390924
+    },
+    "2026-11-24": {
+     "total": 189425243,
+     "output": 1183683
+    },
+    "2026-11-22": {
+     "total": 1141827422,
+     "output": 9460595
     }
    },
-   "updated": "2026-11-20T11:16:33.803Z",
+   "updated": "2026-11-24T11:16:51.922Z",
    "projects": {
-    "other": 18552812963,
-    "slopify": 1320420075,
+    "other": 22517403098,
+    "slopify": 1374276946,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
-    "creditmap": 437219870
+    "creditmap": 440164687
    },
    "models": {
-    "claude-opus-5-5": 23293487839,
+    "claude-opus-5-5": 25152263018,
     "claude-haiku-4-5": 238463,
-    "claude-sonnet-5-5": 170663919,
+    "claude-sonnet-5-5": 381112188,
     "claude-fable-5-1": 1820124955,
-    "claude-haiku-5-5": 2264474,
-    "claude-fable-5-2": 284748239
+    "claude-haiku-5-5": 3756080,
+    "claude-fable-5-2": 2231662239,
+    "claude-opus-4-8": 3762769
    }
   }
  },
- "updated": "2026-11-20T11:16:35.308Z"
+ "updated": "2026-11-24T11:17:07.708Z"
 }

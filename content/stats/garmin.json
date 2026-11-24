@@ -704,6 +704,66 @@
    "readiness": 75,
    "sleep_s": null,
    "sleep_score": null
+  },
+  "2026-11-24": {
+   "steps": 56,
+   "distance_m": 45,
+   "floors": 0,
+   "active_kcal": 0,
+   "intensity_min": 0,
+   "resting_hr": 59,
+   "stress": 20,
+   "body_battery_high": 33,
+   "hrv": null,
+   "hrv_status": null,
+   "readiness": null,
+   "sleep_s": null,
+   "sleep_score": null
+  },
+  "2026-11-23": {
+   "steps": 3909,
+   "distance_m": 3179,
+   "floors": 1.66765,
+   "active_kcal": 68,
+   "intensity_min": 0,
+   "resting_hr": 55,
+   "stress": 28,
+   "body_battery_high": 89,
+   "hrv": 67,
+   "hrv_status": "UNBALANCED",
+   "readiness": 92,
+   "sleep_s": 25980,
+   "sleep_score": 90
+  },
+  "2026-11-22": {
+   "steps": 3170,
+   "distance_m": 2568,
+   "floors": 10.61385,
+   "active_kcal": 50,
+   "intensity_min": 0,
+   "resting_hr": 57,
+   "stress": 33,
+   "body_battery_high": 74,
+   "hrv": 64,
+   "hrv_status": "UNBALANCED",
+   "readiness": 70,
+   "sleep_s": 21840,
+   "sleep_score": 78
+  },
+  "2026-11-21": {
+   "steps": 3755,
+   "distance_m": 3041,
+   "floors": 7,
+   "active_kcal": 81,
+   "intensity_min": 0,
+   "resting_hr": 56,
+   "stress": 29,
+   "body_battery_high": 66,
+   "hrv": 55,
+   "hrv_status": "UNBALANCED",
+   "readiness": 77,
+   "sleep_s": 20220,
+   "sleep_score": 73
   }
  },
  "activities": [
@@ -1373,7 +1433,7 @@
    "calories": 148
   }
  ],
- "updated": "2026-11-20T11:16:40.407Z",
+ "updated": "2026-11-24T11:17:17.325Z",
  "records": {
   "farthest_run_m": {
    "value": 3045,
