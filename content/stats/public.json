@@ -1,9 +1,9 @@
 {
  "github": {
   "login": "happyc0der",
-  "total_year": 4346,
-  "last_7": 439,
-  "streak": 42,
+  "total_year": 4404,
+  "last_7": 410,
+  "streak": 43,
   "days": [
    [
     "2025-11-23",
@@ -1471,22 +1471,26 @@
    ],
    [
     "2026-11-24",
-    15
+    72
+   ],
+   [
+    "2026-11-25",
+    1
    ]
   ],
-  "public_repos": 38,
+  "public_repos": 39,
   "stars": 12,
   "merged_prs": 43,
   "languages": {
-   "Python": 7281183,
+   "Python": 7305883,
    "TypeScript": 5812158,
-   "C": 3500486,
+   "C": 3518576,
    "C++": 3209966,
    "Kotlin": 1697770,
-   "JavaScript": 1469924,
-   "HTML": 799839,
+   "JavaScript": 1475069,
+   "HTML": 822683,
    "Jupyter Notebook": 730356,
-   "Shell": 578202,
+   "Shell": 599358,
    "CMake": 257018,
    "CSS": 200849,
    "Monkey C": 94742,
@@ -1494,6 +1498,7 @@
    "TeX": 57237,
    "PowerShell": 45308,
    "HLSL": 8869,
+   "Lean": 7413,
    "Makefile": 7049,
    "Cuda": 5723,
    "WGSL": 5136,
@@ -1502,7 +1507,7 @@
    "VBScript": 528,
    "Julia": 21
   },
-  "updated": "2026-11-24T11:19:40.205Z"
+  "updated": "2026-11-25T11:19:36.760Z"
  },
  "overwatch": {
   "name": "DankAxon",
@@ -1519,24 +1524,24 @@
   "winrate": 58.84,
   "kda": 4.29,
   "hours": 131,
-  "updated": "2026-11-24T11:19:41.408Z"
+  "updated": "2026-11-25T11:19:37.578Z"
  },
  "pypi": {
   "packages": [
    {
     "name": "ephys-mcp",
-    "last_month": 182,
-    "last_week": 34,
-    "total": 1078
+    "last_month": 154,
+    "last_week": 31,
+    "total": 1102
    },
    {
     "name": "garmin-connect-api",
-    "last_month": 618,
-    "last_week": 89,
-    "total": 1442
+    "last_month": 513,
+    "last_week": 71,
+    "total": 1482
    }
   ],
-  "updated": "2026-11-20T11:18:17.310Z"
+  "updated": "2026-11-25T11:19:38.884Z"
  },
  "connectiq": {
   "apps": [
@@ -1550,7 +1555,7 @@
     "version": "1.0"
    }
   ],
-  "updated": "2026-11-24T11:19:42.773Z"
+  "updated": "2026-11-25T11:19:39.272Z"
  },
  "uptime": {
   "sites": [
@@ -1558,10 +1563,10 @@
     "name": "TideFit",
     "url": "https://tide-fit.vercel.app",
     "last": {
-     "at": "2026-11-24T11:19:43.170Z",
+     "at": "2026-11-25T11:19:41.847Z",
      "ok": true,
      "status": 200,
-     "ms": 397
+     "ms": 2574
     },
     "history": [
      {
@@ -1833,13 +1838,19 @@
       "ok": true,
       "status": 200,
       "ms": 397
+     },
+     {
+      "at": "2026-11-25T11:19:41.847Z",
+      "ok": true,
+      "status": 200,
+      "ms": 2574
      }
     ],
-    "up": 45,
-    "checks": 45
+    "up": 46,
+    "checks": 46
    }
   ],
-  "updated": "2026-11-24T11:19:43.170Z"
+  "updated": "2026-11-25T11:19:41.847Z"
  },
  "codeforces": {
   "handle": "Keshav_Rajput",
@@ -1847,7 +1858,7 @@
   "max_rating": 1381,
   "rank": "pupil",
   "contests": 33,
-  "updated": "2026-11-24T11:19:41.746Z"
+  "updated": "2026-11-25T11:19:37.933Z"
  },
  "leetcode": {
   "username": "ancapMonke",
@@ -1857,7 +1868,7 @@
   "hard": 109,
   "contest_rating": null,
   "contests": null,
-  "updated": "2026-11-24T11:19:41.990Z"
+  "updated": "2026-11-25T11:19:38.192Z"
  },
  "typeracer": {
   "user": "lmao_keke",
@@ -1866,6 +1877,6 @@
   "best_wpm": 120,
   "cert_wpm": 90,
   "races": 2444,
-  "updated": "2026-11-24T11:19:43.581Z"
+  "updated": "2026-11-25T11:19:42.145Z"
  }
 }

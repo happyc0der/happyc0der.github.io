@@ -295,20 +295,24 @@
      "output": 1717162
     },
     "2026-11-24": {
-     "total": 234706784,
-     "output": 443101
+     "total": 1038850313,
+     "output": 1736075
     },
     "2026-11-21": {
      "total": 0,
      "output": 0
+    },
+    "2026-11-25": {
+     "total": 48113714,
+     "output": 137840
     }
    },
-   "updated": "2026-11-24T11:15:18.776Z",
+   "updated": "2026-11-25T11:15:18.550Z",
    "projects": {
-    "other": 18051186369,
+    "other": 18746036690,
     "forgelog": 1723493902,
     "portfolio": 1767136975,
-    "mldsa-auth": 9559850466,
+    "mldsa-auth": 9716771680,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -331,22 +335,22 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 634794222,
+    "trading-agent": 635279930,
     "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 23572402483,
+    "claude-opus-5-5": 24342809374,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
     "claude-haiku-5-5": 350553,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 2033641329,
-    "claude-mythos-5-2": 2458789783
+    "claude-fable-5-2": 2044119277,
+    "claude-mythos-5-2": 2530162187
    }
   },
   "msi": {
@@ -592,32 +596,36 @@
      "output": 13390924
     },
     "2026-11-24": {
-     "total": 189425243,
-     "output": 1183683
+     "total": 642755834,
+     "output": 3628050
     },
     "2026-11-22": {
      "total": 1141827422,
      "output": 9460595
+    },
+    "2026-11-25": {
+     "total": 354462078,
+     "output": 2255391
     }
    },
-   "updated": "2026-11-24T11:16:51.922Z",
+   "updated": "2026-11-25T11:17:30.280Z",
    "projects": {
-    "other": 22517403098,
-    "slopify": 1374276946,
+    "other": 23317960011,
+    "slopify": 1381512702,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
     "creditmap": 440164687
    },
    "models": {
-    "claude-opus-5-5": 25152263018,
+    "claude-opus-5-5": 25874638519,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 381112188,
     "claude-fable-5-1": 1820124955,
-    "claude-haiku-5-5": 3756080,
-    "claude-fable-5-2": 2231662239,
+    "claude-haiku-5-5": 3856364,
+    "claude-fable-5-2": 2316979123,
     "claude-opus-4-8": 3762769
    }
   }
  },
- "updated": "2026-11-24T11:17:07.708Z"
+ "updated": "2026-11-25T11:17:31.693Z"
 }
