@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T11:19:24.179Z",
+ "updated": "2026-11-26T11:18:45.073Z",
  "machine": "MSI",
  "emulators": [
   {
@@ -10,7 +10,7 @@
   {
    "name": "PPSSPP",
    "platform": "PSP",
-   "games": 19
+   "games": 18
   },
   {
    "name": "Xenia",
