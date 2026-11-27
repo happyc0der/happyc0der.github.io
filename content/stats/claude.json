@@ -307,16 +307,20 @@
      "output": 828245
     },
     "2026-11-26": {
-     "total": 241604692,
-     "output": 425271
+     "total": 383595287,
+     "output": 743720
+    },
+    "2026-11-27": {
+     "total": 35597180,
+     "output": 165626
     }
    },
-   "updated": "2026-11-26T11:15:19.006Z",
+   "updated": "2026-11-27T11:15:19.653Z",
    "projects": {
-    "other": 19120116916,
+    "other": 19262938360,
     "forgelog": 1723493902,
     "portfolio": 1767136975,
-    "mldsa-auth": 9843160082,
+    "mldsa-auth": 9877208572,
     "hawk-signature-study": 15541878,
     "bandits": 59484214,
     "ssgd-momentum": 16584305,
@@ -339,22 +343,22 @@
     "kaggle-s6e9": 156899403,
     "ledger": 285577572,
     "localagent": 436405673,
-    "trading-agent": 635279930,
+    "trading-agent": 635997771,
     "trafficflowbench": 679964287,
     "portfolio-pulse": 380353746
    },
    "models": {
     "claude-opus-5": 9182914644,
     "claude-fable-5-1": 2769245387,
-    "claude-opus-5-5": 24804175045,
+    "claude-opus-5-5": 24945718066,
     "claude-sonnet-5": 196218944,
     "claude-opus-4-8": 201381982,
     "claude-haiku-4-5": 5480915,
-    "claude-haiku-5-5": 350553,
+    "claude-haiku-5-5": 418617,
     "claude-sonnet-5-5": 31632804,
     "claude-opus-4-6": 719495,
-    "claude-fable-5-2": 2044119277,
-    "claude-mythos-5-2": 2569509149
+    "claude-fable-5-2": 2044837118,
+    "claude-mythos-5-2": 2604767998
    }
   },
   "msi": {
@@ -612,20 +616,24 @@
      "output": 14148758
     },
     "2026-11-26": {
-     "total": 28262227,
-     "output": 38222
+     "total": 2092807753,
+     "output": 10815908
+    },
+    "2026-11-27": {
+     "total": 708338563,
+     "output": 4101266
     }
    },
-   "updated": "2026-11-26T11:17:08.428Z",
+   "updated": "2026-11-27T11:17:05.253Z",
    "projects": {
-    "other": 25081762116,
-    "slopify": 1383603483,
+    "other": 27833284956,
+    "slopify": 1390046870,
     "gtnh-agent": 5065393358,
     "tfwr-speedrun": 196648103,
-    "creditmap": 440164687
+    "creditmap": 455082549
    },
    "models": {
-    "claude-opus-5-5": 27637416353,
+    "claude-opus-5-5": 30410300442,
     "claude-haiku-4-5": 238463,
     "claude-sonnet-5-5": 383932289,
     "claude-fable-5-1": 1820124955,
@@ -635,5 +643,5 @@
    }
   }
  },
- "updated": "2026-11-26T11:17:09.996Z"
+ "updated": "2026-11-27T11:17:07.622Z"
 }
