@@ -1,25 +1,25 @@
 {
- "updated": "2026-11-26T11:18:45.811Z",
+ "updated": "2026-11-28T11:18:42.087Z",
  "artists": [
+  {
+   "name": "Laufey",
+   "url": "https://open.spotify.com/artist/7gW0r5CkdEUMm42w9XpyZO"
+  },
   {
    "name": "C418",
    "url": "https://open.spotify.com/artist/4uFZsG1vXrPcvnZ4iSQyrx"
   },
   {
-   "name": "Eminem",
-   "url": "https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR"
+   "name": "Keane",
+   "url": "https://open.spotify.com/artist/53A0W3U0s8diEn9RhXQhVz"
   },
   {
    "name": "Red Hot Chili Peppers",
    "url": "https://open.spotify.com/artist/0L8ExT028jH3ddEcZwqJJ5"
   },
   {
-   "name": "NVM",
-   "url": "https://open.spotify.com/artist/3DkHOBTtRZIj7m2aF42rtC"
-  },
-  {
-   "name": "april june",
-   "url": "https://open.spotify.com/artist/4WreACyfQITcXGx86xxYkG"
+   "name": "Darksoft",
+   "url": "https://open.spotify.com/artist/5pD33SUgX5GQ8NvqZ6IdeE"
   }
  ],
  "tracks": [
@@ -27,6 +27,11 @@
    "name": "Ki",
    "artist": "C418",
    "url": "https://open.spotify.com/track/4IX21gApFLNpDxYHaXOuex"
+  },
+  {
+   "name": "Sometimes I Get Emotional",
+   "artist": "After Louise",
+   "url": "https://open.spotify.com/track/7uAD2mlombVXT7JsZ3yexr"
   },
   {
    "name": "Midnight City",
@@ -42,11 +47,6 @@
    "name": "Aria Math",
    "artist": "C418",
    "url": "https://open.spotify.com/track/6VK8OMA2FhX4KoS3QCH7rL"
-  },
-  {
-   "name": "Jump - 2015 Remaster",
-   "artist": "Van Halen",
-   "url": "https://open.spotify.com/track/1o9p6BfR2lYxPhoWsU6uMv"
   }
  ]
 }
